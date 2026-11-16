@@ -1,4 +1,4 @@
-# 向きを変えた分布内画像で振幅の下がる方向を知る 拡散モデルによる分布外検知 (method name OLR is a working name; title in body0.tex)
+# 向きを変えた分布内画像による拡散モデルの分布外検知 (method name OLR is a working name; title in body0.tex)
 
 26f WIP 中間発表のレジュメ(MIRU 2025 クラス, pLaTeX).
 
