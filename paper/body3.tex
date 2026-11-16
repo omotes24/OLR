@@ -13,7 +13,7 @@
 
 \subsection*{A.1\quad 実験の設定}
 \begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{3pt}
-\caption{分布内データセットと拡散モデル(最後の行は\ref{sec:hrset}節の追加実験). FashionMNIST以外は公開されている学習済みの重みを変更せずに用いた. ブロック：プロファイルに入るブロックの数 $p$ / ブロックAまでの数 / 全ブロック(分布内の画像で振幅の分散が0になるブロックは除く. 出力が $1{\times}1$ のブロックである). ブロックA：デコーダで出力が $16{\times}16$ になる最初のブロック(モデルの実装での名前). 画像 $n$：val1 の分布内の画像の枚数. $\Delta$：式~\eqref{eq:delta}. 数値：保存する数値の数($p+p^{2}$).}
+\caption{分布内データセットと拡散モデル(最後の行は\ref{sec:hrset}節の追加実験). FashionMNIST以外は公開されている学習済みの重みを変更せずに用いた. ブロック：プロファイルに入るブロックの数 $p$ / ブロックAまでの数 / 全ブロック(分布内の画像で振幅の分散が0になるブロックは除く. 出力が $1{\times}1$ のブロックである). ブロックA：デコーダで出力が $16{\times}16$ になる最初のブロック(モデルの実装での名前). 画像 $n$：val1 の分布内の画像の枚数. $\Delta$：式~\eqref{eq:expand}の $\Delta^{2}$ の平方根. 数値：保存する数値の数($p+p^{2}$).}
 \label{tab:models}
 \begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{}llllclrrr@{}}\toprule
@@ -73,6 +73,16 @@ $\vd=\vmu-\vmu_{o}$, $\kappa=1+1/c$ とおく. 次元を $p$ とすると,正規
 基準を満たした候補は,ノイズの種を変えても同じ値であった(val2 の平均は種0, 1, 2で\olDevSeeds\%,対照で\olDevSeedsEq\%). その後に実装を凍結し, val2 で開発時の値を再現することを確かめてから(差は最大\olDevDiff{}ポイント), 6つのテスト分割で1回だけ評価した. 振幅の定義,ノイズの大きさ,ブロックAの規則は,著者の以前の研究で決めたものを変えずに使った.
 
 \subsection*{A.4\quad val2 での分析}
+本文の表~\ref{tab:dev}を補足する.
+
+\textbf{定数 $c$.} $c=0$(距離の項だけ)の\olDevCzero\%から $c=8$ の\olDevCeight\%まで上がり, $c=16$ で\olDevCsixteen\%, $c=64$ で\olDevCsixtyfour\%, $c\to\infty$(方向の項だけ)で\olDevCinf\%になる. 8と16の間は平らである. $c=8$ は,上下反転だけを使う形で val2 を見て決め, 7つの向きを使う形を試す前に手順書に書いた(A.3).
+
+\textbf{使う向き.} 上下反転だけでは\olDevOv\%, 7つすべてで\olDevCeight\%である. 差が出るのはSVHNで,上下反転だけの\olDevSVHNOv\%が, 90度の回転と対角の反転(4つ)では\olDevSVHNOquarter\%になる. 左右反転を除いた6つでも\olDevOnomirror\%である. 画像を切って並べ替えた写し(4分割の入れ替え, $4{\times}4$ のパッチの並べ替え, 2枚の貼り合わせ)では,方向の項だけで\olDevCutMin{}〜\olDevCutMax\%にとどまった. 切り口の縁に反応する方向になるためと考えられる.
+
+\textbf{枚数と定数のない形.} 分布内の画像を1{,}000枚に減らしても\olDevNthousand\%で, 500枚で\olDevNfivehundred\%, 100枚で\olDevNhundred\%に下がる. 8つの向きの正規分布のうち「そのまま」である事後確率を使うと\olDevPk\%,距離の項を密度として掛けると\olDevPkd\%である. 距離の項は\olNBlkCten{}次元のどの方向の外れも同じに数えるので,そのままの重みでは方向の項を埋もれさせる. 定数 $c$ はこの重みを決めている.
+
+\textbf{式の一部を変えたもの(6分割).} 本文の表~\ref{tab:six}の下の3行は,評価の前に手順書に書いた3通りである. 距離の項だけでは\Ours{}より\olSixTGap{}ポイント,方向の項だけでは\olSixLGap{}ポイント低い. 方向の項だけでは, SVHNとImageNet-64が\olSixLSVHN\%と\olSixLIN\%である(\Ours{}は\olSixSVHN\%と\olSixIN\%). 全ブロックを使うと, SVHNは\olSixAllSVHN\%に上がり, CIFAR-10とImageNet-64は\olSixAllCten\%と\olSixAllIN\%に下がる. ブロックAで止める形は,時間が\olFwdAShare\%で済む.
+
 \begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{0.93}
 \caption{表~\ref{tab:dev}の分布内ごとの値と,ほかの形(AUROC, \%. val2,ノイズの種3つの平均). 左の5列：分布内ごとの自然画像の分布外集合の平均. 右の2列：縮小の履歴をそろえた対照での5つの平均と上下反転. 全ブロック：ブロックAで止めない. 対数標準偏差：振幅の代わりに,チャネルごとの空間の標準偏差の対数の平均を使う. 事後確率：8つの向きの正規分布(共分散は共通)のうち「そのまま」である事後確率の対数. 密度の積：それに $-d^{2}/2$ を加えたもの. 部分空間：$d^{2}$ を, 7つの向きの方向が張る部分空間に限ったもの.}
 \label{tab:devfull}
@@ -140,7 +150,9 @@ $\vd=\vmu-\vmu_{o}$, $\kappa=1+1/c$ とおく. 次元を $p$ とすると,正規
 \end{tabular}
 \end{table}
 
-\subsection*{A.8\quad 検証の分布内ごとの値}
+\subsection*{A.8\quad 検証の詳細}
+重みを初期化したままのものと,テンソルごとに要素を並べ替えたものに替えると(本文の表~\ref{tab:var}),上下反転も見分けなくなる(\olVarRinitVf\%). 別のデータセットで学習したモデルに替えると(\olVarNBy{}通り. 表~\ref{tab:varby}),平均は\olVarByTrained\%から\olVarBy\%になる. 方向の項は\olVarByL\%に下がるが,距離の項は\olVarByT\%である. 組による差が大きく, CIFAR-10の画像をSVHNのモデルに通すと\olVarByMin\%, SVHNの画像をCIFAR-10のモデルに通すと\olVarByMax\%である.
+
 \begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{0.93}
 \caption{表~\ref{tab:degr}の分布内ごとの値(AUROC, \%. 分布内の画像と,それを劣化させた写し).}
 \label{tab:degrid}

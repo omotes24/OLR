@@ -244,7 +244,7 @@ def vam(v, k='score', met='nat'): return mean(va(b, v, k, met) for b in TAGS)
 for b in TAGS: assert abs(va(b, 'trained') - SP['test7']['original']['rows']['OL'][b]['nat']) < 1.0 and all(VA[b][v]['finite'] for v in VA[b]) and {'rinit', 'rshuf'} <= set(VA[b]), b
 BYP = [(b, v) for b in TAGS for v in VA[b] if v.startswith('by_')]; byv = lambda k='score', met='nat': mean(va(b, v, k, met) for b, v in BYP); BYT = sorted({b for b, v in BYP}); bytr = lambda k='score': mean(va(b, 'trained', k) for b, v in BYP)
 L = ['% written by gen/ol_gen.py: test6, noise seed 0: the trained model, random weights, shuffled weights (olx_var.json)']
-for v, lab in (('trained', '学習済みのモデル'), ('rinit', '初期化したままの重み'), ('rshuf', '重みを並べ替えたもの')):
+for v, lab in (('trained', '学習済み'), ('rinit', '初期化したまま'), ('rshuf', '並べ替え')):
     c = [lab] + [f1(va(b, v)) for b in TAGS] + [f1(vam(v)), f1(vam(v, met='vflip')), f1(vam(v, 'l')), f1(vam(v, 'd2'))]; L.append(' & '.join(blue(x) if v == 'trained' else x for x in c) + '\\\\')
 W('tab_var_ol.tex', L)
 L = ['% written by gen/ol_gen.py: the trained model of another dataset (olx_var.json)']
@@ -267,6 +267,15 @@ L.append('\\multicolumn{4}{@{}l}{{定数 $c$(7つの向き)}}\\\\'); L += [drow(
 L.append('\\multicolumn{4}{@{}l}{{使う向き($c=8$)}}\\\\'); L += [drow(r, lab) for r, lab in OSW]; L.append('\\midrule')
 L.append('\\multicolumn{4}{@{}l}{{分布内の画像の枚数 $n$}}\\\\'); L += [drow(r, lab) for r, lab in NSW]
 W('tab_dev_ol.tex', L)
+# the same rows, three blocks side by side (full-width table in the main text)
+def dcells(r, lab): c = [lab, f1(dv(r)), f1(dv(r, 'eq_nat')), f1(dv(r, 'vflip'))]; return [blue(x) if r == 'c8' else x for x in c]
+L = ['% written by gen/ol_gen.py: val2, mean of noise seeds 0-2 (olx_dev.json): c, orientations and n side by side']
+for i in range(max(len(CSW), len(OSW), len(NSW))):
+    row = []
+    for blk in (CSW, OSW, NSW):
+        row += dcells(*blk[i]) if i < len(blk) else ['', '', '', '']
+    L.append(' & '.join(row) + '\\\\')
+W('tab_devw_ol.tex', L)
 L = ['% written by gen/ol_gen.py: val2, mean of noise seeds 0-2, per ID (olx_dev.json)']
 for grp, rows in (('定数 $c$', CSW), ('使う向き', OSW[:-1]), ('枚数 $n$', NSW[:-1]), ('その他', XSW)):
     for i, (r, lab) in enumerate(rows):

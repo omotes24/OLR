@@ -1,98 +1,81 @@
 \section{はじめに}
-拡散モデル~\cite{song2021score,karras2022edm}は,生成のために学習したモデルを凍結したまま分布外検知に使える. 尤度や統計量による検知~\cite{serra2020input,mahmood2021msma,heng2024diffpath,alexis2026gepc,shoushtari2026eigenscore}は, 1枚あたり10回から数百回のネットワークの評価を要する. CFS~\cite{rouzoumka2026cfs}は,低いノイズで1回通したときの中間特徴~\cite{xiang2023ddae}を使い, 1回の順伝播でこれらを上回る.
+拡散モデル~\cite{song2021score,karras2022edm}は,学習済みのモデルを凍結したまま分布外検知に使える. 尤度や統計量による方法~\cite{serra2020input,mahmood2021msma,heng2024diffpath,alexis2026gepc,shoushtari2026eigenscore}は, 1枚あたり10回から数百回のネットワークの評価を要する. CFS~\cite{rouzoumka2026cfs}は低いノイズでの1回の順伝播から中間特徴~\cite{xiang2023ddae}を読んでこれらを上回るが, 1{,}024次元の特徴を学習画像5万枚の統計量や近傍と比べる.
 
 \begin{figure*}[t]\centering
 \begin{adjustbox}{max width=\textwidth}\input{figs/fig_method}\end{adjustbox}
-\caption{\Ours{}の概要. (a) テスト時. 画像を凍結したU-NetにブロックAまで通し,ブロックごとに数値を1つ(振幅)だけ読む[式~\eqref{eq:amp}]. 振幅の並びから点 $\vmu^{*}$ までのマハラノビス距離が,そのままスコアになる[式~\eqref{eq:score}]. (b) 事前の準備. 分布内の画像\olNRefMax{}枚を8つの向きで通し,そのままの向きでの並びの平均 $\vmu$ と共分散 $\Sm$,残り7つの向きでの並びの平均 $\vmu_{o}$ を求める. (c) スコアの意味. $\vmu^{*}$ は, $\vmu$ を $\vmu_{o}$ の反対側へ動かした点である[式~\eqref{eq:mustar}]. $\vmu_{o}$ の側へ外れた並びほど遠くなる. (a)と(b)の折れ線,(c)の配置は模式図である.}
+\caption{\Ours{}の概要. (a) テスト時：ブロックAまで通し,ブロックごとの振幅[式~\eqref{eq:amp}]の並びから点 $\vmu^{*}$ までのマハラノビス距離をスコアとする. (b) 事前の準備：分布内の画像を8つの向きで通し, $\vmu$, $\Sm$, $\vmu_{o}$ を求める. (c) $\vmu^{*}$ は $\vmu$ を $\vmu_{o}$ の反対側へ動かした点で, $\vmu_{o}$ の側へ外れた並びほど遠い. 折れ線と配置は模式図である.}
 \label{fig:method}
 \end{figure*}
 
-ただし, CFSは1{,}024次元の特徴を読み,分布内の学習画像5万枚から求めた統計量や近傍と比べる.
+本研究の\Ours{}は, U-Net~\cite{ronneberger2015unet}のブロックごとに数値を1つ(振幅)だけ読み,その並びを1つの式で判定する(図~\ref{fig:method}). 学習済みのモデルの振幅は,分布外の画像で下がることが多い(\ref{sec:fall}節). この下がる方向を,分布外の画像を使わずに,分布内の画像の向きを変えて求める. 上下反転や回転をした画像は,画素の値の集まりが同じまま見慣れない画像になり,振幅が下がるからである. スコアは,分布内の平均をこの方向の反対側へ動かした点へのマハラノビス距離~\cite{lee2018mahalanobis}である. 勾配による学習,追加のネットワーク,人手のラベル,分布外の画像は使わない.
 
-本研究の\Ours{}は, U-Net~\cite{ronneberger2015unet}のブロックごとに数値を1つだけ読む(図~\ref{fig:method}). ブロックの出力のチャネルごとに,空間平均から最も離れた値の大きさをとり,その対数をチャネルで平均する. これを振幅と呼ぶ. 読むのは,デコーダで解像度が $16{\times}16$ になる最初のブロック(ブロックA)までで,順伝播はそこで止める. CIFAR-10のモデルでは,画像1枚が\olNBlkCten{}個の数値の並びになる.
-
-学習済みのモデルの振幅は,分布外の画像では下がることが多い. 本研究の5つのデータセットでは,ブロックAの振幅の平均が,\olNSetsA{}の分布外集合のすべてで分布内より低い(\ref{sec:fall}節). この下がる方向を,分布外の画像を使わずに知るために,分布内の画像の向きを変える. 画像を上下反転や回転させると,画素の値の集まりは同じまま,モデルにとって見慣れない画像になり,ブロックAの振幅は5つのデータセットのすべてで下がる. 分布内の画像\olNRefMax{}枚について,そのままの向きでの並びの平均と,残り7つの向きでの並びの平均を求めると,その差が「見慣れなくなると並びが動く方向」を与える. \Ours{}のスコアは,分布内の平均をこの方向の反対側へ動かした点への,マハラノビス距離~\cite{lee2018mahalanobis}である. 式は1つで,分布内の並びの正規分布と,向きを変えた並びの正規分布(共分散を1.125倍に広げたと置いたもの)との対数尤度比に等しい. テスト画像の向きは変えない. 勾配による学習,追加のネットワーク,人手のラベル,分布外の画像は,どの段階でも使わない.
-
-5つの分布内データセットでの結果は次のとおりである. (1) 先行研究と同じ画像(test)で,自然画像の分布外集合に対する平均AUROCは\olTestOL\%で,先行研究の最良(\olBestPriorName, \olBestPriorMean\%)を\olGapCfsKnn{}ポイント上回った(95\%信頼区間[\olGapCfsKnnLo, \olGapCfsKnnHi]). (2) 6つのテスト分割で\olSixMin{}〜\olSixMax\%であった. (3) テスト時の計算は,ブロックAで止める順伝播1回と\olNBlkCten{}次元の2次形式1つで, CPUで1枚\olSecOL{}秒である. 途中で止めたCFSの\olSecRatioCfsKnn{}倍で,保存する数値は\olNStored{}個である. (4) 画像の縮小の履歴をそろえた対照でも, CFSとの差は\olEqGapCfsKnn{}ポイントで保たれた. (5) 重みを乱数にしたモデルでは\olVarRinit\%に下がり,判定はモデルの学習に依っている. (6) $256{\times}256$ の画像(ImageNet)では,向きを変えても並びがほとんど動かず($\Delta=\olHrDelta$),方向の項だけでは\olHrL\%,上下反転は\olHrOLVf\%である. スコアはほぼ距離の項だけになり,分布外集合の違いが元のファイルにも現れるので,内容を見分けている証拠にもならない. 向きの手がかりが働くのは,向きを変えると並びが動く場合に限られる. 一方,式の中の定数1つ($c=8$)は開発用の分割で決めた. 尤度比の共分散の比にあたるが,測った比とは合わない(\ref{sec:score}節). 開発では,候補の式を\olNDev{}通り試し,候補にしない変種を\olNVar{}通り計算した. テスト分割は,以前に他の手法で結果を見たものである. 画質の変化に反応すること,上下反転した分布内の画像の検出は\olSixVf\%にとどまることも報告する.
+5つの分布内データセットで,自然画像の分布外集合に対する平均AUROCは test で\olTestOL\%で,先行研究の最良(\olBestPriorName, \olBestPriorMean\%)を\olGapCfsKnn{}ポイント上回った(95\%信頼区間[\olGapCfsKnnLo, \olGapCfsKnnHi]). 6つのテスト分割では\olSixMin{}〜\olSixMax\%であった. 順伝播は途中で止める1回で, CPUで1枚\olSecOL{}秒(途中で止めたCFSの\olSecRatioCfsKnn{}倍),保存する数値は\olNStored{}個である. 縮小の履歴をそろえた対照でもCFSとの差は変わらず,重みを初期化したままにすると\olVarRinit\%に下がる. 一方, $256{\times}256$ のImageNetでは向きを変えても並びがほとんど動かず,方向の手がかりは働かない(上下反転は\olHrOLVf\%). なお,定数1つ($c=8$)は開発用の分割で決め,テスト分割は以前に他の手法で結果を見たものである.
 
 \section{先行研究}
 \label{sec:related}
-\textbf{尤度と統計量.} 深層生成モデルは分布外の画像に高い尤度を与えることがある~\cite{nalisnick2019deep,serra2020input}. 典型集合の検定~\cite{nalisnick2019typ},入力の複雑さによる補正~\cite{serra2020input},スコアの大きさ~\cite{mahmood2021msma},生成の軌跡~\cite{heng2024diffpath},事後平均の一貫性~\cite{alexis2026gepc},事後共分散~\cite{shoushtari2026eigenscore},内在次元~\cite{kamkari2024geometric}による方法は,多くが1枚あたり10回から数百回のネットワークの評価を要する.
+\textbf{尤度と統計量.} 深層生成モデルは分布外の画像に高い尤度を与えることがある~\cite{nalisnick2019deep,serra2020input}. これを補う典型集合の検定~\cite{nalisnick2019typ},入力の複雑さによる補正~\cite{serra2020input},スコアの大きさ~\cite{mahmood2021msma},生成の軌跡~\cite{heng2024diffpath},事後平均の一貫性~\cite{alexis2026gepc},事後共分散~\cite{shoushtari2026eigenscore},内在次元~\cite{kamkari2024geometric}は,多くが1枚あたり10回以上のネットワークの評価を要する.
 
-\textbf{中間特徴.} kNN~\cite{sun2022knn}は,学習画像の特徴に対する $k$ 番目の近さで判定する. SSD~\cite{sehwag2021ssd}は,特徴のまとまりへのマハラノビス距離~\cite{lee2018mahalanobis}で判定する. CFS~\cite{rouzoumka2026cfs}は,拡散モデルの2つのブロックの出力をチャネルごとの平均と標準偏差にまとめ,対角の正規分布や近傍で判定する. \Ours{}が読むのは,ブロックごとに1つの数値である.
+\textbf{中間特徴.} kNN~\cite{sun2022knn}は学習画像の特徴への近さで, SSD~\cite{sehwag2021ssd}は特徴のまとまりへのマハラノビス距離~\cite{lee2018mahalanobis}で判定する. CFS~\cite{rouzoumka2026cfs}は拡散モデルの2つのブロックの出力をチャネルごとの平均と標準偏差にまとめ,対角の正規分布や近傍で判定する. MSMA~\cite{mahmood2021msma}はノイズの大きさごとのスコアの大きさを並べ,分布内の密度を当てはめる. \Ours{}が並べるのはブロックごとの振幅で,外れのうち振幅が下がる方向を重く数える.
 
-\textbf{大きさの並び.} MSMA~\cite{mahmood2021msma}は,複数の大きさのノイズでのスコアの大きさを並べたベクトルに,分布内のデータの密度を当てはめて判定する. 画像1枚を数十個以下の数値の並びにまとめる点は, \Ours{}と同じである. 違いは3つある. (a) 並べる方向が,ノイズの大きさではなくブロックである(ノイズは1つだけ使う). (b) 並べる量が,ネットワークの出力であるスコアの大きさではなく,途中のブロックの振幅である. (c) 並びの外れを,どの方向にも同じに数えるのではなく,振幅が下がる方向を重く数える.
+\textbf{特徴の大きさ.} 分類器では,中間特徴のノルムが分布外の画像で小さくなる~\cite{yu2023featurenorm,park2023featurenorm}. これらは分布内のラベルで学習した分類器を要し, FeatureNorm~\cite{yu2023featurenorm}は読むブロックを擬似的な分布外の画像で選ぶ. \Ours{}はラベルなしで学習した拡散モデルを使い,ブロックは解像度だけで決める.
 
-\textbf{特徴の大きさ.} 分類器では,中間特徴のノルムが分布内の画像で大きく,分布外で小さいことが知られている~\cite{yu2023featurenorm,park2023featurenorm}. ReAct~\cite{sun2021react}は,大きすぎる活性を切り詰めて分布外の過信を抑える. これらは分布内のラベルで学習した分類器を要する. FeatureNorm~\cite{yu2023featurenorm}は,読むブロックを擬似的な分布外(ジグソーパズル)で選ぶ. \Ours{}はラベルなしで学習した拡散モデルを使い,ブロックは解像度だけで決める.
-
-\textbf{変換した画像.} 画像の回転を当てる課題~\cite{gidaris2018rotnet}で学習した分類器を,検知に使う方法がある~\cite{golan2018geometric,hendrycks2019ss}. CSI~\cite{tack2020csi}は,回転した分布内の画像を対照学習の負例にする. GEPC~\cite{alexis2026gepc}は,変換した入力に対するノイズ除去器の出力の一貫性を14回の評価で測る. \Ours{}は,向きを変えた分布内の画像を学習には使わない. 凍結したモデルでの並びの平均を1つ求めるためだけに使い,テスト画像の向きは変えない.
-
-\textbf{尤度比と背景の分布.} 分布内のモデルの尤度を,背景のモデルの尤度で割る方法がある~\cite{ren2019likelihood}. 背景のモデルは,乱した入力で別に学習する. 相対マハラノビス距離~\cite{ren2021simple}は,クラスごとの正規分布への距離から,全体に当てはめた1つの正規分布への距離を引く. Outlier Exposure~\cite{hendrycks2019oe}は,補助の分布外データを学習に使う. \Ours{}の式も2つの正規分布の尤度比である. 違いは,背景の側を,分布内の画像の向きを変えるだけで作ることと,学習するものがないことである. 共分散が等しい2つの正規分布の尤度比は,線形判別~\cite{fisher1936use}の方向への射影になる. \Ours{}は背景の側の共分散を少し広げたと置くので,この方向への射影に,分布内の平均からのマハラノビス距離が加わる.
+\textbf{変換した画像と背景の分布.} 回転の予測~\cite{gidaris2018rotnet}で学習した分類器を使う方法~\cite{golan2018geometric,hendrycks2019ss},回転した分布内の画像を対照学習の負例にするCSI~\cite{tack2020csi},補助の分布外データで学習するOutlier Exposure~\cite{hendrycks2019oe},背景のモデルとの尤度比~\cite{ren2019likelihood},相対マハラノビス距離~\cite{ren2021simple}がある. GEPC~\cite{alexis2026gepc}は,変換した入力に対するノイズ除去器の出力の一貫性を14回の評価で測る. \Ours{}は向きを変えた分布内の画像を学習に使わず,凍結したモデルでの並びの平均を1つ求めるためだけに使う.
 
 \section{提案手法：\Ours}
 \label{sec:method}
-\textbf{問題設定.} 分布内の画像で学習した拡散モデルのノイズ除去器と,評価に用いない分布内の画像 $\vec{x}_1,\dots,\vec{x}_n$(val1. \olNRefMin{}〜\olNRefMax{}枚)だけを用いる. 次の4つは,どの段階でも用いない. (i) 勾配による学習. (ii) 追加のネットワーク. (iii) 人手のラベル. (iv) 分布外の画像. 求めるのは,平均ベクトル2つと共分散行列1つである. テスト画像 $\vec{x}$ に分布内らしさ $s(\vec{x})$ を与え,分布内の画像ほど大きくする.
+\textbf{問題設定.} 拡散モデルのノイズ除去器と,評価に用いない分布内の画像 $\vec{x}_1,\dots,\vec{x}_n$(val1. \olNRefMin{}〜\olNRefMax{}枚)だけを用いる. テスト画像 $\vec{x}$ に,分布内の画像ほど大きいスコア $s(\vec{x})$ を与える.
 
 \subsection{振幅の並び}
 \label{sec:amp}
-画像 $\vec{x}$ にノイズ $\sigma_1\veps$($\sigma_1=0.01$. $\veps$ はすべての画像に共通の1枚)を加えてノイズ除去器に通す. U-Netのブロックを入力に近い順に $h=1,2,\dots$ とし,ブロック $h$ の出力の,チャネル $c$,位置 $u$ での値を $f_{h,c,u}(\vec{x})$ と書く. チャネルの数を $C_h$,位置の数を $U_h$ とする. チャネルごとの空間平均は
+画像 $\vec{x}$ にノイズ $\sigma_1\veps$($\sigma_1=0.01$. $\veps$ は全画像に共通)を加えてノイズ除去器に通す. ブロック $h$ の出力の,チャネル $c$,位置 $u$ での値を $f_{h,c,u}(\vec{x})$,チャネルの数を $C_h$,位置の数を $U_h$ とし,チャネルごとの空間平均を
 \begin{equation}
 \bar{f}_{h,c}(\vec{x})=\frac{1}{U_h}\sum_{u=1}^{U_h}f_{h,c,u}(\vec{x})
 \label{eq:fbar}
 \end{equation}
-である. ブロック $h$ の振幅を
+とする. ブロック $h$ の振幅を
 \begin{equation}
 a_h(\vec{x})=\frac{1}{C_h}\sum_{c=1}^{C_h}\log\max_{u}|f_{h,c,u}(\vec{x})-\bar{f}_{h,c}(\vec{x})|
 \label{eq:amp}
 \end{equation}
-と定める. チャネルごとに,平均から最も離れた1か所だけを見る量である. 特徴が空間的に一様なら小さく,どこかに強い応答があれば大きい.
-
-デコーダで出力の解像度が $16{\times}16$ になる最初のブロックをAと呼ぶ(補足資料の表~\ref{tab:models}). この規則は5つのモデルで同じである. ブロックAが入力から $p$ 番目のとき,そこまでの振幅を並べたベクトル
+と定める. チャネルごとに空間平均から最も離れた値を見る量で,どこかに強い応答があれば大きい. デコーダで出力が $16{\times}16$ になる最初のブロックをAとし(5つのモデルで同じ規則. 補足資料の表~\ref{tab:models}),入力からAまでの $p$ 個の振幅を並べた
 \begin{equation}
 \va(\vec{x})=\{a_1(\vec{x}),\dots,a_p(\vec{x})\}
 \label{eq:profile}
 \end{equation}
-をプロファイルと呼ぶ. 画像1枚から読むのはこれだけで,順伝播はブロックAで止めてよい(CIFAR-10のモデルで $p=\olNBlkCten$).
+をプロファイルと呼ぶ(CIFAR-10で $p=\olNBlkCten$). 順伝播はAで止めてよい.
 
 \subsection{向きを変えた分布内の画像}
 \label{sec:orient}
-正方形の画像を自分自身に重ねる向きの変え方は, 8通りある(そのまま,上下反転,左右反転, 180度の回転, 90度と270度の回転, 2本の対角線についての反転). そのままを $\Gm_0$,残りの7つを $\Gm_1,\dots,\Gm_7$ と書く. どれも画素を並べ替えるだけなので,画素の値の集まりは変わらない.
-
-分布内の画像 $\vec{x}_1,\dots,\vec{x}_n$ のプロファイルの平均を
+正方形の画像の向きの変え方は,そのままを除いて7つある(上下反転,左右反転, 180度の回転, 90度と270度の回転, 2本の対角線についての反転). これを $\Gm_1,\dots,\Gm_7$ と書く. どれも画素を並べ替えるだけで,画素の値の集まりは変わらない. 分布内の画像のプロファイルの平均を
 \begin{equation}
 \vmu=\frac{1}{n}\sum_{i=1}^{n}\va(\vec{x}_i)
 \label{eq:mu}
 \end{equation}
-とし,共分散行列を $\Sm$ とする. 同じ画像を向き $k$ に変えたときの平均を
+共分散行列を $\Sm$,向きを変えたときの平均を
 \begin{equation}
-\vmu_k=\frac{1}{n}\sum_{i=1}^{n}\va(\Gm_k\vec{x}_i)
-\label{eq:muk}
-\end{equation}
-とし, 7つの向きでの平均を
-\begin{equation}
-\vmu_{o}=\frac{1}{7}\sum_{k=1}^{7}\vmu_k
+\vmu_{o}=\frac{1}{7n}\sum_{k=1}^{7}\sum_{i=1}^{n}\va(\Gm_k\vec{x}_i)
 \label{eq:muo}
 \end{equation}
-とする. 向きを変えた画像は,分布内の画像と同じ画素を持つが,モデルが学習した配置から外れている. $\vmu-\vmu_{o}$ は,見慣れた画像が見慣れなくなるときにプロファイルが動く向きの逆である. 7つすべてを使う形は, val2 での開発の8回目の候補である(補足資料A.3). 左右反転しても分布内である自然画像では,その向きの平均は $\vmu$ とほぼ同じになり,差に寄与しないだけである.
+とする. $\vmu-\vmu_{o}$ は,見慣れた画像が見慣れなくなるときにプロファイルが動く向きの逆である. 7つすべてを使う形は, val2 での開発の8回目の候補である(補足資料A.3).
 
 \subsection{スコア}
 \label{sec:score}
-分布内の平均を, $\vmu_{o}$ の反対側へ動かした点を
+分布内の平均を $\vmu_{o}$ の反対側へ動かした点
 \begin{equation}
 \vmu^{*}=\vmu+c(\vmu-\vmu_{o})
 \label{eq:mustar}
 \end{equation}
-とする($c=8$. val2 で決めた. 補足資料A.3). 共分散行列の逆行列を
+($c=8$. val2 で決めた)と
 \begin{equation}
 \Pm=(\Sm+\lambda\bar{s}\Id)^{-1}
 \label{eq:prec}
 \end{equation}
-と書く. $\bar{s}$ は $\Sm$ の対角成分の平均, $\Id$ は単位行列で, $\lambda=10^{-3}$ である. 分布内の画像で分散が0になるブロックは除く. \Ours{}のスコアは
+($\bar{s}$ は $\Sm$ の対角成分の平均, $\lambda=10^{-3}$. 分散が0のブロックは除く)を用いて, \Ours{}のスコアを
 \begin{equation}
 s(\vec{x})=-\{\va(\vec{x})-\vmu^{*}\}^{\top}\Pm\{\va(\vec{x})-\vmu^{*}\}
 \label{eq:score}
 \end{equation}
-である. 点 $\vmu^{*}$ へのマハラノビス距離の2乗の符号を変えたもので,式はこれ1つである.
+とする.
 
 \textbf{2つの項.} 分布内の平均からの距離と,向きの方向への射影を
 \begin{equation}
@@ -103,43 +86,38 @@ d^{2}(\vec{x})=\{\va(\vec{x})-\vmu\}^{\top}\Pm\{\va(\vec{x})-\vmu\}
 \ell(\vec{x})=(\vmu-\vmu_{o})^{\top}\Pm\{\va(\vec{x})-\vmu\}
 \label{eq:ell}
 \end{equation}
-と書くと,式~\eqref{eq:score}を展開して
+とおくと,式~\eqref{eq:score}は
 \begin{equation}
 s(\vec{x})=-d^{2}(\vec{x})+2c\,\ell(\vec{x})-c^{2}\Delta^{2}
 \label{eq:expand}
 \end{equation}
-を得る. ここで
-\begin{equation}
-\Delta^{2}=(\vmu-\vmu_{o})^{\top}\Pm(\vmu-\vmu_{o})
-\label{eq:delta}
-\end{equation}
-は画像によらない定数である. $-d^{2}$ は,プロファイルが分布内の平均からどの方向に外れても小さくなる(距離の項). $\ell$ は,向きを変えた画像の側へ外れると小さく,反対側では大きくなる(方向の項). $c=0$ なら距離の項だけになり, $c$ を大きくすると方向の項だけに近づく. $\Delta$ は,向きを変えた画像のプロファイルが,そのままの画像からどれだけ離れているかを表す(5つのモデルで\olDeltaMin{}から\olDeltaMax). 分布内の画像での $2c\,\ell$ の標準偏差はほぼ $2c\Delta$ なので,方向の項の重みは $\Delta$ に比例する. 向きを変えても並びがあまり動かないデータでは,方向の項は自動的に軽くなる.
+と分かれる. $\Delta^{2}=(\vmu-\vmu_{o})^{\top}\Pm(\vmu-\vmu_{o})$ は画像によらない. $-d^{2}$ はどの方向の外れでも小さくなる距離の項, $\ell$ は向きを変えた画像の側へ外れると小さくなる方向の項である. 分布内の画像での $\ell$ の標準偏差はほぼ $\Delta$ なので,向きを変えても並びが動かないデータでは,方向の項は自動的に軽くなる(5つのモデルで $\Delta=\olDeltaMin$〜$\olDeltaMax$).
 
-\textbf{尤度比としての意味.} 平均 $\vec{m}$,共分散行列 $\mathbf{C}$ の正規分布の密度を $N(\va;\vec{m},\mathbf{C})$ と書く. 分布内のプロファイルを $N(\va;\vmu,\Pm^{-1})$,向きを変えた画像のプロファイルを,共分散を $1+1/c$ 倍に広げた $N\{\va;\vmu_{o},(1+1/c)\Pm^{-1}\}$ で表すと,対数尤度比は
+\textbf{尤度比としての解釈.} 分布内のプロファイルを正規分布 $N(\vmu,\Pm^{-1})$,向きを変えた画像のプロファイルを $N\{\vmu_{o},(1+1/c)\Pm^{-1}\}$ とおくと,
 \begin{equation}
 \log\frac{N(\va;\vmu,\Pm^{-1})}{N\{\va;\vmu_{o},(1+1/c)\Pm^{-1}\}}=\frac{s(\vec{x})}{2(1+c)}+\mathrm{const.}
 \label{eq:llr}
 \end{equation}
-となる(導出は補足資料A.2). 式~\eqref{eq:score}で順位をつけることは,この尤度比で順位をつけることと同じである. $c=8$ は,共分散を1.125倍に広げることにあたる. 広げなければ($c\to\infty$)線形判別~\cite{fisher1936use}の方向だけになり,無限に広げれば($c\to0$)分布内の平均からのマハラノビス距離だけになる. ただし,これはモデルとしての解釈である. 向きを変えた並びの共分散を実際に測ると, $\Pm$ との積のトレースを $p$ で割った比は\olKapMin{}〜\olKapMax{}で(5つのうち\olKapNLeOne{}つで1.0以下. 補足資料の表~\ref{tab:kappa}), 1.125倍ではない. $c$ は当てはめた量ではなく,距離の項と方向の項の重みである.
+である(補足資料A.2). ただし,向きを変えた並びの共分散を測ると分布内の\olKapMin{}〜\olKapMax{}倍で(補足資料の表~\ref{tab:kappa}), 1.125倍ではない. $c$ は当てはめた量ではなく, 2つの項の重みである.
 
-\textbf{計算量と保存量.} テスト時の計算は,ブロックAで止める順伝播1回(全ブロックを通る順伝播の\olFwdAShare\%), $p$ 個の振幅, $p$ 次元の2次形式1つである. 保存するのは $\vmu^{*}$($p$ 個)と $\Pm$($p^{2}$ 個)で, CIFAR-10では計\olNStored{}個の数値である. 事前の計算は,分布内の画像 $n$ 枚を8つの向きで通す $8n$ 回の順伝播だけで,勾配による学習も k-means もない. 学習画像の特徴は保存しない.
+\textbf{計算量.} テスト時は,ブロックAで止める順伝播1回(全体の\olFwdAShare\%)と $p$ 次元の2次形式1つである. 保存するのは $\vmu^{*}$ と $\Pm$ の\olNStored{}個の数値(CIFAR-10)で,事前の計算は $8n$ 回の順伝播だけである.
 
 \section{実験}
 \label{sec:exp}
 \begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{2.5pt}\renewcommand{\arraystretch}{1.05}
-\caption{画像の分け方. 9つは互いに重ならない. 分布外データセットの内訳は補足資料A.1.}
+\caption{画像の分け方(9つは互いに重ならない. 分布外データセットは補足資料A.1).}
 \label{tab:splits}
-\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.37\columnwidth}>{\raggedright\arraybackslash}p{0.41\columnwidth}@{}}\toprule
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.40\columnwidth}>{\raggedright\arraybackslash}p{0.38\columnwidth}@{}}\toprule
 分割 & 画像 & 用途\\\midrule
-train & 分布内の学習画像5万枚(ImageNet-64は1万枚) & \Ours{}は使わない. 比較手法の当てはめ\\[1pt]
+train & 分布内の学習画像5万枚(ImageNet-64は1万枚) & 比較手法の当てはめ\\[1pt]
 val1 & 分布内の画像2{,}000枚(ImageNet-64は1{,}500枚) & \Ours{}の $\vmu$, $\Sm$, $\vmu_{o}$. 比較手法の当てはめ\\[1pt]
 val2 & 分布内と各分布外集合から1{,}000枚ずつ(FashionMNISTは2{,}000枚) & \Ours{}の開発(補足資料A.3)\\[1pt]
 test & 500枚ずつ & 比較手法との比較(表~\ref{tab:main})\\[1pt]
-test2〜test6 & 500枚ずつ(test6 のCIFAR-10は\olNCten{}枚, Texturesは\olNTex{}枚) & 分割を変えた確認(表~\ref{tab:six})\\\bottomrule
+test2〜6 & 500枚ずつ(test6 のCIFAR-10は\olNCten{}枚) & 分割を変えた確認(表~\ref{tab:six})\\\bottomrule
 \end{tabular}
 \end{table}
 \begin{table*}[t]\centering\scriptsize\setlength{\tabcolsep}{2.6pt}\renewcommand{\arraystretch}{0.88}
-\caption{比較手法との比較(AUROC, \%. test, 各集合500枚). 左の5列：分布内ごとの自然画像の分布外集合(順に9, 9, 9, 7, 4集合)の平均. 上下反転：上下反転した分布内の画像の5つの平均. \Ours{}の勝/分/負：全\olPairs{}組(自然画像の分布外集合,上下反転,合成画像)での,その行に対する結果(基準は\ref{sec:eval}節. 組ごとの値は補足資料の表~\ref{tab:pairs}). 上の\olNPrior{}行は,同じ拡散モデルを用いる先行研究である. $\dagger$：先行研究の最良(表示の値が等しいものは同点). \colorbox{firstblue}{\textbf{水色の太字}}：\Ours{}がその最良に並ぶか上回る列.\olUnderlineNote{} 順伝播：1枚あたりの回数(+は逆伝播). $\S$：読む最後のブロックで止める(\Ours{}はブロックA, CFSはデコーダの1/2の解像度. CFSを止めない場合は\olSecCfs{}秒と\olSecCfsKnn{}秒). 秒/枚：CIFAR-10のモデルでのCPU(2スレッド)の時間. $\ddagger$：同じ計算機で続けて測った値(\ref{sec:cost}節). ほかは別の計算機での値である. \Ours, CFS, GEPC, EigenScoreはノイズの種3つの平均.}
+\caption{比較手法との比較(AUROC, \%. test). 左の5列：自然画像の分布外集合(分布内ごとに9, 9, 9, 7, 4集合)の平均. 上下反転：上下反転した分布内の画像. 勝/分/負：全\olPairs{}組での\Ours{}の結果(\ref{sec:eval}節. 組ごとの値は補足資料の表~\ref{tab:pairs}). $\dagger$：先行研究の最良. \colorbox{firstblue}{\textbf{水色の太字}}：\Ours{}が最良に並ぶか上回る列.\olUnderlineNote{} 順伝播：1枚あたりの回数(+は逆伝播. $\S$：途中で止める). 秒/枚：CIFAR-10のモデルのCPU時間($\ddagger$：同じ計算機で続けて測定).}
 \label{tab:main}
 \makebox[\textwidth][c]{\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{\hspace{2pt}}lccccc|c|c|c|c|c@{\hspace{2pt}}}\toprule
@@ -150,7 +128,7 @@ test2〜test6 & 500枚ずつ(test6 のCIFAR-10は\olNCten{}枚, Texturesは\olNT
 \end{adjustbox}}
 \end{table*}
 \begin{table*}[t]\centering\scriptsize\setlength{\tabcolsep}{3.4pt}\renewcommand{\arraystretch}{0.92}
-\caption{6つのテスト分割での\Ours{}の結果(AUROC, \%. ノイズの種3つの平均). 左の5列：分布内ごとの自然画像の分布外集合の平均. 上下反転,左右反転：分布内の画像とその反転を見分けるAUROCの5つの平均. FPR95：自然画像の分布外集合での5つの平均(\%, 低いほどよい). 下の3行は,式の一部を変えたものの6分割の平均である(評価の前に手順書に書いたもの). 全ブロック：ブロックAで止めず,すべてのブロックの振幅を使う. 方向の項だけ：式~\eqref{eq:ell}の $\ell$. 距離の項だけ：式~\eqref{eq:dsq}の $-d^{2}$.}
+\caption{6つのテスト分割での\Ours{}(AUROC, \%). 上下反転,左右反転：分布内の画像とその反転を見分けるAUROC. FPR95：\%,低いほどよい. 下の3行は評価の前に登録した変種(6分割の平均). 方向の項：式~\eqref{eq:ell}. 距離の項：式~\eqref{eq:dsq}.}
 \label{tab:six}
 \begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{}lccccc|c|c|c|c@{}}\toprule
@@ -159,18 +137,13 @@ test2〜test6 & 500枚ずつ(test6 のCIFAR-10は\olNCten{}枚, Texturesは\olNT
 \end{tabular}
 \end{adjustbox}
 \end{table*}
-\subsection{データ}
-分布内データセットは5つ(CIFAR-10, SVHN, CelebA, ImageNet-64, FashionMNIST)である. 公開されている学習済みの拡散モデルを変更せずに用い, FashionMNISTだけは本研究で学習した(補足資料の表~\ref{tab:models}). 分布外の集合は,他のデータセットの画像の集合(自然画像の分布外集合. 分布内ごとに9, 9, 9, 7, 4集合),上下反転した分布内の画像,合成画像(一様ノイズと定数画像. ImageNet-64と test6 を除く)である. 左右反転した分布内の画像も調べる. 画像は表~\ref{tab:splits}の9つに分けた. test6 は残りの画像で作った分割で, CIFAR-10は\olNCten{}枚, Texturesは\olNTex{}枚である. 先行研究の手法は test でだけ計算してある.
-
-\subsection{比較手法}
-同じ拡散モデルを用いる先行研究として,尤度(NLL),入力の複雑さ(IC. 符号長にPNGとJPEG2000を用いる2通り),典型集合の検定(TT), MSMA型, DiffPath, GEPC, EigenScoreの\olNStat{}手法と, CFS(対角ガウスと kNN ヘッドの2通り)の計\olNPrior{}手法と比べる. CFSは公式コードの手順で同じ拡散モデルと参照画像に当てはめた(補足資料A.1).
+\subsection{設定}
+分布内データセットは5つ(CIFAR-10, SVHN, CelebA, ImageNet-64, FashionMNIST)で,公開されている学習済みの拡散モデルを用いる(FashionMNISTだけは本研究で学習した. 補足資料の表~\ref{tab:models}). 分布外の集合は,他のデータセットの画像(自然画像の分布外集合),上下反転した分布内の画像,合成画像(ImageNet-64と test6 を除く)である. 画像は表~\ref{tab:splits}のように分けた. 比較手法は,同じ拡散モデルを用いる尤度(NLL),入力の複雑さ(IC. PNGとJPEG2000),典型集合の検定(TT), MSMA型, DiffPath, GEPC, EigenScore, CFS(対角ガウスと kNN ヘッド)の\olNPrior{}手法で, test でだけ計算した(補足資料A.1).
 
 \subsection{評価}
 \label{sec:eval}
-\Ours, CFS, GEPC, EigenScoreはノイズの種3つの平均,ほかの手法は1回の値である. 差の95\%信頼区間は,分布内と分布外の画像をそれぞれ復元抽出するブートストラップ(2{,}000回. 同じ抽出を両方の手法に用い,ノイズの種で平均する)で求めた. 組ごとの勝敗は,この信頼区間が0を含まず,差が0.05ポイント以上のときを勝ち/負け,ほかを引き分けとする.
+\Ours, CFS, GEPC, EigenScoreはノイズの種3つの平均である. 差の95\%信頼区間は,分布内と分布外の画像を復元抽出するブートストラップ(2{,}000回. 両方の手法に同じ抽出)で求め,信頼区間が0を含まず差が0.05ポイント以上の組を勝ち/負けとする. \Ours{}の式は val2 だけで決め(補足資料A.3),実装を凍結してから6つのテスト分割で1回だけ評価した. 評価の前に書いた主張「6分割の平均が95.0\%以上」は成り立った. ただし,テスト分割はどれも以前に他の手法で結果を見ており,未使用の分割より弱い根拠である. \ref{sec:verify}節の検証と\ref{sec:hrset}節の追加実験は,評価の後に計画を書いてから行った.
 
-\Ours{}の式は val2 だけで決めた(補足資料A.3). その後,実装,定数,報告する数値を手順書に書いてハッシュとともに記録し,凍結した実装が val2 で開発時の値を再現することを確かめてから, 6つのテスト分割で1回だけ評価した. 評価の前に,「6分割の平均が95.0\%以上」という主張を手順書に書いた. これは成り立った(\olSixMean\%). ただし, 6つのテスト分割はどれも,以前に他の手法で結果を見ている. \Ours{}の式,定数,ブロックの決め方をこれらの分割で選んだことはないが,一度も使っていない分割での評価よりは弱い根拠である. \ref{sec:verify}節の検証と\ref{sec:hrset}節の追加実験は,この評価の後に計画を手順書に書いてから行った.
-
-\subsection{256{$\times$}256の画像での追加実験}
+\subsection{256{$\times$}256の画像}
 \label{sec:hrset}
-より大きな画像でも働くかを見るため,追加実験を行った. 手法は変えていない. ブロックAも同じ規則で決まる. 分布内はImageNetで, ADM~\cite{dhariwal2021adm}の $256{\times}256$ の条件なしモデル(37ブロック)を用いる. 分布外は, OpenOOD v1.5~\cite{zhang2023openood}のSSB-hard, NINCO, iNaturalist, Textures, OpenImage-Oである. 解像度の違いが手がかりにならないよう,すべての画像を224ピクセルにそろえてから $256{\times}256$ に拡大した. $\vmu$, $\Sm$, $\vmu_{o}$ には分布内の画像\olHrNCal{}枚を使い,評価は各集合1{,}000枚で行う. 比較手法はCFS(2通り)である. 画像を一度112ピクセルに縮小してから拡大する対照も加えた(\ref{sec:hr}節).
+分布内はImageNetで, ADM~\cite{dhariwal2021adm}の $256{\times}256$ の条件なしモデルを用い,手法とブロックAの規則は変えない. 分布外はOpenOOD v1.5~\cite{zhang2023openood}のSSB-hard, NINCO, iNaturalist, Textures, OpenImage-Oである. すべての画像を224ピクセルにそろえてから拡大し,較正に分布内の画像\olHrNCal{}枚,評価に各集合1{,}000枚を使う. 一度112ピクセルに縮小してから拡大する対照も加えた.

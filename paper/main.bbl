@@ -81,10 +81,6 @@ Yu, Y., Shin, S., Lee, S., Jun, C. and Lee, K.: Block Selection Method for
 Park, J., Chai, J. C.~L., Yoon, J. and Teoh, A. B.~J.: Understanding the
   Feature Norm for Out-of-Distribution Detection, {\em Proc. ICCV} (2023).
 
-\bibitem{sun2021react}
-Sun, Y., Guo, C. and Li, Y.: {ReAct}: Out-of-distribution Detection With
-  Rectified Activations, {\em Proc. NeurIPS} (2021).
-
 \bibitem{gidaris2018rotnet}
 Gidaris, S., Singh, P. and Komodakis, N.: Unsupervised Representation Learning
   by Predicting Image Rotations, {\em Proc. ICLR} (2018).
@@ -103,6 +99,10 @@ Tack, J., Mo, S., Jeong, J. and Shin, J.: {CSI}: Novelty Detection via
   Contrastive Learning on Distributionally Shifted Instances, {\em Proc.
   NeurIPS} (2020).
 
+\bibitem{hendrycks2019oe}
+Hendrycks, D., Mazeika, M. and Dietterich, T.: Deep Anomaly Detection with
+  Outlier Exposure, {\em Proc. ICLR} (2019).
+
 \bibitem{ren2019likelihood}
 Ren, J., Liu, P.~J., Fertig, E., Snoek, J., Poplin, R., DePristo, M.~A.,
   Dillon, J.~V. and Lakshminarayanan, B.: Likelihood Ratios for
@@ -112,14 +112,6 @@ Ren, J., Liu, P.~J., Fertig, E., Snoek, J., Poplin, R., DePristo, M.~A.,
 Ren, J., Fort, S., Liu, J., Roy, A.~G., Padhy, S. and Lakshminarayanan, B.: A
   Simple Fix to {M}ahalanobis Distance for Improving Near-{OOD} Detection, {\em
   arXiv:2106.09022} (2021).
-
-\bibitem{hendrycks2019oe}
-Hendrycks, D., Mazeika, M. and Dietterich, T.: Deep Anomaly Detection with
-  Outlier Exposure, {\em Proc. ICLR} (2019).
-
-\bibitem{fisher1936use}
-Fisher, R.~A.: The Use of Multiple Measurements in Taxonomic Problems, {\em
-  Annals of Eugenics},  Vol.~7, No.~2, pp.\ 179--188 (1936).
 
 \bibitem{dhariwal2021adm}
 Dhariwal, P. and Nichol, A.~Q.: Diffusion Models Beat {GANs} on Image
