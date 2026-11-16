@@ -64,13 +64,13 @@ M['EqSix'] = f1(six(cond='eq50')); M['EqSixMin'] = f1(min(s(sp, cond='eq50') for
 M['EqSixVf'] = f1(six(met='vflip', cond='eq50'))
 for t in TAGS: M['EqSix' + KEY[t]] = f1(six(cond='eq50', t=t)); M['EqSixDrop' + KEY[t]] = f1(six(t=t) - six(cond='eq50', t=t))
 M['NCten'] = str(SE['test7']['original']['edmc10']['n_id']); M['NTex'] = str(SE['test7']['original']['edmc10']['sets']['textures']['n']); assert M['NCten'] == '258'
-L = ['% written by gen/ol_gen.py: OL on the six splits (ol_final.json, olx_sets.json); the registered ablations as six-split means']
+L = ['% written by gen/ol_gen.py: OLR on the six splits (ol_final.json, olx_sets.json); the registered ablations as six-split means', '\\multicolumn{10}{@{}l}{\\textbf{\\Ours(Ours)}}\\\\']
 for sp in SPO:
-    e = SE[sp]['original']; L.append(' & '.join([f'\\Ours, {PNAME[sp]}'] + [f1(s(sp, t=t)) for t in TAGS] + [f1(s(sp)), f1(s(sp, met='vflip')), f1(e['mean']['hflip']), f1(e['mean']['fpr95'])]) + '\\\\')
-L.append('\\midrule')
-L.append(' & '.join(blue(v) for v in ['\\Ours, 6分割の平均'] + [f1(six(t=t)) for t in TAGS] + [f1(six()), f1(six(met='vflip')), M['SixHf'], M['SixFpr']]) + '\\\\'); L.append('\\midrule')
+    e = SE[sp]['original']; L.append(' & '.join([f'\\quad {PNAME[sp]}'] + [f1(s(sp, t=t)) for t in TAGS] + [f1(s(sp)), f1(s(sp, met='vflip')), f1(e['mean']['hflip']), f1(e['mean']['fpr95'])]) + '\\\\')
+L.append(' & '.join(blue(v) for v in ['\\quad 6分割の平均'] + [f1(six(t=t)) for t in TAGS] + [f1(six()), f1(six(met='vflip')), M['SixHf'], M['SixFpr']]) + '\\\\'); L.append('\\midrule')
+L.append('\\multicolumn{10}{@{}l}{式の一部を変えたもの(6分割の平均)}\\\\')
 for k, lab in (('OLa', '全ブロック'), ('OLl', '方向の項だけ'), ('OLt', '距離の項だけ')):
-    L.append(' & '.join([lab + '(6分割の平均)'] + [f1(six(k, t=t)) for t in TAGS] + [f1(six(k)), f1(six(k, met='vflip')), '--', '--']) + '\\\\')
+    L.append(' & '.join(['\\quad ' + lab] + [f1(six(k, t=t)) for t in TAGS] + [f1(six(k)), f1(six(k, met='vflip')), '--', '--']) + '\\\\')
 W('tab_six_ol.tex', L)
 # ---- fitted quantities, blocks and storage
 INFO = LJ('olx_info.json'); MET = LJ('hl_meta.json'); AB = LJ('fk_ablate.json'); NREF = {t: AB[t]['n_val1_id'] for t in TAGS}
@@ -155,7 +155,7 @@ def oc(j, v):
     if len(second) > 1 and round(v, 1) >= second[1]: under = True; return f'\\underline{{{f1(v)}}}'
     return f1(v)
 ocells = [oc(j, v) for j, v in enumerate(jrow(None))]; M['OursColsBest'] = str(sum('firstblue' in c for c in ocells))
-L.append('\\Ours(Ours) & ' + ' & '.join(ocells) + f" & -- & 1$^{{\\S}}$ & {f2(so)}$^{{\\ddagger}}$\\\\\\bottomrule")
+L.append('\\textbf{\\Ours(Ours)} & ' + ' & '.join(ocells) + f" & -- & 1$^{{\\S}}$ & {f2(so)}$^{{\\ddagger}}$\\\\\\bottomrule")
 W('tab_main_ol.tex', L); M['UnderlineNote'] = ' \\underline{下線}：その最良に次ぐ列.' if under else ''
 M['TestSVHNBehind'] = f1(float(M['PriorBestSVHN']) - float(M['TestSVHN'])); M['TestFMBehind'] = f1(float(M['PriorBestFM']) - float(M['TestFM']))
 # ---- time and what is needed (CIFAR-10 network; AUROC on test)
@@ -163,7 +163,7 @@ NB = {t: 10000 if t == 'in64' else 50000 for t in TAGS}
 def crow(lab, stop, tot, img, num, mb, au, bl=False):
     c = [lab, stop, f3(tot), f2(tot / fA), img, num, mb, f1(au)]; return ' & '.join(blue(v) if bl else v for v in c) + '\\\\'
 L = ['% written by gen/ol_gen.py: CPU seconds per image (bench_ol.py, one session), ID images needed, stored numbers and size (16 bit), five-ID natural mean on test']
-L.append(crow('\\Ours(Ours)', 'A', so, cm(NREF['edmc10']), cm(nstored('edmc10')), f'{2 * nstored("edmc10") / 1e6:.4f}', s('test2'), True)); L.append('\\midrule')
+L.append(crow('\\textbf{\\Ours(Ours)}', 'A', so, cm(NREF['edmc10']), cm(nstored('edmc10')), f'{2 * nstored("edmc10") / 1e6:.4f}', s('test2'), True)); L.append('\\midrule')
 L.append(crow('CFS(kNN ヘッド)', '1/2', sec['cfsknn_stop'], cm(NB['edmc10']), cm(NB['edmc10'] * 1024), f'{2 * NB["edmc10"] * 1024 / 1e6:.0f}', mean(jm('CFS-kNN', t) for t in TAGS)))
 L.append(crow('CFS(対角ガウス)', '1/2', sec['cfs_stop'], cm(NB['edmc10']), cm(2 * 1024), f'{2 * 2 * 1024 / 1e6:.4f}', mean(jm('CFS', t) for t in TAGS)))
 W('tab_cost_ol.tex', L); M['NImgCfs'] = cm(NB['edmc10']); M['MBCfsKnn'] = f'{2 * NB["edmc10"] * 1024 / 1e6:.0f}'; M['ImgRatio'] = f'{NB["edmc10"] / NREF["edmc10"]:.0f}'
@@ -209,7 +209,7 @@ M['TestFpr'] = f1(cfm(CO, 'OL', 'fpr95')); M['CfsKnnFpr'] = f1(cfm(CO, 'CFS-kNN'
 M['EqVfOL'] = f1(cfm(CE, 'OL', 'vflip')); M['EqVfCfsKnn'] = f1(cfm(CE, 'CFS-kNN', 'vflip'))
 L = ['% written by gen/ol_gen.py: test (server test2), the original images and the identical resampling history: OL, CFS, CFS-kNN (olx_cfs.json)']
 for c, cl in ((CO, '元の画像'), (CE, '履歴をそろえた対照')):
-    for i, (r, lab) in enumerate((('OL', '\\Ours(Ours)'), ('CFS-kNN', 'CFS(kNN ヘッド)'), ('CFS', 'CFS(対角ガウス)'))):
+    for i, (r, lab) in enumerate((('OL', '\\textbf{\\Ours(Ours)}'), ('CFS-kNN', 'CFS(kNN ヘッド)'), ('CFS', 'CFS(対角ガウス)'))):
         v = [cl if i == 0 else '', lab] + [f1(c['rows'][r][t]['nat']) for t in TAGS] + [f1(cfm(c, r)), f1(cfm(c, r, 'vflip')), ('--' if r == 'OL' else ci(c['boot'][r]['mean']))]
         L.append(' & '.join(blue(x) if (r == 'OL' and j > 0) else x for j, x in enumerate(v)) + '\\\\')
     L.append('\\midrule')
@@ -224,12 +224,12 @@ DQ = LJ('olx_dq.json'); COND = DQ['cond']; CN = {'blur05': 'ぼかし0.5', 'blur
 assert DQ['check_max_abs_diff_of_the_ID_scores_to_the_evaluation'] < 2.0 and list(CN) == COND   # two runs of the same images differ by the GPU arithmetic: at most 0.6% of the SD of the scores, Spearman >= 0.999994 (I71)
 def dq(r, c, t='mean'): return DQ['rows'][r][t][c]
 L = ['% written by gen/ol_gen.py: AUROC (%) of the ID images of test6 against their degraded copies, five-ID mean (olx_dq.json); 50 = blind']
-for r, lab in (('OL', '\\Ours(Ours)'), ('OL-l', '\\quad 方向の項だけ'), ('OL-d2', '\\quad 距離の項だけ'), ('CFS-kNN', 'CFS(kNN ヘッド)'), ('CFS', 'CFS(対角ガウス)')):
+for r, lab in (('OL', '\\textbf{\\Ours(Ours)}'), ('OL-l', '\\quad 方向の項だけ'), ('OL-d2', '\\quad 距離の項だけ'), ('CFS-kNN', 'CFS(kNN ヘッド)'), ('CFS', 'CFS(対角ガウス)')):
     v = [lab] + [f1(dq(r, c)) for c in COND] + [f1(mean(dq(r, c) for c in COND))]; L.append(' & '.join(blue(x) if r == 'OL' else x for x in v) + '\\\\')
     if r == 'OL-d2': L.append('\\midrule')
 W('tab_degr_ol.tex', L)
 L = ['% written by gen/ol_gen.py: the same per ID (olx_dq.json)']
-for r, lab in (('OL', '\\Ours'), ('CFS-kNN', 'CFS(kNN)')):
+for r, lab in (('OL', '\\textbf{\\Ours(Ours)}'), ('CFS-kNN', 'CFS(kNN)')):
     for i, t in enumerate(TAGS): L.append(' & '.join([lab if i == 0 else '', NAME[t]] + [f1(dq(r, c, t)) for c in COND]) + '\\\\')
     L.append('\\midrule')
 W('supp_degr_ol.tex', L)
@@ -257,9 +257,9 @@ for b in TAGS: M['VarRinit' + KEY[b]] = f1(va(b, 'rinit')); M['VarRshuf' + KEY[b
 # ---- development analyses on val2 (olx_dev.json; mean of noise seeds 0-2)
 DV = LJ('olx_dev.json')['rows']
 def dv(r, met='nat', t='mean'): return DV[r][t][met]
-CSW = [('c0', '0(距離の項だけ)'), ('c1', '1'), ('c2', '2'), ('c4', '4'), ('c8', '8(\\Ours)'), ('c16', '16'), ('c32', '32'), ('c64', '64'), ('cinf', '$\\infty$(方向の項だけ)')]
-OSW = [('o_v', '上下反転だけ'), ('o_flips', '反転と180度の回転(3つ)'), ('o_quarter', '90度の回転と対角の反転(4つ)'), ('o_no_mirror', '左右反転を除く6つ'), ('c8', '7つすべて(\\Ours)')]
-NSW = [('n50', '50'), ('n100', '100'), ('n200', '200'), ('n500', '500'), ('n1000', '1{,}000'), ('c8', 'すべて(\\Ours)')]
+CSW = [('c0', '0(距離の項だけ)'), ('c1', '1'), ('c2', '2'), ('c4', '4'), ('c8', '8(\\textbf{\\Ours})'), ('c16', '16'), ('c32', '32'), ('c64', '64'), ('cinf', '$\\infty$(方向の項だけ)')]
+OSW = [('o_v', '上下反転だけ'), ('o_flips', '反転と180度の回転(3つ)'), ('o_quarter', '90度の回転と対角の反転(4つ)'), ('o_no_mirror', '左右反転を除く6つ'), ('c8', '7つすべて(\\textbf{\\Ours})')]
+NSW = [('n50', '50'), ('n100', '100'), ('n200', '200'), ('n500', '500'), ('n1000', '1{,}000'), ('c8', 'すべて(\\textbf{\\Ours})')]
 XSW = [('allblocks', '全ブロック'), ('logstd', '対数標準偏差'), ('pk', '定数なし：「そのまま」の事後確率'), ('pk_d2', '定数なし：事後確率と密度の積'), ('pk_d2sub', '定数なし：向きが異なる部分空間だけ')]
 def drow(r, lab): c = [lab, f1(dv(r)), f1(dv(r, 'eq_nat')), f1(dv(r, 'vflip'))]; return ' & '.join(blue(x) if r == 'c8' else x for x in c) + '\\\\'
 L = ['% written by gen/ol_gen.py: val2, mean of noise seeds 0-2 (olx_dev.json): the constant c and the set of orientations']
@@ -302,17 +302,49 @@ H3 = [LJ(f'gx_val2h_s{i}.json')['rows'] for i in (0, 1, 2)]; M['DevSeeds'] = ', 
 assert abs(mean(h['O8s']['mean']['nat'] for h in H3) - dv('c8')) < 0.006
 G7 = LJ('gx_val2g_s0.json')['rows']; cut = [G7[r]['mean']['nat'] for r in ('Lj2', 'Lj4', 'Lch')]; M['DevCutMin'] = f'{min(cut):.0f}'; M['DevCutMax'] = f'{max(cut):.0f}'; assert max(cut) < 86 and G7['Lr90']['mean']['nat'] > 94
 GI = LJ('gx_val2g_s0.json')['info']; cs_ = [GI[t]['cos_oracle']['r90'] for t in TAGS]; M['OracleCosMin'] = f2(min(cs_)); M['OracleCosMax'] = f2(max(cs_)); assert min(cs_) > 0.7 and all(GI[t]['cos_oracle']['v'] > 0.55 for t in TAGS)
+CQ = LJ('olx_cos.json'); cq = [CQ[t]['cos_pooled'] for t in TAGS]; M['CosMin'] = f2(min(cq)); M['CosMax'] = f2(max(cq)); assert all(CQ[t]['p'] == PB[t] for t in TAGS) and min(cq) > 0.7
 M['BarNat'] = f2(BARN); M['BarEq'] = f2(BARE); M['DevDiff'] = '0.003'; assert 'largest difference from the development numbers: 0.003 OK' in open(f'{D}/ol_devcheck_s0.log').read()
-# ---- what the profile holds at most: directions fitted WITH the val2 OOD sets (gx_val2f_s0.json; a diagnostic, not a method)
-OR = LJ('gx_val2f_s0.json')['oracle']
-def orc(t, k): return mean(OR[t]['P'][k].values())
-L = ['% written by gen/ol_gen.py: val2, noise seed 0: OL and linear directions fitted with the OOD sets, two folds (gx_val2f_s0.json, gx_val2h_s0.json)']
-for lab, f in (('\\Ours(分布外の画像を使わない)', lambda t: H3[0]['O8s'][t]['nat']), ('分布外集合をまとめて決めた1つの方向', lambda t: orc(t, 'lda_pool')), ('分布外集合ごとに決めた方向', lambda t: orc(t, 'lda_set'))):
-    L.append(' & '.join([lab] + [f1(f(t)) for t in TAGS] + [f1(mean(f(t) for t in TAGS))]) + '\\\\')
+# ---- does the amplitude fall (olx_fall.json, olx_diag.json X9), OLR's direction against directions fitted with the OOD sets (X8b), the spread of the re-oriented profiles (X10); val2, seeds 0-2, blocks up to A
+FA = LJ('olx_fall.json'); DG = LJ('olx_diag.json')['mean']; assert FA['margin'] == 0.2
+for t in TAGS: assert FA['tags'][t]['p'] == PB[t] == DG[t]['p'], t
+def pc(v): return f'{100 * v:.0f}'
+def zf(v): return f'{v:.1f}'.replace('-', '$-$')
+L = ['% written by gen/ol_gen.py: shares of the blocks up to A where the mean amplitude falls (z < -0.2) or rises (z > +0.2), z at block A (olx_fall.json)']
+for t in TAGS:
+    d = FA['tags'][t]; L.append(' & '.join([NAME[t], str(d['p']), pc(d['orient']['fall']), pc(d['orient']['rise']), zf(d['orient']['atA']), pc(d['ood']['fall']), pc(d['ood']['rise']), zf(d['ood']['atA']), pc(d['id_val2']['fall']), pc(d['id_val2']['rise']), zf(d['id_val2']['atA'])]) + '\\\\')
+W('tab_fall_ol.tex', L)
+fo = [FA['tags'][t]['orient'] for t in TAGS]; fd = [FA['tags'][t]['ood'] for t in TAGS]; fi = [FA['tags'][t]['id_val2'] for t in TAGS]
+M['FallOrMin'] = pc(min(x['fall'] for x in fo)); M['FallOrMax'] = pc(max(x['fall'] for x in fo)); M['RiseOrMax'] = pc(max(x['rise'] for x in fo))
+M['ZaOrMin'] = f"{min(x['atA'] for x in fo):.1f}"; M['ZaOrMax'] = f"{max(x['atA'] for x in fo):.1f}"; assert max(x['atA'] for x in fo) < -0.2 and max(x['rise'] for x in fo) < 0.25 and min(x['fall'] for x in fo) > max(x['rise'] for x in fo)
+M['FallOodMin'] = pc(min(x['fall'] for x in fd)); M['FallOodMax'] = pc(max(x['fall'] for x in fd)); M['RiseOodSVHN'] = pc(FA['tags']['l6svhn']['ood']['rise']); M['FallOodSVHN'] = pc(FA['tags']['l6svhn']['ood']['fall'])
+assert FA['tags']['l6svhn']['ood']['rise'] > FA['tags']['l6svhn']['ood']['fall'] and all(FA['tags'][t]['ood']['fall'] > FA['tags'][t]['ood']['rise'] for t in TAGS if t != 'l6svhn')
+za = [v['atA'] for t in TAGS for v in FA['tags'][t]['ood_sets'].values()]; M['NSetsA'] = str(len(za)); M['NSetsAMargin'] = str(sum(v < -0.2 for v in za)); assert max(za) < 0 and all(DG[t]['atA_ood'] == 1.0 for t in TAGS)
+assert all(x['fall'] == 0 and x['rise'] == 0 for x in fi) and max(abs(x['atA']) for x in fi) < 0.1
+M['IdZaAbsMax'] = f2(max(abs(x['atA']) for x in fi))
+L = ['% written by gen/ol_gen.py: the same with the sign only (olx_diag.json X9): share of the blocks up to A below the ID mean']
+for t in TAGS:
+    d = DG[t]; L.append(' & '.join([NAME[t], str(d['p']), pc(d['orient']), pc(d['ood_mean']), pc(d['ood_min']), pc(d['ood_max']), pc(d['id_val2']), pc(d['atA_orient']), pc(d['atA_ood'])]) + '\\\\')
+W('supp_fallsign_ol.tex', L)
+M['SignIdMin'] = pc(min(DG[t]['id_val2'] for t in TAGS)); M['SignIdMax'] = pc(max(DG[t]['id_val2'] for t in TAGS))
+L = ['% written by gen/ol_gen.py: the spread of the re-oriented profiles against S (olx_diag.json X10)']
+for t in TAGS:
+    k = DG[t]['kappa']; L.append(' & '.join([NAME[t], str(DG[t]['p']), f2(k['pooled']['trace']), f2(k['pooled']['det']), f2(k['pooled']['eig_min']), f2(k['pooled']['eig_med']), f2(k['pooled']['eig_max']), f2(k['within']['trace']), f2(k['id_val2']['trace'])]) + '\\\\')
+W('supp_kappa_ol.tex', L)
+kp = [DG[t]['kappa']['pooled']['trace'] for t in TAGS]; M['KapMin'] = f2(min(kp)); M['KapMax'] = f2(max(kp)); M['KapNLeOne'] = str(sum(v <= 1.0 for v in kp)); M['KapCelebA'] = f2(DG['dpceleba']['kappa']['pooled']['trace'])
+kw = [DG[t]['kappa']['within']['trace'] for t in TAGS]; M['KapWMin'] = f2(min(kw)); M['KapWMax'] = f2(max(kw)); ki = [DG[t]['kappa']['id_val2']['trace'] for t in TAGS]; M['KapIdMin'] = f2(min(ki)); M['KapIdMax'] = f2(max(ki))
+assert max(kp) == DG['dpceleba']['kappa']['pooled']['trace'] and sorted(kp)[-2] < 1.125 and max(kw) < 1.0
+X8 = {t: DG[t]['auroc'] for t in TAGS}; XS = {t: DG[t]['auroc_sets'] for t in TAGS}
+L = ['% written by gen/ol_gen.py: val2, blocks up to A, seeds 0-2, two folds: OLR, its direction term, LDA directions fitted with the OOD sets; cosine (olx_diag.json X8b)']
+for k, lab in (('OLR', '\\textbf{\\Ours(Ours)}'), ('dir', '\\Ours{}の方向の項だけ'), ('lda_pool', '分布外集合をまとめて決めた方向'), ('lda_set', '分布外集合ごとに決めた方向')):
+    L.append(' & '.join([lab] + [f1(X8[t][k]) for t in TAGS] + [f1(mean(X8[t][k] for t in TAGS))]) + '\\\\')
+    if k == 'dir': L.append('\\midrule')
+L.append('\\midrule'); L.append(' & '.join(['余弦(\\Ours{}の方向とまとめて決めた方向)'] + [f2(DG[t]['cos_pool']) for t in TAGS] + [f2(mean(DG[t]['cos_pool'] for t in TAGS))]) + '\\\\')
 W('supp_oracle_ol.tex', L)
-M['OraclePool'] = f1(mean(orc(t, 'lda_pool') for t in TAGS)); M['OracleSet'] = f1(mean(orc(t, 'lda_set') for t in TAGS)); M['OracleGap'] = f1(mean(orc(t, 'lda_pool') for t in TAGS) - H3[0]['O8s']['mean']['nat']); M['DevSeedZero'] = f1(H3[0]['O8s']['mean']['nat'])
-M['OraclePoolCten'] = f1(orc('edmc10', 'lda_pool')); M['OraclePoolIN'] = f1(orc('in64', 'lda_pool')); M['OracleSsb'] = f1(OR['in64']['P']['lda_set']['fresh-in64_ssb_hard']); M['OracleCHundred'] = f1(OR['edmc10']['P']['lda_set']['fresh-cifar100_test'])
-M['DevCHundred'] = f1(H3[0]['O8s']['edmc10']['per']['fresh-cifar100_test']); M['DevSsb'] = f1(H3[0]['O8s']['in64']['per']['fresh-in64_ssb_hard'])
+cq = [DG[t]['cos_pool'] for t in TAGS]; M['CosMin'] = f2(min(cq)); M['CosMax'] = f2(max(cq)); assert all(abs(DG[t]['cos_pool'] - CQ[t]['cos_pooled']) < 0.05 for t in TAGS)
+for k, q in (('OLR', 'OLR'), ('dir', 'Dir'), ('lda_pool', 'Pool'), ('lda_set', 'Set')): M['X' + q] = f1(mean(X8[t][k] for t in TAGS))
+M['XSsbSet'] = f1(XS['in64']['lda_set']['fresh-in64_ssb_hard']); M['XSsbOLR'] = f1(XS['in64']['OLR']['fresh-in64_ssb_hard']); M['XCHundredSet'] = f1(XS['edmc10']['lda_set']['fresh-cifar100_test']); M['XCHundredOLR'] = f1(XS['edmc10']['OLR']['fresh-cifar100_test'])
+assert mean(X8[t]['OLR'] for t in TAGS) < mean(X8[t]['lda_pool'] for t in TAGS) < mean(X8[t]['lda_set'] for t in TAGS) and abs(mean(X8[t]['OLR'] for t in TAGS) - dv('c8')) < 0.1
+M['DevMGeight'] = f2(LJ('gx_val2g_s0.json')['rows']['MG8s']['mean']['nat'])
 # ---- 256x256 (olx_hr.json), the source files of the sets (ssb_diag.json, ssb_diag2.json)
 HSET = ['ssb_hard', 'ninco', 'inaturalist', 'textures', 'openimage_o']
 if os.path.exists(f'{D}/olx_hr.json'):
@@ -321,13 +353,13 @@ if os.path.exists(f'{D}/olx_hr.json'):
     L = ['% written by gen/ol_gen.py: the 256x256 tier and its 112-px control: AUROC (%) per set, means, upside-down ID (olx_hr.json)']
     for T, tl in ((HC, '224ピクセルを拡大'), (HD, '112ピクセル経由(対照)')):
         pb = [max(round(hrow(T, r)[j], 1) for r in ('CFS', 'CFS-kNN')) for j in range(9)]
-        for i, (r, lab) in enumerate((('OL', '\\Ours(Ours)'), ('CFS-kNN', 'CFS(kNN ヘッド)'), ('CFS', 'CFS(対角ガウス)'))):
+        for i, (r, lab) in enumerate((('OL', '\\textbf{\\Ours(Ours)}'), ('CFS-kNN', 'CFS(kNN ヘッド)'), ('CFS', 'CFS(対角ガウス)'))):
             v = hrow(T, r); c = [tl if i == 0 else '', lab] + [(f'\\cellcolor{{firstblue}}\\textbf{{{f1(x)}}}' if (r == 'OL' and round(x, 1) >= pb[j]) else f1(x)) for j, x in enumerate(v)]; L.append(' & '.join(c) + '\\\\')
         L.append('\\midrule')
     W('tab_hr_ol.tex', L)
     L = ['% written by gen/ol_gen.py: the 256x256 tier, the parts of the score (olx_hr.json)']
     for T, tl in ((HC, '224ピクセルを拡大'), (HD, '112ピクセル経由')):
-        for i, (r, lab) in enumerate((('OL', '\\Ours'), ('OLa', '全ブロック'), ('OLl', '方向の項だけ'), ('OLt', '距離の項だけ'))):
+        for i, (r, lab) in enumerate((('OL', '\\textbf{\\Ours(Ours)}'), ('OLa', '全ブロック'), ('OLl', '方向の項だけ'), ('OLt', '距離の項だけ'))):
             L.append(' & '.join([tl if i == 0 else '', lab] + [f1(x) for x in hrow(T, r)] + [f1(T['rows'][r]['fpr95'])]) + '\\\\')
         L.append('\\midrule')
     W('supp_hr_ol.tex', L)
@@ -349,6 +381,10 @@ if os.path.exists(f'{D}/olx_hr.json'):
         L.append(' & '.join(c) + '\\\\')
         if st_ == 'imagenet_test': L.append('\\midrule')
     W('supp_ssbsrc_ol.tex', L)
+    hc, hd = HC['rows'], HD['rows']; assert hc['OL']['vflip'] < min(six(met='vflip', t=t) for t in TAGS) and abs(hc['OL']['natural'] - hc['OLt']['natural']) < 1 and hc['OLl']['natural'] < 65 and hc['OLa']['natural'] > hc['OL']['natural']
+    assert hc['OL']['natural'] > hc['CFS']['natural'] > hc['CFS-kNN']['natural'] and hd['OL']['natural'] > hd['CFS']['natural'] > hd['CFS-kNN']['natural'] and HC['boot']['CFS']['ci'][0] > 0 and HD['boot']['CFS']['ci'][0] > 0
+    M['HrDelta'] = f2(INFO['in256c']['Delta']); M['HdDelta'] = f2(INFO['in256d']['Delta']); assert INFO['in256c']['Delta'] < min(INFO[t]['Delta'] for t in TAGS)
+    M['HdOLSsbRank'] = str(1 + sorted([HD['rows']['OL']['auroc'][o] for o in HSET], reverse=True).index(HD['rows']['OL']['auroc']['ssb_hard']))
     M['SsbShort'] = f"{sm['ssb_hard']['shorter_side']:.0f}"; M['InShort'] = f"{sm['imagenet_test']['shorter_side']:.0f}"; M['SsbShare'] = f1(sh['ssb_hard']); M['InShare'] = f1(sh['imagenet_test'])
     M['SsbFacts'] = f1(bst(cv['ssb_hard'], 'source_facts_lr', 'source_facts_hgb')); M['FactsMin'] = f1(min(bst(cv[o], 'source_facts_lr', 'source_facts_hgb') for o in HSET))
 else:
@@ -368,4 +404,4 @@ with open(f'{OUT}/numbers_ol.tex', 'w') as fo:
     fo.write('% written by gen/ol_gen.py\n')
     for k, v in M.items(): assert re.fullmatch(r'[A-Za-z]+', k), k; fo.write(f'\\newcommand{{\\ol{k}}}{{{v}}}\n')
 print('numbers_ol.tex:', len(M), 'macros')
-for k in ('TestOL', 'BestPriorMean', 'GapCfsKnn', 'SixMin', 'SixMax', 'SixMean', 'SixVf', 'SecOL', 'SecRatioCfsKnn', 'EqOL', 'EqCfsKnn', 'EqGapCfsKnn', 'VarTrained', 'VarRinit', 'VarRshuf', 'VarBy', 'NStored', 'DevCeight', 'OraclePool', 'NLostPrior', 'LostPriorList'): print(' ', k, '=', M[k])
+for k in ('TestOL', 'BestPriorMean', 'GapCfsKnn', 'SixMin', 'SixMax', 'SixMean', 'SixVf', 'SecOL', 'SecRatioCfsKnn', 'EqOL', 'EqCfsKnn', 'EqGapCfsKnn', 'VarTrained', 'VarRinit', 'VarRshuf', 'VarBy', 'NStored', 'DevCeight', 'XPool', 'NLostPrior', 'FallOrMin', 'FallOrMax', 'KapMin', 'KapMax', 'HrOL', 'HdOL', 'FactsMin'): print(' ', k, '=', M[k])

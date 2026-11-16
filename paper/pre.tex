@@ -1,4 +1,4 @@
-% OL (working name; "orientation likelihood ratio"): out-of-distribution detection with a frozen diffusion model from one number per U-Net
+% OLR (working name; "orientation likelihood ratio"): out-of-distribution detection with a frozen diffusion model from one number per U-Net
 %   block, the amplitude a_h = mean over channels of log max over positions |h - spatial mean| of the block output at sigma_1 = 0.01, read
 %   for the blocks up to A (the first decoder block with a 16x16 output; the pass stops there).  From held-out ID images (val1): the mean m
 %   and covariance S of the profile, and m_o = the mean profile of the same images in the seven other orientations of the square.
@@ -30,7 +30,7 @@
 \makeatother
 \newcommand{\veps}{\vec{\varepsilon}}
 \newcommand{\Vf}{\mathbf{V}}   % the upside-down flip is a matrix (bold), vectors carry arrows
-\newcommand{\Ours}{OL}   % the name of the method (working name)
+\newcommand{\Ours}{OLR}   % the name of the method (working name; tables: \textbf{\Ours(Ours)})
 \newcommand{\Pm}{\mathbf{P}}\newcommand{\Gm}{\mathbf{G}}\newcommand{\vd}{\vec{\delta}}\newcommand{\vmu}{\vec{\mu}}\newcommand{\va}{\vec{a}}\newcommand{\Sm}{\mathbf{S}}\newcommand{\Id}{\mathbf{I}}
 \makeatletter\newcommand{\inputrows}[1]{\@@input #1 }\makeatother   % primitive \input: a table body may then begin with a rule (\noalign)
 \renewcommand{\eqref}[1]{(\ref{#1})}   % amsmath's \eqref puts extra space before the Japanese text that follows

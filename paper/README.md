@@ -1,4 +1,4 @@
-# OOD Detection by an Orientation Likelihood Ratio (working title; method name OL is a working name)
+# OOD Detection by an Orientation Likelihood Ratio (working title; method name OLR is a working name)
 
 26f WIP 中間発表のレジュメ(MIRU 2025 クラス, pLaTeX).
 
@@ -16,7 +16,7 @@
     score = -(a - m*)' P (a - m*),   m* = m + 8 (m - m_o),   P = (S + 1e-3 * 平均分散 * I)^-1
 
 m, S は val1 の分布内の画像の並びの平均と共分散, m_o は同じ画像を残り7つの向きにしたときの並びの平均.
-C1(I68 で書き直したもの): 勾配による学習なし, 追加のネットワークなし, 人手のラベルなし, 分布外の画像なし. 「学習した分類器なし」とは書かない.
+表では「OLR(Ours)」を太字で書く(pre.tex の \Ours). C1(I68 で書き直したもの): 勾配による学習なし, 追加のネットワークなし, 人手のラベルなし, 分布外の画像なし. 「学習した分類器なし」とは書かない.
 
 ## データ(gen/data/ol, GPUサーバからの写し)
 | ファイル | 中身 |
@@ -32,13 +32,16 @@ C1(I68 で書き直したもの): 勾配による学習なし, 追加のネッ�
 | olx_hr.json | 256x256(in256c)と 112 ピクセル経由の対照(in256d)(I70 X4) |
 | bench_ol.jsonl | CPU時間(1セッション. I70 X5) |
 | olx_dev.json | val2 での分析: 定数 c, 向き, 枚数, 定数のない形(I70 X6) |
+| olx_cos.json | 診断: OLR の方向と, val2 の分布外集合で決めた方向の余弦(seed 0. I72 X8) |
+| olx_diag.json | 診断(val2, seed 0-2, ブロックAまで): 振幅が下がるブロックの割合(符号), OLR の方向と分布外集合で決めた方向(余弦, AUROC), 向きを変えた並びの共分散の比(I73 X9, X8b, X10) |
+| olx_fall.json | 診断: 0.2標準偏差の幅で数えた, 振幅が下がる/上がるブロックの割合とブロックAでの z(I73) |
 | olx_info.json | 当てはめた量(p, n, Delta) |
 | gx_val2*_s0.json, gx_val2h_s1/2.json | val2 での開発の8回(62通り. I59-I67) |
 | hl_meta.json, fk_ablate.json | モデルのブロック, val1 の枚数 |
 | ssb_diag.json, ssb_diag2.json, bench_rf256.jsonl | 256x256 の集合の元ファイルの量, 256 での順伝播の時間 |
 
 ## 本文に書いてある制約
-- 定数 c = 8 は val2 で決めた(8 と 16 の間は平ら).
+- 定数 c = 8 は val2 で決めた(8 と 16 の間は平ら). 尤度比の共分散の比 1+1/c = 1.125 は測った値(0.83〜1.65)と合わない. 題名の尤度比はこの比を固定したモデルでのもの.
 - val2 で 62 通りの式を試した.
 - 6つのテスト分割は,以前に他の手法で結果を見ている. この式の選択には使っていない.
 - 評価の前に書いた主張は5つですべて成り立った. 本文に関わるのは「6分割の平均が 95.0% 以上」. 残りの4つは本文で扱わない別の手法との比較.

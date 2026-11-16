@@ -3,4 +3,5 @@ CIFAR-10 & $32{\times}32$ & EDM(VP, DDPM++) & \cite{karras2022edm} & 23 / 23 / 3
 SVHN & $32{\times}32$ & VP-SDE & \cite{kamkari2024geometric} & 8 / 11 / 13 & \texttt{up\_blocks.3} & 2{,}000 & 1.10 & 72\\
 CelebA & $32{\times}32$ & iDDPM & \cite{nichol2021improved} & 25 / 25 / 33 & \texttt{output\_blocks.7} & 2{,}000 & 8.84 & 650\\
 ImageNet-64 & $64{\times}64$ & EDM2-XS(条件なし) & \cite{karras2024edm2} & 23 / 23 / 37 & \texttt{dec.16x16\_up} & 1{,}500 & 0.90 & 552\\
-FashionMNIST & $32{\times}32$ & EDMの前処理によるU-Net & 本研究で学習 & 22 / 22 / 29 & \texttt{dec.16x16\_up} & 2{,}000 & 2.78 & 506\\\bottomrule
+FashionMNIST & $32{\times}32$ & EDMの前処理によるU-Net & 本研究で学習 & 22 / 22 / 29 & \texttt{dec.16x16\_up} & 2{,}000 & 2.78 & 506\\
+ImageNet(追加実験) & $256{\times}256$ & ADM(条件なし) & \cite{dhariwal2021adm} & 22 / 22 / 37 & \texttt{output\_blocks.2} & 1{,}000 & 0.55 & 506\\\bottomrule
