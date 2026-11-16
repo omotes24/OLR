@@ -1,0 +1,161 @@
+
+\subsection*{{\normalsize 謝辞　水谷 伸さん}}
+
+\bibliographystyle{miru2025j-unsrt}   % numbered in order of citation: miru2025j.bst without SORT
+\bibliography{refs}
+
+\onecolumn   % the supplement in one column (\onecolumn starts a new page)
+\raggedbottom   % the supplement: no stretched space between a heading and the table below it
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}   % the tables of the supplement sit in the text
+\section*{補足資料}
+\renewcommand{\thetable}{A\arabic{table}}\setcounter{table}{0}
+\renewcommand{\thefigure}{A\arabic{figure}}\setcounter{figure}{0}
+
+\subsection*{A.1\quad 実験の設定}
+\begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\caption{分布内データセットと拡散モデル(最後の行は\ref{sec:hrset}節の追加実験). FashionMNIST以外は公開されている学習済みの重みを変更せずに用いた. ブロック：プロファイルに入るブロックの数 $p$ / ブロックAまでの数 / 全ブロック(分布内の画像で振幅の分散が0になるブロックは除く. 出力が $1{\times}1$ のブロックである). ブロックA：デコーダで出力が $16{\times}16$ になる最初のブロック(モデルの実装での名前). 画像 $n$：val1 の分布内の画像の枚数. $\Delta$：式~\eqref{eq:delta}. 数値：保存する数値の数($p+p^{2}$).}
+\label{tab:models}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{@{}llllclrrr@{}}\toprule
+分布内 & 解像度 & モデル & 出典 & ブロック & ブロックA & 画像 $n$ & $\Delta$ & 数値\\\midrule
+\inputrows{supp_models_ol.tex}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+\textbf{分布外集合(val2, test, test2, \dots, test6).}
+$32{\times}32$ の分布内データセットに対しては,他の自然画像のデータセット[分布内自身を除くCIFAR-10/100, SVHN, CelebAと, Textures(DTD), Tiny-ImageNet(検証画像を $32{\times}32$ に縮小), LSUNとImageNet(CSI~\cite{tack2020csi}が配布するリサイズ版), ImageNet32(ダウンサンプル版の検証画像), Places365(検証画像)]を用いた. ImageNet-64に対してはOpenOOD v1.5~\cite{zhang2023openood}の集合(SSB-hard, NINCO, iNaturalist, Textures, OpenImage-O)とPlaces365, CelebAを, FashionMNISTに対しては $32{\times}32$ に埋め込んだ灰色画像の集合(MNIST, KMNIST, Omniglot, notMNIST)を用いた. これらが自然画像の分布外集合である. test6 は,それまでの分割に現れない画像から,集合ごとに500枚を乱数で選んで作った. 残りが500枚に満たない集合は残りをすべて使い(CIFAR-10のテスト画像\olNCten{}枚, Textures \olNTex{}枚),残りのない合成画像は含めていない. CIFAR-10を分布内とする test6 の組は,分布内の画像が\olNCten{}枚なので,ほかより信頼区間が広い.
+
+\textbf{向きの変え方.}
+7つの向きは,上下反転,左右反転, 180度の回転, 90度と270度の回転,それぞれに上下反転を重ねたもの(2本の対角線についての反転)である. 較正の画像にだけ適用し,ノイズ $\veps$ は向きを変えずに加える. 灰色画像でも同じである.
+
+\textbf{比較手法.}
+比較手法の当てはめには val1 の分布内画像を用いた. MSMA型は, 20スケールでのスコアの大きさのベクトルの, val1 の分布内画像に対するマハラノビス距離である. DiffPathとGEPCは公式のコードに, EigenScoreは論文の手順に従って再実装した. PF-ODEを用いる手法(NLL, IC, TT)はHeun法64段で,順伝播と逆伝播を128回ずつ要する. CFSは,公式コード~\cite{rouzoumka2026cfs}のフックの選び方,特徴のまとめ方, 2つのヘッド(対角ガウス,標準化した特徴での10近傍の平均距離)を本研究の拡散モデルに移植し,参照画像(train)を当てはめに用いた. 論文の主設定では, CIFAR-10を分布内とする組のうち論文と共通の4組で,対角ガウスの値が論文の表の値と\cfsRepMaxDiff{}ポイント以内で一致した. 比較手法の計算時間は,重みを乱数にしたCIFAR-10のモデルにより, CPU(Intel Xeon \cpuGHz, 2スレッド)で測った(順伝播が1回の手法は交互に\cpuReps{}回ずつ繰り返した中央値). \Ours{}とCFSは,同じ手順で別の計算機(\olCpuHere)で続けて測った(\ref{sec:cost}節. 保存する値は実際と同じ大きさの乱数). この測定は評価の後に行った.
+
+\textbf{再現性.}
+GPUでの演算の選ばれ方によって,同じ画像のスコアは実行ごとにわずかに変わる. 同じ画像を2回通したときの差は,スコアの標準偏差の0.6\%以下であった(順位相関0.99999以上).
+
+\subsection*{A.2\quad 式~\eqref{eq:llr}の導出}
+$\vd=\vmu-\vmu_{o}$, $\kappa=1+1/c$ とおく. 次元を $p$ とすると,正規分布の対数密度は
+\begin{equation}
+\log N(\va;\vmu,\Pm^{-1})=-\frac{1}{2}d^{2}+\frac{1}{2}\log|\Pm|-\frac{p}{2}\log(2\pi)
+\label{eq:lognid}
+\end{equation}
+\begin{equation}
+\log N(\va;\vmu_{o},\kappa\Pm^{-1})=-\frac{1}{2\kappa}(\va-\vmu_{o})^{\top}\Pm(\va-\vmu_{o})+\frac{1}{2}\log|\Pm|-\frac{p}{2}\log(2\pi\kappa)
+\label{eq:lognbg}
+\end{equation}
+である. $\va-\vmu_{o}=(\va-\vmu)+\vd$ なので, 2次形式は
+\begin{equation}
+(\va-\vmu_{o})^{\top}\Pm(\va-\vmu_{o})=d^{2}+2\ell+\Delta^{2}
+\label{eq:quadbg}
+\end{equation}
+と書ける. 式~\eqref{eq:lognid}から式~\eqref{eq:lognbg}を引き, $1/\kappa=c/(1+c)$ を使うと
+\begin{equation}
+\log\frac{N(\va;\vmu,\Pm^{-1})}{N(\va;\vmu_{o},\kappa\Pm^{-1})}=\frac{-d^{2}+2c\,\ell}{2(1+c)}+\frac{c\Delta^{2}}{2(1+c)}+\frac{p}{2}\log\kappa
+\label{eq:llrfull}
+\end{equation}
+となる. 式~\eqref{eq:expand}より $-d^{2}+2c\,\ell=s+c^{2}\Delta^{2}$ で,残りは画像によらない定数だから,式~\eqref{eq:llr}を得る.
+
+\subsection*{A.3\quad 開発の経過(val2)}
+\begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{0.95}
+\caption{val2 で試した式(ノイズの種0). 数：その回に手順書に書いてから試した候補の式の数(計\olNDev. このほかに,定数 $c$ の値を変えたものなど,候補にしない変種も計算した). 最良：その回で val2 の平均(自然画像の分布外集合に対する5つの平均AUROC, \%)が最も高かった式の値. 対照：その式の,縮小の履歴をそろえた対照での値. 基準：2つの基準(\olBarNat\%以上と\olBarEq\%以上)をともに満たす式があったか.}
+\label{tab:devlog}
+\begin{tabular}{@{}clcccc@{}}\toprule
+回 & 試した式 & 数 & 最良 & 対照 & 基準\\\midrule
+\inputrows{supp_devlog_ol.tex}
+\end{tabular}
+\end{table}
+式は val2 と val1 の分布内の画像だけで決めた. 各回の前に,試す式と判断の基準を手順書に書いてから計算し,試した式はすべて記録した(表~\ref{tab:devlog}). 基準は「順位の合成を含まない1つの式で, val2 の平均が\olBarNat\%以上,かつ縮小の履歴をそろえた対照で\olBarEq\%以上」である. 2つの値は,開発を始める前に手順書に書いた目標値である. 8回で\olNDev{}通りを試し, 8回目の式(7つの向き, $c=8$,ブロックAまで)が初めて基準を満たした. $c=8$ は, 6回目に,上下反転だけを使う形で $c$ を変えた値を val2 で見て決めた($c=8$ と16が最も高かった). 7つの向きは,正方形を自分自身に重ねる向きのすべてで,選んでいない. 7回目で,画像を切って並べ替えた写しは方向を悪くすることが分かり(方向の項だけで\olDevCutMin{}〜\olDevCutMax\%),向きを変えた写しだけにした. 基準を満たした式は,ノイズの種を変えても同じ値であった(val2 の平均は種0, 1, 2で\olDevSeeds\%,対照で\olDevSeedsEq\%). その後に実装を凍結し, val2 で開発時の値を再現することを確かめてから(差は最大\olDevDiff{}ポイント), 6つのテスト分割で1回だけ評価した. 振幅の定義,ノイズの大きさ,ブロックAの規則は,著者の以前の研究で決めたものを変えずに使った.
+
+\subsection*{A.4\quad val2 での分析}
+\begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{0.93}
+\caption{表~\ref{tab:dev}の分布内ごとの値と,ほかの形(AUROC, \%. val2,ノイズの種3つの平均). 左の5列：分布内ごとの自然画像の分布外集合の平均. 右の2列：縮小の履歴をそろえた対照での5つの平均と上下反転. 全ブロック：ブロックAで止めない. 対数標準偏差：振幅の代わりに,チャネルごとの空間の標準偏差の対数の平均を使う. 事後確率：8つの向きの正規分布(共分散は共通)のうち「そのまま」である事後確率の対数. 密度の積：それに $-d^{2}/2$ を加えたもの. 部分空間：$d^{2}$ を, 7つの向きの方向が張る部分空間に限ったもの.}
+\label{tab:devfull}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{@{}llccccc|c|c|cc@{}}\toprule
+ & & CIFAR-10 & SVHN & CelebA & ImageNet-64 & FashionMNIST & 5つの平均 & 上下反転 & 対照 & 対照の上下反転\\\midrule
+\inputrows{supp_devfull_ol.tex}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\subsection*{A.5\quad 縮小の履歴をそろえた対照での6つの分割}
+\begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{0.95}
+\caption{縮小の履歴をそろえた対照での\Ours{}の結果(AUROC, \%. ノイズの種3つの平均). 左の5列：分布内ごとの自然画像の分布外集合の平均. FPR95：自然画像の分布外集合での5つの平均(\%). 最後の行：表~\ref{tab:six}の6分割の平均との差.}
+\label{tab:splitseq}
+\begin{tabular}{@{}lccccc|c|c|c@{}}\toprule
+分割 & CIFAR-10 & SVHN & CelebA & ImageNet-64 & FashionMNIST & 5つの平均 & 上下反転 & FPR95\\\midrule
+\inputrows{supp_splitseq_ol.tex}
+\end{tabular}
+\end{table}
+
+\subsection*{A.6\quad 組ごとの値(test)}
+\begin{table}[H]\centering\scriptsize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{0.86}
+\caption{test での組ごとのAUROC(\%. ノイズの種3つの平均). 先行研究の最良：その組で値が最も高い先行研究の手法と,その値. 差：\Ours{}からその手法の値を引いたもの. \colorbox{firstblue}{\textbf{水色の太字}}は\Ours{}の勝ち, \colorbox{lossred}{赤}は負け,色なしは引き分け(基準は\ref{sec:eval}節). 右の2列は, CFSの kNN ヘッドの値と,それに対する差.}
+\label{tab:pairs}
+\begin{tabular}{@{}llcclc|cc@{}}\toprule
+分布内 & 分布外 & \Ours & \multicolumn{2}{c}{先行研究の最良} & 差 & CFS-kNN & 差\\\midrule
+\inputrows{supp_pairs_ol.tex}
+\end{tabular}
+\end{table}
+
+\subsection*{A.7\quad 集合ごとの値(test6)}
+\begin{table}[H]\centering\scriptsize\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{0.86}
+\caption{test6 での集合ごとの\Ours{}の値(ノイズの種3つの平均). 枚数：その集合の画像の枚数. AUROCとFPR95は\%. 対照：縮小の履歴をそろえた対照でのAUROC.}
+\label{tab:perset}
+\begin{tabular}{@{}llcccc@{}}\toprule
+分布内 & 分布外 & 枚数 & AUROC & FPR95 & 対照\\\midrule
+\inputrows{supp_perset_ol.tex}
+\end{tabular}
+\end{table}
+
+\subsection*{A.8\quad 検証の分布内ごとの値}
+\begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{0.93}
+\caption{表~\ref{tab:degr}の分布内ごとの値(AUROC, \%. 分布内の画像と,それを劣化させた写し).}
+\label{tab:degrid}
+\begin{tabular}{@{}llccccccc@{}}\toprule
+手法 & 分布内 & ぼかし0.5 & ぼかし1.0 & JPEG 90 & JPEG 75 & JPEG 50 & 3/4に縮小 & 1/2に縮小\\\midrule
+\inputrows{supp_degr_ol.tex}
+\end{tabular}
+\end{table}
+\begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{0.93}
+\caption{別のデータセットで学習したモデルに通したときのAUROC(\%. test6,ノイズの種0,自然画像の分布外集合の平均). 較正の画像も同じモデルに通す. 本来：その分布内で学習したモデルでの値. 方向,距離：方向の項だけ,距離の項だけ. 上下反転：上下反転した分布内の画像.}
+\label{tab:varby}
+\begin{tabular}{@{}llccccc@{}}\toprule
+分布内 & モデルの学習データ & 本来 & \Ours & 方向 & 距離 & 上下反転\\\midrule
+\inputrows{supp_var_ol.tex}
+\end{tabular}
+\end{table}
+\begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{0.93}
+\caption{方向を分布外集合で決めた場合との比較(AUROC, \%. val2,ノイズの種0,自然画像の分布外集合の平均). 下の2行は,ブロックの振幅の並び(全ブロック)に対する線形判別の方向を, val2 の分布内の画像と分布外集合の半分で決め,残りの半分で測ったもの(2分割の平均). 分布外の画像を使うので手法ではなく,並びが持つ情報の目安である.}
+\label{tab:oracle}
+\begin{tabular}{@{}lccccc|c@{}}\toprule
+ & CIFAR-10 & SVHN & CelebA & ImageNet-64 & FashionMNIST & 5つの平均\\\midrule
+\inputrows{supp_oracle_ol.tex}
+\end{tabular}
+\end{table}
+
+\subsection*{A.9\quad 256{$\times$}256の画像での追加実験}
+\OLHRSUPP
+\begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{0.93}
+\caption{$256{\times}256$ の画像での,式の一部を変えたものの値(AUROC, \%. ノイズの種3つの平均). FPR95：5つの分布外集合での平均(\%).}
+\label{tab:hrparts}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{@{}llccccc|cc|c|c|c@{}}\toprule
+画像 & & SSB-hard & NINCO & iNaturalist & Textures & OpenImage-O & 近い & 遠い & 5つの平均 & 上下反転 & FPR95\\\midrule
+\inputrows{supp_hr_ol.tex}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+\begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{0.95}
+\caption{$256{\times}256$ の実験の集合の,元のファイルと画像の低水準の量(各集合1{,}000枚). 左の5列：元のファイルの短辺(ピクセル),縦横比(長辺/短辺),ビット/画素(ファイルの大きさを画素数で割ったもの),量子化(JPEGの輝度の量子化表の平均. 大きいほど強い圧縮)の中央値と,色を半分の解像度で保存しているファイル(4:2:0)の割合(\%). 右の4列：ImageNetとその集合を見分けるAUROC(\%). 元ファイル,輝度など,色差：それぞれ,元のファイルの量, 112ピクセルの画像の輝度などの統計量,色差の統計量だけを使う分類器(交差検証). \Ours：112ピクセル経由の対照での\Ours{}の値.}
+\label{tab:ssbsrc}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{@{}lccccc|ccc|c@{}}\toprule
+集合 & 短辺 & 縦横比 & ビット/画素 & 量子化 & 4:2:0 & 元ファイル & 輝度など & 色差 & \Ours\\\midrule
+\inputrows{supp_ssbsrc_ol.tex}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\end{document}

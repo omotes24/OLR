@@ -1,0 +1,25 @@
+edmc10 ours 95.59 {'all blocks': 94.5, 'direction o': 95.5, 'distance on': 76.6, 'CFS': 74.9, 'CFS-kNN': 85.4, 'GEPC': 49.9, 'EigenScore': 72.8, 'NLL': 57.4, 'IC-png': 72.7, 'IC-j2k': 71.4, 'TT': 62.1, 'MSMA*': 64.5, 'DiffPath': 72.4}
+l6svhn ours 96.91 {'all blocks': 99.5, 'direction o': 95.4, 'distance on': 89.8, 'CFS': 91.0, 'CFS-kNN': 93.8, 'GEPC': 92.0, 'EigenScore': 86.3, 'NLL': 99.3, 'IC-png': 91.6, 'IC-j2k': 72.8, 'TT': 99.0, 'MSMA*': 99.3, 'DiffPath': 99.8}
+dpceleba ours 100.0 {'all blocks': 100.0, 'direction o': 100.0, 'distance on': 100.0, 'CFS': 99.4, 'CFS-kNN': 99.6, 'GEPC': 99.0, 'EigenScore': 87.4, 'NLL': 80.9, 'IC-png': 86.5, 'IC-j2k': 80.9, 'TT': 84.6, 'MSMA*': 99.3, 'DiffPath': 99.8}
+in64 ours 85.76 {'all blocks': 84.0, 'direction o': 83.1, 'distance on': 72.5, 'CFS': 65.5, 'CFS-kNN': 61.4, 'GEPC': 52.0, 'EigenScore': 45.2, 'NLL': 54.6, 'IC-png': 48.9, 'IC-j2k': 47.2, 'TT': 59.8, 'MSMA*': 65.1, 'DiffPath': 55.5}
+fmnist ours 99.82 {'all blocks': 99.9, 'direction o': 99.6, 'distance on': 97.9, 'CFS': 97.4, 'CFS-kNN': 99.8, 'GEPC': 83.9, 'EigenScore': 93.8, 'NLL': 32.8, 'IC-png': 86.3, 'IC-j2k': 38.4, 'TT': 62.1, 'MSMA*': 96.6, 'DiffPath': 80.6}
+/home/omote/olr/code/ol_vs_all.py:172: RuntimeWarning: Mean of empty slice
+  print(f'{r:12s}', ' '.join(f1(OUT['ids'][t]['rows'][r]['mean']) for t in TAGS), '|', f1(w['mean_nat']), ';', f1(np.mean([vf(t, r) for t in TAGS])), ';', f1(np.nanmean([hf(t, r) for t in TAGS])),
+
+== test2 / Ours = OL: natural per ID | mean ; upside-down mean ; mirror mean ; W/T/L of Ours ; FPR95 mean   (max abs diff to ol_final.json over 15 values: 1.42e-14)
+OL            95.6  96.9 100.0  85.8  99.8 |  95.6 ;  84.7 ;  58.6 ;      -      ;  18.6
+all blocks    94.5  99.5 100.0  84.0  99.9 |  95.6 ;  84.5 ;  58.2 ; 13/24/14 of 51 ;  17.0
+direction only  95.5  95.4 100.0  83.1  99.6 |  94.7 ;  86.7 ;  59.2 ; 22/21/8 of 51 ;  20.4
+distance only  76.6  89.8 100.0  72.5  97.9 |  87.4 ;  62.1 ;  51.4 ; 35/16/0 of 51 ;  40.5
+CFS           74.9  91.0  99.4  65.5  97.4 |  85.6 ;  61.4 ;  50.3 ; 42/9/0 of 51 ;  45.5
+CFS-kNN       85.4  93.8  99.6  61.4  99.8 |  88.0 ;  73.6 ;  57.0 ; 37/14/0 of 51 ;  35.9
+GEPC          49.9  92.0  99.0  52.0  83.9 |  75.4 ;  52.5 ;   nan ; 47/4/0 of 51 ;  62.4
+EigenScore    72.8  86.3  87.4  45.2  93.8 |  77.1 ;  78.6 ;   nan ; 50/0/1 of 51 ;  64.1
+NLL           57.4  99.3  80.9  54.6  32.8 |  65.0 ;  57.7 ;   nan ; 37/5/9 of 51 ;  62.2
+IC-png        72.7  91.6  86.5  48.9  86.3 |  77.2 ;  57.9 ;   nan ; 41/7/3 of 51 ;  62.5
+IC-j2k        71.4  72.8  80.9  47.2  38.4 |  62.1 ;  57.3 ;   nan ; 45/5/1 of 51 ;  75.5
+TT            62.1  99.0  84.6  59.8  62.1 |  73.5 ;  54.4 ;   nan ; 38/4/9 of 51 ;  60.8
+MSMA*         64.5  99.3  99.3  65.1  96.6 |  85.0 ;  65.7 ;   nan ; 35/6/10 of 51 ;  39.7
+DiffPath      72.4  99.8  99.8  55.5  80.6 |  81.6 ;  64.3 ;   nan ; 34/7/10 of 51 ;  47.4
+five-ID mean difference (OL - row) [95% interval]: {'all blocks': (0.04, [-0.17, 0.25]), 'direction only': (0.87, [0.56, 1.16]), 'distance only': (8.26, [7.67, 8.89]), 'CFS': (9.99, [9.29, 10.66]), 'CFS-kNN': (7.63, [6.99, 8.28]), 'GEPC': (20.26, [19.33, 21.21]), 'EigenScore': (18.49, [17.58, 19.39]), 'NLL': (30.6, [29.67, 31.51]), 'IC-png': (18.41, [17.46, 19.32]), 'IC-j2k': (33.48, [32.39, 34.55]), 'TT': (22.11, [21.16, 23.03]), 'MSMA*': (10.66, [9.89, 11.4]), 'DiffPath': (14.0, [13.17, 14.84])}
+OL_VS_ALL_DONE test2

@@ -1,0 +1,56 @@
+% written by gen/ol_gen.py: test (server test2), AUROC (%) per pair, mean of noise seeds 0-2 (ol_vs_all_test2.json)
+CIFAR-10 & SVHN & 99.5 & 99.2 & DiffPath & $+$0.3 & 99.2 & $+$0.3\\
+ & Textures & 99.5 & 97.0 & CFS & \cellcolor{firstblue}\textbf{\boldmath$+$2.5} & 97.0 & \cellcolor{firstblue}\textbf{\boldmath$+$2.5}\\
+ & CelebA & 93.3 & 77.2 & CFS-kNN & \cellcolor{firstblue}\textbf{\boldmath$+$16.1} & 77.2 & \cellcolor{firstblue}\textbf{\boldmath$+$16.1}\\
+ & Tiny-ImageNet & 91.3 & 79.7 & CFS-kNN & \cellcolor{firstblue}\textbf{\boldmath$+$11.6} & 79.7 & \cellcolor{firstblue}\textbf{\boldmath$+$11.6}\\
+ & LSUN & 98.3 & 85.0 & IC-PNG & \cellcolor{firstblue}\textbf{\boldmath$+$13.3} & 81.3 & \cellcolor{firstblue}\textbf{\boldmath$+$17.0}\\
+ & ImageNet & 97.8 & 88.3 & CFS-kNN & \cellcolor{firstblue}\textbf{\boldmath$+$9.6} & 88.3 & \cellcolor{firstblue}\textbf{\boldmath$+$9.6}\\
+ & ImageNet32 & 95.1 & 91.1 & CFS-kNN & \cellcolor{firstblue}\textbf{\boldmath$+$4.0} & 91.1 & \cellcolor{firstblue}\textbf{\boldmath$+$4.0}\\
+ & Places365 & 96.2 & 81.8 & IC-PNG & \cellcolor{firstblue}\textbf{\boldmath$+$14.4} & 81.6 & \cellcolor{firstblue}\textbf{\boldmath$+$14.5}\\
+ & CIFAR-100 & 89.4 & 73.3 & CFS-kNN & \cellcolor{firstblue}\textbf{\boldmath$+$16.1} & 73.3 & \cellcolor{firstblue}\textbf{\boldmath$+$16.1}\\
+ & 上下反転 & 88.6 & 76.2 & EigenScore & \cellcolor{firstblue}\textbf{\boldmath$+$12.4} & 65.6 & \cellcolor{firstblue}\textbf{\boldmath$+$23.0}\\
+ & 一様ノイズ & 100.0 & 100.0 & NLL & 0.0 & 100.0 & 0.0\\
+ & 定数画像 & 100.0 & 100.0 & CFS & 0.0 & 100.0 & 0.0\\
+\midrule
+SVHN & CIFAR-10 & 97.0 & 99.5 & DiffPath & \cellcolor{lossred}$-$2.4 & 94.2 & \cellcolor{firstblue}\textbf{\boldmath$+$2.8}\\
+ & CIFAR-100 & 96.6 & 99.6 & DiffPath & \cellcolor{lossred}$-$3.0 & 93.9 & \cellcolor{firstblue}\textbf{\boldmath$+$2.7}\\
+ & CelebA & 96.6 & 100.0 & NLL & \cellcolor{lossred}$-$3.3 & 93.4 & \cellcolor{firstblue}\textbf{\boldmath$+$3.3}\\
+ & Textures & 98.0 & 99.9 & DiffPath & \cellcolor{lossred}$-$1.9 & 88.7 & \cellcolor{firstblue}\textbf{\boldmath$+$9.3}\\
+ & Tiny-ImageNet & 96.8 & 99.6 & DiffPath & \cellcolor{lossred}$-$2.8 & 94.8 & \cellcolor{firstblue}\textbf{\boldmath$+$2.0}\\
+ & LSUN & 97.7 & 99.9 & DiffPath & \cellcolor{lossred}$-$2.3 & 94.8 & \cellcolor{firstblue}\textbf{\boldmath$+$2.8}\\
+ & ImageNet & 96.4 & 99.9 & DiffPath & \cellcolor{lossred}$-$3.5 & 95.2 & $+$1.2\\
+ & ImageNet32 & 95.9 & 100.0 & DiffPath & \cellcolor{lossred}$-$4.1 & 94.6 & $+$1.3\\
+ & Places365 & 97.1 & 99.9 & DiffPath & \cellcolor{lossred}$-$2.7 & 94.2 & \cellcolor{firstblue}\textbf{\boldmath$+$3.0}\\
+ & 上下反転 & 62.9 & 70.6 & EigenScore & \cellcolor{lossred}$-$7.7 & 57.6 & \cellcolor{firstblue}\textbf{\boldmath$+$5.3}\\
+ & 一様ノイズ & 99.2 & 100.0 & NLL & \cellcolor{lossred}$-$0.8 & 85.8 & \cellcolor{firstblue}\textbf{\boldmath$+$13.5}\\
+ & 定数画像 & 100.0 & 100.0 & DiffPath & 0.0 & 99.1 & \cellcolor{firstblue}\textbf{\boldmath$+$0.9}\\
+\midrule
+CelebA & CIFAR-10 & 100.0 & 99.7 & DiffPath & \cellcolor{firstblue}\textbf{\boldmath$+$0.3} & 99.6 & \cellcolor{firstblue}\textbf{\boldmath$+$0.4}\\
+ & CIFAR-100 & 100.0 & 99.6 & DiffPath & \cellcolor{firstblue}\textbf{\boldmath$+$0.4} & 99.6 & \cellcolor{firstblue}\textbf{\boldmath$+$0.4}\\
+ & SVHN & 100.0 & 100.0 & DiffPath & 0.0 & 99.8 & \cellcolor{firstblue}\textbf{\boldmath$+$0.2}\\
+ & Textures & 100.0 & 99.9 & DiffPath & \cellcolor{firstblue}\textbf{\boldmath$+$0.1} & 99.9 & \cellcolor{firstblue}\textbf{\boldmath$+$0.1}\\
+ & Tiny-ImageNet & 100.0 & 99.7 & DiffPath & \cellcolor{firstblue}\textbf{\boldmath$+$0.3} & 99.6 & \cellcolor{firstblue}\textbf{\boldmath$+$0.4}\\
+ & LSUN & 100.0 & 99.9 & DiffPath & \cellcolor{firstblue}\textbf{\boldmath$+$0.1} & 99.4 & \cellcolor{firstblue}\textbf{\boldmath$+$0.6}\\
+ & ImageNet & 100.0 & 99.7 & DiffPath & \cellcolor{firstblue}\textbf{\boldmath$+$0.3} & 99.6 & \cellcolor{firstblue}\textbf{\boldmath$+$0.4}\\
+ & ImageNet32 & 100.0 & 99.9 & DiffPath & \cellcolor{firstblue}\textbf{\boldmath$+$0.1} & 99.7 & \cellcolor{firstblue}\textbf{\boldmath$+$0.3}\\
+ & Places365 & 100.0 & 99.9 & DiffPath & \cellcolor{firstblue}\textbf{\boldmath$+$0.1} & 99.6 & \cellcolor{firstblue}\textbf{\boldmath$+$0.4}\\
+ & 上下反転 & 99.9 & 99.7 & DiffPath & \cellcolor{firstblue}\textbf{\boldmath$+$0.2} & 97.4 & \cellcolor{firstblue}\textbf{\boldmath$+$2.6}\\
+ & 一様ノイズ & 100.0 & 100.0 & NLL & 0.0 & 100.0 & 0.0\\
+ & 定数画像 & 100.0 & 100.0 & IC-PNG & 0.0 & 100.0 & 0.0\\
+\midrule
+ImageNet-64 & SSB-hard & 65.8 & 58.4 & MSMA型 & \cellcolor{firstblue}\textbf{\boldmath$+$7.3} & 50.8 & \cellcolor{firstblue}\textbf{\boldmath$+$14.9}\\
+ & NINCO & 76.6 & 63.6 & CFS & \cellcolor{firstblue}\textbf{\boldmath$+$13.0} & 59.6 & \cellcolor{firstblue}\textbf{\boldmath$+$16.9}\\
+ & iNaturalist & 87.8 & 87.3 & NLL & $+$0.5 & 52.5 & \cellcolor{firstblue}\textbf{\boldmath$+$35.3}\\
+ & Textures & 94.9 & 91.0 & CFS-kNN & \cellcolor{firstblue}\textbf{\boldmath$+$3.9} & 91.0 & \cellcolor{firstblue}\textbf{\boldmath$+$3.9}\\
+ & OpenImage-O & 82.2 & 66.6 & CFS-kNN & \cellcolor{firstblue}\textbf{\boldmath$+$15.6} & 66.6 & \cellcolor{firstblue}\textbf{\boldmath$+$15.6}\\
+ & Places365 & 94.9 & 76.2 & MSMA型 & \cellcolor{firstblue}\textbf{\boldmath$+$18.6} & 62.1 & \cellcolor{firstblue}\textbf{\boldmath$+$32.8}\\
+ & CelebA & 98.2 & 77.3 & MSMA型 & \cellcolor{firstblue}\textbf{\boldmath$+$20.9} & 46.8 & \cellcolor{firstblue}\textbf{\boldmath$+$51.4}\\
+ & 上下反転 & 74.7 & 67.5 & EigenScore & \cellcolor{firstblue}\textbf{\boldmath$+$7.2} & 50.8 & \cellcolor{firstblue}\textbf{\boldmath$+$23.8}\\
+\midrule
+FashionMNIST & MNIST & 99.9 & 99.9 & CFS-kNN & 0.0 & 99.9 & 0.0\\
+ & KMNIST & 99.7 & 99.8 & CFS-kNN & $-$0.1 & 99.8 & $-$0.1\\
+ & Omniglot & 99.8 & 99.5 & CFS-kNN & $+$0.4 & 99.5 & $+$0.4\\
+ & notMNIST & 99.8 & 100.0 & CFS-kNN & $-$0.1 & 100.0 & $-$0.1\\
+ & 上下反転 & 97.2 & 96.4 & CFS-kNN & $+$0.8 & 96.4 & $+$0.8\\
+ & 一様ノイズ & 100.0 & 100.0 & NLL & 0.0 & 100.0 & 0.0\\
+ & 定数画像 & 100.0 & 100.0 & IC-PNG & 0.0 & 100.0 & 0.0\\\bottomrule

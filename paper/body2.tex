@@ -1,0 +1,121 @@
+\section{結果}
+\label{sec:results}
+\subsection{比較手法との比較}
+\label{sec:prior}
+表~\ref{tab:main}に test での比較を示す. 自然画像の分布外集合に対する5つの平均は, \Ours{}が\olTestOL\%,先行研究の最良(\olBestPriorName)が\olBestPriorMean\%で,差は\olGapCfsKnn{}ポイントである(95\%信頼区間[\olGapCfsKnnLo, \olGapCfsKnnHi]). CFSの対角ガウス(\olCfsMean\%)との差は\olGapCfs{}ポイントである([\olGapCfsLo, \olGapCfsHi]). \Ours{}は表の7列のうち\olOursColsBest{}列で先行研究の最良に並ぶか上回る. CIFAR-10では\olTestCten\%(先行研究の最良は\olPriorBestCten\%), ImageNet-64では\olTestIN\%(同\olPriorBestIN\%)である. 上下反転した分布内の画像は\olTestVf\%で見分け,先行研究の最良(\olVfBestPriorName, \olVfBestPriorAvg\%)を上回る. FPR95(自然画像の分布外集合での5つの平均)は, \Ours{}が\olTestFpr\%, CFSの kNN ヘッドが\olCfsKnnFpr\%,対角ガウスが\olCfsFpr\%である.
+
+上回らない列はSVHNである. \Ours{}の\olTestSVHN\%に対し, \olPriorBestSVHNName{}は\olPriorBestSVHN\%で, \olTestSVHNBehind{}ポイントの差がある. 全\olPairs{}組のうち,先行研究のどれかに負けた組は\olNLostPrior{}組で,すべてSVHNを分布内とする組である(補足資料の表~\ref{tab:pairs}). 相手は主に尤度やスコアの大きさを使う手法(NLL, TT, MSMA型, DiffPath)である. これらは1枚あたり10回から256回のネットワークの評価を要し, CIFAR-10とImageNet-64では\Ours{}より20ポイント以上低い. 先行研究の各手法に対して, \Ours{}が勝った組は\olPairs{}組中\olPriorWinMin{}〜\olPriorWinMax{}組,負けた組は最大\olPriorLossMax{}組(\olPriorLossMaxName)である. CFSの2通りには負けた組がない(対角ガウスに\olWtlCfs, kNN ヘッドに\olWtlCfsKnn).
+
+\subsection{6つの分割}
+\label{sec:six}
+表~\ref{tab:six}に6つのテスト分割での結果を示す. 5つの平均は\olSixMin{}〜\olSixMax\%で, 6分割の平均は\olSixMean\%である. 評価の前に書いた「6分割の平均が95.0\%以上」は成り立った. 分布内ごとに見ると, CIFAR-10は\olSixMinCten{}〜\olSixMaxCten\%, ImageNet-64は\olSixMinIN{}〜\olSixMaxIN\%で,ほかの3つは\olSixMinSVHN\%以上である. 上下反転した分布内の画像を見分けるAUROCは\olSixVfMin{}〜\olSixVfMax\%で,分布内ごとの差が大きい(CelebA \olSixVfCelebA\%, FashionMNIST \olSixVfFM\%, CIFAR-10 \olSixVfCten\%, ImageNet-64 \olSixVfIN\%, SVHN \olSixVfSVHN\%). 数字は,上下を反転しても数字として読めるものが多いためと考えられる. 左右反転は,自然画像の3つのデータセットではほぼ50\%で,見分けない. 左右反転した自然画像は分布内の画像だからである. FPR95は平均\olSixFpr\%である.
+
+\subsection{時間と用意するもの}
+\label{sec:cost}
+\begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{2.2pt}\renewcommand{\arraystretch}{1.0}
+\caption{時間と用意するもの(CIFAR-10のモデル, CPU 2スレッド,同じ計算機で続けて測った中央値). 止める：順伝播を止めるブロック(A：ブロックA. 1/2：デコーダの1/2の解像度). 比：ブロックAで止める順伝播(\olFwdA{}秒)に対する比. 画像：事前に通す分布内の画像の枚数. 数値：保存する数値の数. MB：16ビットで保存したときの大きさ. AUROC：test での5つの平均(\%).}
+\label{tab:cost}
+\begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{@{}lccccccc@{}}\toprule
+手法 & 止める & 秒/枚 & 比 & 画像 & 数値 & MB & AUROC\\\midrule
+\inputrows{tab_cost_ol.tex}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+表~\ref{tab:cost}に時間と用意するものを示す. \Ours{}は1枚\olSecOL{}秒である. ブロックAで止める順伝播が\olFwdA{}秒で,振幅と2次形式の計算は\olJudgeMs{}ミリ秒である. 途中で止めたCFSは\olSecCfsStop{}秒(対角ガウス)と\olSecCfsKnnStop{}秒(kNN ヘッド)で, \Ours{}はその\olSecRatioCfs{}倍と\olSecRatioCfsKnn{}倍である. CFSを止めない場合は\olSecCfs{}秒と\olSecCfsKnn{}秒かかる. 事前に通す分布内の画像は, CFSの\olNImgCfs{}枚に対して\olNRefMax{}枚である. ただし\Ours{}は8つの向きで通すので,事前の順伝播は $8n$ 回(ブロックAで止めるもの)になる. 保存する数値は\olNStored{}個で, kNN ヘッドの\olMBCfsKnn\,MBに対して\olMBOurs\,MBである. なお, CFSを\Ours{}と同じ val1 の画像だけに当てはめても, test での値は\olCfsValMean\%(対角ガウス)と\olCfsKnnValMean\%(kNN ヘッド)で, 5万枚のとき(\olCfsMean\%と\olBestPriorMean\%)と大きくは変わらない. \Ours{}との差は,用意する画像の枚数によるものではない.
+
+\subsection{何が効いているか}
+\label{sec:ablate}
+\begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{0.95}
+\caption{開発用の分割 val2 での分析(AUROC, \%. ノイズの種3つの平均). 平均：自然画像の分布外集合に対する5つの平均. 対照：縮小の履歴をそろえた対照(\ref{sec:hist}節)での同じ平均. 上下反転：上下反転した分布内の画像. $c=8$ と7つの向きは,この分割で決めた. 分布内ごとの値は補足資料の表~\ref{tab:devfull}.}
+\label{tab:dev}
+\begin{tabular}{@{}lccc@{}}\toprule
+ & 平均 & 対照 & 上下反転\\\midrule
+\inputrows{tab_dev_ol.tex}
+\end{tabular}
+\end{table}
+\textbf{式の一部を変えたもの(6分割).} 表~\ref{tab:six}の下の3行は,評価の前に手順書に書いた3通りである. 距離の項 $-d^{2}$ だけでは\olSixT\%(\Ours{}より\olSixTGap{}ポイント低い),方向の項 $\ell$ だけでは\olSixL\%(\olSixLGap{}ポイント低い)である. 方向の項が主で,距離の項が残りを補う. 距離の項が効くのはSVHNとImageNet-64である(方向の項だけでは\olSixLSVHN\%と\olSixLIN\%, \Ours{}は\olSixSVHN\%と\olSixIN\%). ブロックAで止めずに全ブロックを使うと,平均は\olSixAll\%でほぼ同じだが,中身は入れ替わる. SVHNは\olSixAllSVHN\%に上がり, CIFAR-10とImageNet-64は\olSixAllCten\%と\olSixAllIN\%に下がる. 止める形は,時間が\olFwdAShare\%で済むのでこちらをとった.
+
+\textbf{定数 $c$(val2).} 表~\ref{tab:dev}の上段に, $c$ を変えたときの val2 での値を示す. $c=0$(距離の項だけ)の\olDevCzero\%から $c=8$ の\olDevCeight\%まで上がり, $c=16$ で\olDevCsixteen\%, $c=64$ で\olDevCsixtyfour\%, $c\to\infty$(方向の項だけ)で\olDevCinf\%になる. 8と16の間は平らである. $c=8$ は,上下反転だけを使う形で val2 を見て決め, 7つの向きを使う形を試す前に手順書に書いた.
+
+\textbf{使う向き(val2).} 上下反転だけでは\olDevOv\%, 7つすべてで\olDevCeight\%である. 差が出るのはSVHNで,上下反転だけの\olDevSVHNOv\%が, 90度の回転と対角の反転(4つ)では\olDevSVHNOquarter\%になる. 左右反転を除いた6つでも\olDevOnomirror\%で,左右反転を入れても害はない. 向きの代わりに,画像を切って並べ替えた写し(4分割の入れ替え, $4{\times}4$ のパッチの並べ替え, 2枚の画像の貼り合わせ)も試したが,方向の項だけで\olDevCutMin{}〜\olDevCutMax\%にとどまった(補足資料A.3). 切り口の縁に反応する方向になるためと考えられる.
+
+\textbf{枚数と定数のない形(val2).} 分布内の画像を1{,}000枚に減らしても\olDevNthousand\%で変わらない. 500枚で\olDevNfivehundred\%, 100枚で\olDevNhundred\%に下がる. 式から定数をなくす形も試した. 8つの向きの正規分布のうち「そのまま」である事後確率を使うと\olDevPk\%で,距離の項を密度として掛けると\olDevPkd\%に下がる. 距離の項は\olNBlkCten{}次元のどの方向の外れも同じに数えるので,そのままの重みでは方向の項を埋もれさせる. 定数 $c$ はこの重みを決めている.
+
+\subsection{256{$\times$}256の画像}
+\label{sec:hr}
+\begin{table*}[t]\centering\scriptsize\setlength{\tabcolsep}{3.4pt}\renewcommand{\arraystretch}{0.92}
+\caption{$256{\times}256$ の画像での結果(AUROC, \%. 分布内はImageNet,各集合1{,}000枚,ノイズの種3つの平均). 上：224ピクセルにそろえた画像を拡大したもの. 下：一度112ピクセルに縮小してから拡大した対照(較正の画像にも同じ処理をする). 近い：SSB-hardとNINCOの平均. 遠い：ほかの3つの平均. \colorbox{firstblue}{\textbf{水色の太字}}：\Ours{}がCFSの2通りに並ぶか上回る列.}
+\label{tab:hr}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{@{}llccccc|cc|c|c@{}}\toprule
+画像 & 手法 & SSB-hard & NINCO & iNaturalist & Textures & OpenImage-O & 近い & 遠い & 5つの平均 & 上下反転\\\midrule
+\inputrows{tab_hr_ol.tex}
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+\OLHRTEXT
+
+\section{検証：何を見ているか}
+\label{sec:verify}
+\Ours{}が読むのは,画像の内容に対するモデルの応答だけではない. 画質や画像の作り方の違いも並びを動かす. この節では, 3つの検証で\Ours{}が何に反応しているかを調べる. どれも評価の後に計画を手順書に書いてから行った.
+
+\subsection{画質への感度}
+\label{sec:qual}
+\begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{2.4pt}\renewcommand{\arraystretch}{0.95}
+\caption{分布内の画像と,それを劣化させた写しを見分けるAUROC(\%. test6 の分布内の画像, 5つの平均,ノイズの種3つの平均). 50\%なら見分けない. ぼかし：ガウスぼかしの標準偏差(ピクセル). JPEG：品質. 縮小：その倍率に縮小して元の大きさに戻す. 分布内ごとの値は補足資料の表~\ref{tab:degrid}.}
+\label{tab:degr}
+\begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{@{}lccccccc|c@{}}\toprule
+手法 & \multicolumn{2}{c}{ぼかし} & \multicolumn{3}{c}{JPEG} & \multicolumn{2}{c|}{縮小} & 平均\\
+ & 0.5 & 1.0 & 90 & 75 & 50 & 3/4 & 1/2 & \\\midrule
+\inputrows{tab_degr_ol.tex}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+分布内の画像と,それを少し劣化させた写しは,内容が同じである. 内容だけを見る検知器なら見分けない. 表~\ref{tab:degr}のとおり, \Ours{}は7通りの劣化を\olDqOLMin{}〜\olDqOLMax\%で見分ける(平均\olDqOLMean\%). CFSも同じで, kNN ヘッドが\olDqCfsKnnMin{}〜\olDqCfsKnnMax\%(平均\olDqCfsKnnMean\%),対角ガウスが\olDqCfsMin{}〜\olDqCfsMax\%(平均\olDqCfsMean\%)である. 画質への感度は,中間特徴を読む検知器に共通で, \Ours{}は7通りのうち\olDqNHigher{}通りで kNN ヘッドより高い. \Ours{}の中では,距離の項(平均\olDqTMean\%)が方向の項(\olDqLMean\%)より敏感である. 分布内ごとの差は大きく, SVHNは最大でも\olDqSVHNMax\%だが, ImageNet-64は品質90のJPEGを\olDqINJpeg\%で見分ける(kNN ヘッドは\olDqCfsKnnINJpeg\%). 分布外集合と分布内の画像で保存の形式や縮小の仕方が違えば,それも手がかりになる.
+
+\subsection{縮小の履歴をそろえた対照}
+\label{sec:hist}
+\begin{table*}[t]\centering\scriptsize\setlength{\tabcolsep}{3.4pt}\renewcommand{\arraystretch}{0.92}
+\caption{縮小の履歴をそろえた対照(AUROC, \%. test,ノイズの種3つの平均). 対照では,評価の画像,較正の画像, CFSの参照画像のすべてを,一辺を半分に縮小してから元の大きさに戻す. 左の5列：分布内ごとの自然画像の分布外集合の平均. 右端：\Ours{}との差(5つの平均)と95\%信頼区間.}
+\label{tab:hist}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{@{}llccccc|c|c|c@{}}\toprule
+画像 & 手法 & CIFAR-10 & SVHN & CelebA & ImageNet-64 & FashionMNIST & 5つの平均 & 上下反転 & \Ours{}との差\\\midrule
+\inputrows{tab_hist_ol.tex}
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+分布外集合の画像は,データセットごとに違う大きさの元画像から,違う方法で縮小されている. この違いを消すため,すべての画像の一辺を半分に縮小してから元の大きさに戻し,縮小の履歴をそろえた(較正の画像とCFSの参照画像にも同じ処理をする). 表~\ref{tab:hist}に test での結果を示す. \Ours{}は\olTestOL\%から\olEqOL\%に下がる(\olEqDropOL{}ポイント). CFSも kNN ヘッドが\olEqDropCfsKnn{}ポイント,対角ガウスが\olEqDropCfs{}ポイント下がる. \Ours{}と kNN ヘッドの差は\olEqGapCfsKnn{}ポイントで(95\%信頼区間[\olEqGapCfsKnnLo, \olEqGapCfsKnnHi]),元の画像での差と変わらない. 組ごとには\olEqNPairs{}組中\olEqWtlCfsKnn(勝/分/負)で,負けた\olEqNLostCfsKnn{}組はFashionMNISTを分布内とする4組である(\olEqOLFM\%に対して\olEqCfsKnnFM\%).
+
+6つの分割では,対照での平均は\olEqSixMin{}〜\olEqSixMax\%(平均\olEqSix\%)で,元の画像より\olEqSixDrop{}ポイント低い(補足資料の表~\ref{tab:splitseq}). 下がるのはImageNet-64(\olSixIN\%から\olEqSixIN\%)とCIFAR-10(\olSixCten\%から\olEqSixCten\%)で, SVHN, CelebA, FashionMNISTはほぼ変わらない. 対照では細部も失われるので,下がった\olEqSixDrop{}ポイントには,縮小の履歴の違いによる分と,細部が失われた分が混ざっている. どちらにしても, CFSとの差は対照でも変わらなかった(test).
+
+\subsection{モデルの学習}
+\label{sec:model}
+\begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{2.2pt}\renewcommand{\arraystretch}{0.95}
+\caption{モデルを変えたときのAUROC(\%. test6,ノイズの種0). 較正の画像と式は同じで,ノイズ除去器の重みだけを変える. 上下：上下反転した分布内の画像. 方向,距離：方向の項だけ,距離の項だけでの5つの平均.}
+\label{tab:var}
+\begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{@{}lccccc|c|c|cc@{}}\toprule
+重み & C-10 & SVHN & CelebA & IN-64 & FMNIST & 平均 & 上下 & 方向 & 距離\\\midrule
+\inputrows{tab_var_ol.tex}
+\end{tabular}
+\end{adjustbox}
+\end{table}
+\Ours{}がモデルの学習に依っているかを見るため,ノイズ除去器の重みを,初期化したままのものと,テンソルごとに要素を並べ替えたものに替えた(表~\ref{tab:var}). 5つの平均は\olVarTrained\%から\olVarRinit\%と\olVarRshuf\%に下がる. 方向の項は\olVarTrainedL\%から\olVarRinitL\%に下がり,上下反転も見分けなくなる(\olVarRinitVf\%). 方向の項は学習した応答を読んでいる. 距離の項は\olVarTrainedT\%から\olVarRinitT\%で,下がり方が小さい. 学習していないネットワークでも,画像の統計の違いは振幅に現れるからである.
+
+別のデータセットで学習したモデルに替えると(\olVarNBy{}通り. 補足資料の表~\ref{tab:varby}),平均は\olVarByTrained\%から\olVarBy\%になる. 方向の項は\olVarByL\%に下がるが,距離の項は\olVarByT\%である. 組による差が大きく, CIFAR-10の画像をSVHNのモデルに通すと\olVarByMin\%だが, SVHNの画像をCIFAR-10のモデルに通すと\olVarByMax\%になる. 数字と自然画像は,別のデータで学習したモデルの振幅でも,距離の項で分かれる. SVHNを分布内とする結果は,モデルが数字を学習したことの証拠にはならない.
+
+\subsection{分布外集合から決めた方向との比較}
+\label{sec:oracle}
+\Ours{}は,応答が変わる方向を,分布内の画像の向きを変えて決める. この方向を, val2 の分布外集合を使って決めた方向と比べた(これは手法ではない). ブロックAまでの並びで, 90度の回転から決めた方向と,分布外集合をまとめて決めた線形判別の方向との余弦($\Sm$ で測る)は, 5つの分布内で\olOracleCosMin{}〜\olOracleCosMax{}であった. 分布外の画像を使わずに,それを使った方向に近い方向が得られている. 分布外集合を使って決めた方向で判定すると(全ブロック, 2分割の交差検証. 補足資料の表~\ref{tab:oracle}),分布内ごとに1つの方向で\olOraclePool\%,分布外集合ごとの方向で\olOracleSet\%で, \Ours{}の\olDevSeedZero\%より高い. ただし,この方向は画質や縮小の履歴の違いも拾う. ImageNet-64に対するSSB-hardは内容がImageNetに近い集合だが,集合ごとに決めた方向では\olOracleSsb\%で分かれる(\Ours{}は\olDevSsb\%). CIFAR-10に対するCIFAR-100は,集合ごとに決めても\olOracleCHundred\%で, \Ours{}の\olDevCHundred\%に近い.
+
+\section{考察}
+\label{sec:disc}
+\textbf{何をしているか.} 補助の分布外データで検知器を学習する方法~\cite{hendrycks2019oe}に対し, \Ours{}は補助のデータを分布内の画像の向きを変えて作り,学習の代わりに平均を1つ求める. 得られる方向は,分布外集合を使って決めた方向と似ており(\ref{sec:oracle}節),重みを乱数にすると働かなくなる(\ref{sec:model}節). 向きを変えた画像に対して学習済みのモデルの応答が弱くなることが,分布外の画像に対して応答が弱くなることの代わりになっている.
+
+\textbf{限界.} (1) 定数 $c=8$ は val2 で決めた. 8と16の間は平らだが,別のモデルやデータで同じ値がよいとは限らない. 定数のない形は val2 で1ポイント低かった. (2) 開発では val2 で\olNDev{}通りの式を試した. テスト分割は式の選択に使っていないが, 6つとも以前に他の手法で結果を見た分割である. (3) 縮小の履歴をそろえると値は\olEqSixDrop{}ポイント下がり,画質の違いにも反応する. どちらもCFSに共通する. (4) 向きに意味のないデータ(上から撮った画像やテクスチャなど)では, $\vmu$ と $\vmu_{o}$ が近くなり,距離の項だけになる. 距離の項だけの値は6分割で\olSixT\%である. 上下反転した数字を見分けられないのも同じ理由である. (5) SVHNを分布内とする組では,尤度やスコアの大きさを使う手法に及ばない. (6) 内容が近い分布外集合は難しい. ImageNet-64は6分割で\olSixIN\%で,対照では\olEqSixIN\%である. (7) 実験は5つのデータセット($64{\times}64$ 以下)と $256{\times}256$ の1つで,分類器の特徴を使う検知器とは比べていない.
+
+\section{おわりに}
+凍結した拡散モデルのブロックごとに数値を1つ読み,その並びを1つの式で判定する\Ours{}を提案した. 分布内の画像の向きを変えた写しが,分布外の画像の代わりに,応答が失われる方向を与える. スコアは1点へのマハラノビス距離で, 2つの正規分布の対数尤度比に等しい. 5つの分布内データセットで,自然画像の分布外集合に対する平均AUROCは test で\olTestOL\%, 6つの分割で\olSixMin{}〜\olSixMax\%で,同じ拡散モデルを用いる先行研究の最良を\olGapCfsKnn{}ポイント上回った. 順伝播は途中で止める1回で,用意するのは分布内の画像\olNRefMax{}枚から求めた\olNStored{}個の数値である. 縮小の履歴をそろえた対照でも,先行研究との差は保たれた. 定数を1つ開発用の分割で決めていること,テスト分割が以前に結果を見たものであること,画質と縮小の履歴に反応することは,結果とともに示した.

@@ -1,0 +1,52 @@
+% OL (working name; "orientation likelihood ratio"): out-of-distribution detection with a frozen diffusion model from one number per U-Net
+%   block, the amplitude a_h = mean over channels of log max over positions |h - spatial mean| of the block output at sigma_1 = 0.01, read
+%   for the blocks up to A (the first decoder block with a 16x16 output; the pass stops there).  From held-out ID images (val1): the mean m
+%   and covariance S of the profile, and m_o = the mean profile of the same images in the seven other orientations of the square.
+%   Score = -(a - m*)^T (S + ridge)^-1 (a - m*), m* = m + c (m - m_o), c = 8: one Mahalanobis distance = the Gaussian log-likelihood ratio
+%   between N(m, S) and N(m_o, (1 + 1/c) S).  Nothing trained by gradient descent, no further network, no human label, no OOD image.
+%   26f WIP, Japanese; MIRU 2025 class.  Splits: train (not used by OL) / val1 / val2 (development) / test ... test6.
+% build: python3 gen/ol_gen.py && python3 assemble.py && latexmk -r latexmkrc main.tex
+% numbers: numbers_ol.tex and the tab_*_ol.tex and supp_*_ol.tex tables are written by gen/ol_gen.py from gen/data/ol
+%   (server names of the splits: test2 = this paper's test, test3 ... test6 = test2 ... test5, test7 = test6; fresh = val2).
+%   numbers_bench.tex supplies the timing of the published methods and the CFS reproduction.
+\documentclass[MIRU,submit]{miru2025j}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage[dvipdfmx,table]{xcolor}
+\definecolor{firstblue}{RGB}{189,215,238}   % background of the cells where Ours ties or beats the best comparison method (light blue)
+\definecolor{lossred}{RGB}{246,200,192}      % background of the losses in the per-pair tables (light red)
+\definecolor{navyc}{RGB}{31,58,122}\definecolor{redc}{RGB}{192,57,43}   % Figure 1: the ID side (navy) and the test image / what is computed (red)
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{float}   % [H]: the tables of the supplement stay below their heading
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,decorations.pathreplacing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+\makeatletter
+\renewcommand{\signame}{26f WIP中間発表}   % running head (in place of the symposium name)
+\renewcommand{\MIRUPreface}{}                        % removes the "CONFIDENTIAL ..." notice of the submission mode
+\makeatother
+\newcommand{\veps}{\vec{\varepsilon}}
+\newcommand{\Vf}{\mathbf{V}}   % the upside-down flip is a matrix (bold), vectors carry arrows
+\newcommand{\Ours}{OL}   % the name of the method (working name)
+\newcommand{\Pm}{\mathbf{P}}\newcommand{\Gm}{\mathbf{G}}\newcommand{\vd}{\vec{\delta}}\newcommand{\vmu}{\vec{\mu}}\newcommand{\va}{\vec{a}}\newcommand{\Sm}{\mathbf{S}}\newcommand{\Id}{\mathbf{I}}
+\makeatletter\newcommand{\inputrows}[1]{\@@input #1 }\makeatother   % primitive \input: a table body may then begin with a rule (\noalign)
+\renewcommand{\eqref}[1]{(\ref{#1})}   % amsmath's \eqref puts extra space before the Japanese text that follows
+\renewcommand{\dbltopfraction}{0.95}\renewcommand{\topfraction}{0.95}\renewcommand{\textfraction}{0.05}\renewcommand{\dblfloatpagefraction}{0.9}\setcounter{dbltopnumber}{3}\setcounter{topnumber}{3}
+\renewcommand{\floatpagefraction}{0.9}
+\makeatletter   % figures and tables over both columns: captions over the full width (the class narrows them to 2/3)
+\renewenvironment{figure*}{\@floatenv\capwidth\textwidth\ecapwidth\textwidth\abovecaptionskip1mm\belowcaptionskip\z@\@dblfloat{figure}}{\end@dblfloat}
+\renewenvironment{table*}{\@floatenv\capwidth\textwidth\ecapwidth\textwidth\abovecaptionskip\z@\belowcaptionskip1mm\@dblfloat{table}}{\end@dblfloat}
+\renewenvironment{table}{\@floatenv\capwidth\columnwidth\ecapwidth\columnwidth\abovecaptionskip\z@\belowcaptionskip1mm\@float{table}}{\end@float}
+\makeatother
+\input{numbers_bench}  % timing of the comparison methods, the CFS reproduction
+\input{numbers_ol}     % gen/ol_gen.py
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\@makecaption}{\vskip-1.5mm}{\vskip0.3mm}{}{\PackageError{main}{makecaption not patched}{}}   % multi-line table captions no longer touch the top rule
+\setlength{\@fptop}{0pt}\setlength{\@fpbot}{0pt plus 1fil}   % pages that hold only floats start at the top instead of centring them
+\makeatother
+\hyphenation{FashionMNIST ImageNet EigenScore DiffPath}   % no hyphenation of these names inside the Japanese text
+\raggedbottom

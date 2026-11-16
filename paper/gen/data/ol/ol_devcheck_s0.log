@@ -1,0 +1,26 @@
+  O8s edmc10         natural  95.38 (development  95.38)   upside-down  89.12 ( 89.12)   blocks 23
+  O8s l6svhn         natural  97.29 (development  97.29)   upside-down  65.15 ( 65.15)   blocks 8
+  O8s dpceleba       natural 100.00 (development 100.00)   upside-down  99.96 ( 99.96)   blocks 25
+  O8s in64           natural  85.24 (development  85.24)   upside-down  73.97 ( 73.97)   blocks 23
+  O8s fmnist         natural  99.80 (development  99.80)   upside-down  97.46 ( 97.46)   blocks 22
+O8s      five-ID natural mean  95.54 (development  95.54)
+  O8s edmc10_eq50    natural  87.78 (development  87.78)   upside-down  82.22 ( 82.22)   blocks 23
+  O8s l6svhn_eq50    natural  97.60 (development  97.60)   upside-down  67.07 ( 67.07)   blocks 8
+  O8s dpceleba_eq50  natural 100.00 (development 100.00)   upside-down  99.70 ( 99.70)   blocks 25
+  O8s in64_eq50      natural  73.90 (development  73.90)   upside-down  61.53 ( 61.53)   blocks 23
+  O8s fmnist_eq50    natural  99.03 (development  99.03)   upside-down  93.50 ( 93.50)   blocks 22
+O8s_eq50 five-ID natural mean  91.66 (development  91.66)
+  O8a edmc10         natural  93.79 (development  93.79)   upside-down  90.03 ( 90.03)   blocks 23
+  O8a l6svhn         natural  99.51 (development  99.51)   upside-down  65.18 ( 65.18)   blocks 8
+  O8a dpceleba       natural 100.00 (development 100.00)   upside-down  99.95 ( 99.95)   blocks 25
+  O8a in64           natural  83.60 (development  83.60)   upside-down  71.37 ( 71.37)   blocks 23
+  O8a fmnist         natural  99.82 (development  99.82)   upside-down  98.02 ( 98.02)   blocks 22
+O8a      five-ID natural mean  95.34 (development  95.34)
+  O8a edmc10_eq50    natural  85.00 (development  85.00)   upside-down  80.54 ( 80.54)   blocks 23
+  O8a l6svhn_eq50    natural  98.27 (development  98.27)   upside-down  66.80 ( 66.80)   blocks 8
+  O8a dpceleba_eq50  natural 100.00 (development 100.00)   upside-down  99.69 ( 99.69)   blocks 25
+  O8a in64_eq50      natural  70.98 (development  70.98)   upside-down  57.77 ( 57.77)   blocks 23
+  O8a fmnist_eq50    natural  99.34 (development  99.34)   upside-down  95.22 ( 95.22)   blocks 22
+O8a_eq50 five-ID natural mean  90.72 (development  90.72)
+largest difference from the development numbers: 0.003 OK
+OL_DEVCHECK_DONE
