@@ -281,21 +281,31 @@ M['DevCeightB'] = f2(dv('c8')); M['DevEqCeightB'] = f2(dv('c8', 'eq_nat')); M['D
 assert max(CSW, key=lambda x: dv(x[0]))[0] in ('c8', 'c16') and abs(dv('c8') - dv('c16')) < 0.2 and dv('c4') < dv('c8') - 0.4 and dv('c32') < dv('c8') and dv('cinf') < dv('c8') - 0.8 and dv('c0') < 90
 assert dv('n100') < dv('n500') < dv('c8') and abs(dv('n1000') - dv('c8')) < 0.2 and dv('pk') < dv('c8') - 0.8 and dv('pk_d2') < dv('pk') and dv('o_v') < dv('c8') and dv('logstd') < dv('c8')
 # ---- the rounds of the development on val2 (gx_val2*_s0.json; noise seed 0)
-RND = [('gx_val2_s0', '入力の振幅に対する応答の比と残差', ['G1', 'G2', 'G3', 'G4', 'C1', 'C2', 'C3', 'S1', 'S2', 'S3', 'G5', 'G6']),
-       ('gx_val2b_s0', '距離の測り方,振幅の形, 2つの向きを合わせた量', ['M1', 'M2', 'M3', 'M4', 'M5', 'K1', 'K2', 'K3', 'K4', 'P1', 'P2', 'P3']),
-       ('gx_val2c_s0', 'ブロックAのチャネルごとの量', ['H1', 'H2', 'H2b', 'H3', 'H4', 'H5', 'H6', 'H7', 'LC', 'AC']),
-       ('gx_val2d_s0', '少数のブロック,上下反転した画像との判別の方向', ['N2', 'N3', 'ST', 'STs', 'LQ', 'L1d', 'LN', 'L1', 'L1s']),
-       ('gx_val2e_s0', '上下反転した平均の反対側へ動かした点への距離($c=1$)', ['A1s', 'A1', 'Ts']),
-       ('gx_val2f_s0', '重みを自動で決める形,片側だけの距離', ['Z1s', 'Z1a', 'TPs', 'TPa']),
-       ('gx_val2g_s0', '向きを変えた画像と切り貼りした画像(6種類)', ['M8s', 'M8a', 'LMs', 'LMa', 'Q8s', 'PKs']),
-       ('gx_val2h_s0', '7つの向きすべて', ['O8s', 'O8a', 'PKo', 'PKoa', 'JFo', 'JRo'])]
+RND = [('gx_val2_s0', '入力の振幅に対する応答の比と残差', ['G1', 'G2', 'G3', 'G4', 'C1', 'C2', 'C3', 'S1', 'S2', 'S3', 'G5', 'G6'], []),
+       ('gx_val2b_s0', '距離の測り方,振幅の形, 2つの向きを合わせた量', ['M1', 'M2', 'M3', 'M4', 'M5', 'K1', 'K2', 'K3', 'K4', 'P1', 'P2', 'P3'], []),
+       ('gx_val2c_s0', 'ブロックAのチャネルごとの量', ['H1', 'H2', 'H2b', 'H3', 'H4', 'H5', 'H6', 'H7', 'LC', 'AC'], ['LCr', 'ACr']),
+       ('gx_val2d_s0', '少数のブロック,上下反転した画像との判別の方向', ['N2', 'N3', 'ST', 'STs', 'LQ', 'L1d', 'LN', 'L1', 'L1s'], []),
+       ('gx_val2e_s0', '上下反転した平均の反対側へ動かした点への距離($c=1$)', ['A1s', 'A1', 'Ts'], ['A0.5s', 'A2s', 'A4s', 'A1sp']),
+       ('gx_val2f_s0', '重みを自動で決める形,片側だけの距離', ['Z1s', 'Z1a', 'TPs', 'TPa'], ['Ls', 'La', 'A2a', 'A4a', 'A8a', 'A16a', 'A8s', 'A16s', 'A64s', 'RKs', 'RKa']),
+       ('gx_val2g_s0', '向きを変えた画像と切り貼りした画像(6種類)', ['M8s', 'M8a', 'LMs', 'LMa', 'Q8s', 'PKs'], ['MG8s', 'MJ8s', 'M4s', 'M16s', 'Lv', 'Lr90', 'Lr270', 'Lj2', 'Lj4', 'Lch', 'Lt1', 'Lt2']),
+       ('gx_val2h_s0', '7つの向きすべて', ['O8s', 'O8a', 'PKo', 'PKoa', 'JFo', 'JRo'], ['LGo', 'O4s', 'O16s', 'O8s5', 'Lh', 'Lr180'])]      # variants: rows for understanding, not candidates (repeats of earlier rows left out)
 def gx(f, r, met='nat'):
     J = LJ(f + '.json'); R = (J['kinds']['amp'] if 'kinds' in J else J['rows'])[r]; return R['mean'].get(met)      # round 1 stores the rows per statistic
-L = ['% written by gen/ol_gen.py: the rounds of the development on val2, noise seed 0 (gx_val2*_s0.json)']; ndev = 0; BARN, BARE = 95.07, 90.33
-for i, (f, lab, el) in enumerate(RND):
-    v = {r: gx(f, r) for r in el}; assert all(x is not None for x in v.values()), (f, v); b = max(el, key=lambda r: v[r]); e = gx(f, b, 'eq_nat'); ndev += len(el)
+L = ['% written by gen/ol_gen.py: the rounds of the development on val2, noise seed 0 (gx_val2*_s0.json): candidates and the variants that were not candidates']; ndev = 0; nvar = 0; BARN, BARE = 95.07, 90.33; VQ = {}
+for i, (f, lab, el, vl) in enumerate(RND):
+    v = {r: gx(f, r) for r in el}; assert all(x is not None for x in v.values()), (f, v); b = max(el, key=lambda r: v[r]); e = gx(f, b, 'eq_nat'); ndev += len(el); nvar += len(vl)
     q = (v[b] >= BARN and e is not None and e >= BARE); assert q == (f == 'gx_val2h_s0'), (f, b, v[b], e)
-    L.append(' & '.join([str(i + 1), lab, str(len(el)), f2(v[b]), f2(e) if e is not None else '--', '○' if q else '--']) + '\\\\')
+    c = [str(i + 1), lab, str(len(el)), f2(v[b]), f2(e) if e is not None else '--', '○' if q else '--']
+    if vl:
+        w = {r: gx(f, r) for r in vl}; assert all(x is not None for x in w.values()), (f, w); bv = max(vl, key=lambda r: w[r]); ev = gx(f, bv, 'eq_nat'); qv = w[bv] >= BARN and ev >= BARE; VQ[i + 1] = (bv, w[bv], ev, qv)
+        c += [str(len(vl)), f2(w[bv]), f2(ev), '○' if qv else '--']
+    else: c += ['0', '--', '--', '--']
+    L.append(' & '.join(c) + '\\\\')
+assert [k for k, x in VQ.items() if x[3]] == [6, 7, 8] and VQ[7][0] == 'MG8s' and abs(VQ[7][1] - 95.61) < 0.006 and VQ[8][0] == 'O8s5'
+M['NVar'] = str(nvar); assert nvar == 35
+M['VarSixName'] = {'A16a': '全ブロック, $c=16$'}.get(VQ[6][0], VQ[6][0]); M['VarSixNat'] = f2(VQ[6][1]); M['VarSixEq'] = f2(VQ[6][2]); M['VarSevenEq'] = f2(VQ[7][2]); M['VarEightNat'] = f2(VQ[8][1]); M['VarEightEq'] = f2(VQ[8][2])
+M['CandEightNat'] = f2(gx('gx_val2h_s0', 'O8s')); M['CandEightEq'] = f2(gx('gx_val2h_s0', 'O8s', 'eq_nat')); M['CandSevenBest'] = f2(max(gx('gx_val2g_s0', r) for r in RND[6][2])); M['CandSevenBestEq'] = f2(gx('gx_val2g_s0', max(RND[6][2], key=lambda r: gx('gx_val2g_s0', r)), 'eq_nat'))
+assert VQ[6][0] == 'A16a'
 W('supp_devlog_ol.tex', L); M['NDev'] = str(ndev); assert ndev == 62
 assert gx('gx_val2h_s0', 'O8s') == max(gx('gx_val2h_s0', r) for r in RND[-1][2]) and abs(gx('gx_val2h_s0', 'O8s') - 95.54) < 0.006
 H3 = [LJ(f'gx_val2h_s{i}.json')['rows'] for i in (0, 1, 2)]; M['DevSeeds'] = ', '.join(f2(h['O8s']['mean']['nat']) for h in H3); M['DevSeedsEq'] = ', '.join(f2(h['O8s']['mean']['eq_nat']) for h in H3)

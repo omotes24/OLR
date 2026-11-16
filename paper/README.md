@@ -1,4 +1,4 @@
-# OOD Detection by an Orientation Likelihood Ratio (working title; method name OLR is a working name)
+# 向きを変えた分布内画像で振幅の下がる方向を知る 拡散モデルによる分布外検知 (method name OLR is a working name; title in body0.tex)
 
 26f WIP 中間発表のレジュメ(MIRU 2025 クラス, pLaTeX).
 
@@ -36,7 +36,7 @@ m, S は val1 の分布内の画像の並びの平均と共分散, m_o は同じ
 | olx_diag.json | 診断(val2, seed 0-2, ブロックAまで): 振幅が下がるブロックの割合(符号), OLR の方向と分布外集合で決めた方向(余弦, AUROC), 向きを変えた並びの共分散の比(I73 X9, X8b, X10) |
 | olx_fall.json | 診断: 0.2標準偏差の幅で数えた, 振幅が下がる/上がるブロックの割合とブロックAでの z(I73) |
 | olx_info.json | 当てはめた量(p, n, Delta) |
-| gx_val2*_s0.json, gx_val2h_s1/2.json | val2 での開発の8回(62通り. I59-I67) |
+| gx_val2*_s0.json, gx_val2h_s1/2.json | val2 での開発の8回(候補62通り, 候補にしない変種35通り. I59-I67) |
 | hl_meta.json, fk_ablate.json | モデルのブロック, val1 の枚数 |
 | ssb_diag.json, ssb_diag2.json, bench_rf256.jsonl | 256x256 の集合の元ファイルの量, 256 での順伝播の時間 |
 
