@@ -1,0 +1,542 @@
+{
+ "tag": "in64",
+ "spec": "edm2:edm2-img64-xs-uncond-2147483-0.100.pkl",
+ "seed": 0,
+ "fp16": "1",
+ "hooks": [
+  [
+   "unet.enc.64x64_conv",
+   "enc",
+   128,
+   64
+  ],
+  [
+   "unet.enc.64x64_block0",
+   "enc",
+   128,
+   64
+  ],
+  [
+   "unet.enc.64x64_block1",
+   "enc",
+   128,
+   64
+  ],
+  [
+   "unet.enc.64x64_block2",
+   "enc",
+   128,
+   64
+  ],
+  [
+   "unet.enc.32x32_down",
+   "enc",
+   128,
+   32
+  ],
+  [
+   "unet.enc.32x32_block0",
+   "enc",
+   256,
+   32
+  ],
+  [
+   "unet.enc.32x32_block1",
+   "enc",
+   256,
+   32
+  ],
+  [
+   "unet.enc.32x32_block2",
+   "enc",
+   256,
+   32
+  ],
+  [
+   "unet.enc.16x16_down",
+   "enc",
+   256,
+   16
+  ],
+  [
+   "unet.enc.16x16_block0",
+   "enc",
+   384,
+   16
+  ],
+  [
+   "unet.enc.16x16_block1",
+   "enc",
+   384,
+   16
+  ],
+  [
+   "unet.enc.16x16_block2",
+   "enc",
+   384,
+   16
+  ],
+  [
+   "unet.enc.8x8_down",
+   "enc",
+   384,
+   8
+  ],
+  [
+   "unet.enc.8x8_block0",
+   "enc",
+   512,
+   8
+  ],
+  [
+   "unet.enc.8x8_block1",
+   "enc",
+   512,
+   8
+  ],
+  [
+   "unet.enc.8x8_block2",
+   "enc",
+   512,
+   8
+  ],
+  [
+   "unet.dec.8x8_in0",
+   "dec",
+   512,
+   8
+  ],
+  [
+   "unet.dec.8x8_in1",
+   "dec",
+   512,
+   8
+  ],
+  [
+   "unet.dec.8x8_block0",
+   "dec",
+   512,
+   8
+  ],
+  [
+   "unet.dec.8x8_block1",
+   "dec",
+   512,
+   8
+  ],
+  [
+   "unet.dec.8x8_block2",
+   "dec",
+   512,
+   8
+  ],
+  [
+   "unet.dec.8x8_block3",
+   "dec",
+   512,
+   8
+  ],
+  [
+   "unet.dec.16x16_up",
+   "dec",
+   512,
+   16
+  ],
+  [
+   "unet.dec.16x16_block0",
+   "dec",
+   384,
+   16
+  ],
+  [
+   "unet.dec.16x16_block1",
+   "dec",
+   384,
+   16
+  ],
+  [
+   "unet.dec.16x16_block2",
+   "dec",
+   384,
+   16
+  ],
+  [
+   "unet.dec.16x16_block3",
+   "dec",
+   384,
+   16
+  ],
+  [
+   "unet.dec.32x32_up",
+   "dec",
+   384,
+   32
+  ],
+  [
+   "unet.dec.32x32_block0",
+   "dec",
+   256,
+   32
+  ],
+  [
+   "unet.dec.32x32_block1",
+   "dec",
+   256,
+   32
+  ],
+  [
+   "unet.dec.32x32_block2",
+   "dec",
+   256,
+   32
+  ],
+  [
+   "unet.dec.32x32_block3",
+   "dec",
+   256,
+   32
+  ],
+  [
+   "unet.dec.64x64_up",
+   "dec",
+   256,
+   64
+  ],
+  [
+   "unet.dec.64x64_block0",
+   "dec",
+   128,
+   64
+  ],
+  [
+   "unet.dec.64x64_block1",
+   "dec",
+   128,
+   64
+  ],
+  [
+   "unet.dec.64x64_block2",
+   "dec",
+   128,
+   64
+  ],
+  [
+   "unet.dec.64x64_block3",
+   "dec",
+   128,
+   64
+  ]
+ ],
+ "g_off": {
+  "unet.enc.64x64_conv": [
+   0,
+   256
+  ],
+  "unet.enc.64x64_block0": [
+   256,
+   512
+  ],
+  "unet.enc.64x64_block1": [
+   512,
+   768
+  ],
+  "unet.enc.64x64_block2": [
+   768,
+   1024
+  ],
+  "unet.enc.32x32_down": [
+   1024,
+   1280
+  ],
+  "unet.enc.32x32_block0": [
+   1280,
+   1792
+  ],
+  "unet.enc.32x32_block1": [
+   1792,
+   2304
+  ],
+  "unet.enc.32x32_block2": [
+   2304,
+   2816
+  ],
+  "unet.enc.16x16_down": [
+   2816,
+   3328
+  ],
+  "unet.enc.16x16_block0": [
+   3328,
+   4096
+  ],
+  "unet.enc.16x16_block1": [
+   4096,
+   4864
+  ],
+  "unet.enc.16x16_block2": [
+   4864,
+   5632
+  ],
+  "unet.enc.8x8_down": [
+   5632,
+   6400
+  ],
+  "unet.enc.8x8_block0": [
+   6400,
+   7424
+  ],
+  "unet.enc.8x8_block1": [
+   7424,
+   8448
+  ],
+  "unet.enc.8x8_block2": [
+   8448,
+   9472
+  ],
+  "unet.dec.8x8_in0": [
+   9472,
+   10496
+  ],
+  "unet.dec.8x8_in1": [
+   10496,
+   11520
+  ],
+  "unet.dec.8x8_block0": [
+   11520,
+   12544
+  ],
+  "unet.dec.8x8_block1": [
+   12544,
+   13568
+  ],
+  "unet.dec.8x8_block2": [
+   13568,
+   14592
+  ],
+  "unet.dec.8x8_block3": [
+   14592,
+   15616
+  ],
+  "unet.dec.16x16_up": [
+   15616,
+   16640
+  ],
+  "unet.dec.16x16_block0": [
+   16640,
+   17408
+  ],
+  "unet.dec.16x16_block1": [
+   17408,
+   18176
+  ],
+  "unet.dec.16x16_block2": [
+   18176,
+   18944
+  ],
+  "unet.dec.16x16_block3": [
+   18944,
+   19712
+  ],
+  "unet.dec.32x32_up": [
+   19712,
+   20480
+  ],
+  "unet.dec.32x32_block0": [
+   20480,
+   20992
+  ],
+  "unet.dec.32x32_block1": [
+   20992,
+   21504
+  ],
+  "unet.dec.32x32_block2": [
+   21504,
+   22016
+  ],
+  "unet.dec.32x32_block3": [
+   22016,
+   22528
+  ],
+  "unet.dec.64x64_up": [
+   22528,
+   23040
+  ],
+  "unet.dec.64x64_block0": [
+   23040,
+   23296
+  ],
+  "unet.dec.64x64_block1": [
+   23296,
+   23552
+  ],
+  "unet.dec.64x64_block2": [
+   23552,
+   23808
+  ],
+  "unet.dec.64x64_block3": [
+   23808,
+   24064
+  ]
+ },
+ "q_off": {
+  "unet.enc.64x64_conv": [
+   0,
+   512
+  ],
+  "unet.enc.64x64_block0": [
+   512,
+   1024
+  ],
+  "unet.enc.64x64_block1": [
+   1024,
+   1536
+  ],
+  "unet.enc.64x64_block2": [
+   1536,
+   2048
+  ],
+  "unet.enc.32x32_down": [
+   2048,
+   2560
+  ],
+  "unet.enc.32x32_block0": [
+   2560,
+   3584
+  ],
+  "unet.enc.32x32_block1": [
+   3584,
+   4608
+  ],
+  "unet.enc.32x32_block2": [
+   4608,
+   5632
+  ],
+  "unet.enc.16x16_down": [
+   5632,
+   6656
+  ],
+  "unet.enc.16x16_block0": [
+   6656,
+   8192
+  ],
+  "unet.enc.16x16_block1": [
+   8192,
+   9728
+  ],
+  "unet.enc.16x16_block2": [
+   9728,
+   11264
+  ],
+  "unet.enc.8x8_down": [
+   11264,
+   12800
+  ],
+  "unet.enc.8x8_block0": [
+   12800,
+   14848
+  ],
+  "unet.enc.8x8_block1": [
+   14848,
+   16896
+  ],
+  "unet.enc.8x8_block2": [
+   16896,
+   18944
+  ],
+  "unet.dec.8x8_in0": [
+   18944,
+   20992
+  ],
+  "unet.dec.8x8_in1": [
+   20992,
+   23040
+  ],
+  "unet.dec.8x8_block0": [
+   23040,
+   25088
+  ],
+  "unet.dec.8x8_block1": [
+   25088,
+   27136
+  ],
+  "unet.dec.8x8_block2": [
+   27136,
+   29184
+  ],
+  "unet.dec.8x8_block3": [
+   29184,
+   31232
+  ],
+  "unet.dec.16x16_up": [
+   31232,
+   33280
+  ],
+  "unet.dec.16x16_block0": [
+   33280,
+   34816
+  ],
+  "unet.dec.16x16_block1": [
+   34816,
+   36352
+  ],
+  "unet.dec.16x16_block2": [
+   36352,
+   37888
+  ],
+  "unet.dec.16x16_block3": [
+   37888,
+   39424
+  ],
+  "unet.dec.32x32_up": [
+   39424,
+   40960
+  ],
+  "unet.dec.32x32_block0": [
+   40960,
+   41984
+  ],
+  "unet.dec.32x32_block1": [
+   41984,
+   43008
+  ],
+  "unet.dec.32x32_block2": [
+   43008,
+   44032
+  ],
+  "unet.dec.32x32_block3": [
+   44032,
+   45056
+  ],
+  "unet.dec.64x64_up": [
+   45056,
+   46080
+  ],
+  "unet.dec.64x64_block0": [
+   46080,
+   46592
+  ],
+  "unet.dec.64x64_block1": [
+   46592,
+   47104
+  ],
+  "unet.dec.64x64_block2": [
+   47104,
+   47616
+  ],
+  "unet.dec.64x64_block3": [
+   47616,
+   48128
+  ]
+ },
+ "g_dim": 24064,
+ "q_dim": 48128,
+ "sigmas": {
+  "0": 0.01,
+  "2": 0.0292864,
+  "4": 0.0857696,
+  "6": 0.251189,
+  "7": 0.429866,
+  "8": 0.735643,
+  "9": 1.25893,
+  "10": 2.15444
+ }
+}

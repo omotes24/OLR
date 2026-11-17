@@ -1,0 +1,500 @@
+{
+ "tag": "edmc10",
+ "spec": "edm:edm-cifar10-32x32-uncond-vp.pkl",
+ "seed": 0,
+ "fp16": "1",
+ "hooks": [
+  [
+   "model.enc.32x32_conv",
+   "enc",
+   128,
+   32
+  ],
+  [
+   "model.enc.32x32_block0",
+   "enc",
+   256,
+   32
+  ],
+  [
+   "model.enc.32x32_block1",
+   "enc",
+   256,
+   32
+  ],
+  [
+   "model.enc.32x32_block2",
+   "enc",
+   256,
+   32
+  ],
+  [
+   "model.enc.32x32_block3",
+   "enc",
+   256,
+   32
+  ],
+  [
+   "model.enc.16x16_down",
+   "enc",
+   256,
+   16
+  ],
+  [
+   "model.enc.16x16_block0",
+   "enc",
+   256,
+   16
+  ],
+  [
+   "model.enc.16x16_block1",
+   "enc",
+   256,
+   16
+  ],
+  [
+   "model.enc.16x16_block2",
+   "enc",
+   256,
+   16
+  ],
+  [
+   "model.enc.16x16_block3",
+   "enc",
+   256,
+   16
+  ],
+  [
+   "model.enc.8x8_down",
+   "enc",
+   256,
+   8
+  ],
+  [
+   "model.enc.8x8_block0",
+   "enc",
+   256,
+   8
+  ],
+  [
+   "model.enc.8x8_block1",
+   "enc",
+   256,
+   8
+  ],
+  [
+   "model.enc.8x8_block2",
+   "enc",
+   256,
+   8
+  ],
+  [
+   "model.enc.8x8_block3",
+   "enc",
+   256,
+   8
+  ],
+  [
+   "model.dec.8x8_in0",
+   "dec",
+   256,
+   8
+  ],
+  [
+   "model.dec.8x8_in1",
+   "dec",
+   256,
+   8
+  ],
+  [
+   "model.dec.8x8_block0",
+   "dec",
+   256,
+   8
+  ],
+  [
+   "model.dec.8x8_block1",
+   "dec",
+   256,
+   8
+  ],
+  [
+   "model.dec.8x8_block2",
+   "dec",
+   256,
+   8
+  ],
+  [
+   "model.dec.8x8_block3",
+   "dec",
+   256,
+   8
+  ],
+  [
+   "model.dec.8x8_block4",
+   "dec",
+   256,
+   8
+  ],
+  [
+   "model.dec.16x16_up",
+   "dec",
+   256,
+   16
+  ],
+  [
+   "model.dec.16x16_block0",
+   "dec",
+   256,
+   16
+  ],
+  [
+   "model.dec.16x16_block1",
+   "dec",
+   256,
+   16
+  ],
+  [
+   "model.dec.16x16_block2",
+   "dec",
+   256,
+   16
+  ],
+  [
+   "model.dec.16x16_block3",
+   "dec",
+   256,
+   16
+  ],
+  [
+   "model.dec.16x16_block4",
+   "dec",
+   256,
+   16
+  ],
+  [
+   "model.dec.32x32_up",
+   "dec",
+   256,
+   32
+  ],
+  [
+   "model.dec.32x32_block0",
+   "dec",
+   256,
+   32
+  ],
+  [
+   "model.dec.32x32_block1",
+   "dec",
+   256,
+   32
+  ],
+  [
+   "model.dec.32x32_block2",
+   "dec",
+   256,
+   32
+  ],
+  [
+   "model.dec.32x32_block3",
+   "dec",
+   256,
+   32
+  ],
+  [
+   "model.dec.32x32_block4",
+   "dec",
+   256,
+   32
+  ]
+ ],
+ "g_off": {
+  "model.enc.32x32_conv": [
+   0,
+   256
+  ],
+  "model.enc.32x32_block0": [
+   256,
+   768
+  ],
+  "model.enc.32x32_block1": [
+   768,
+   1280
+  ],
+  "model.enc.32x32_block2": [
+   1280,
+   1792
+  ],
+  "model.enc.32x32_block3": [
+   1792,
+   2304
+  ],
+  "model.enc.16x16_down": [
+   2304,
+   2816
+  ],
+  "model.enc.16x16_block0": [
+   2816,
+   3328
+  ],
+  "model.enc.16x16_block1": [
+   3328,
+   3840
+  ],
+  "model.enc.16x16_block2": [
+   3840,
+   4352
+  ],
+  "model.enc.16x16_block3": [
+   4352,
+   4864
+  ],
+  "model.enc.8x8_down": [
+   4864,
+   5376
+  ],
+  "model.enc.8x8_block0": [
+   5376,
+   5888
+  ],
+  "model.enc.8x8_block1": [
+   5888,
+   6400
+  ],
+  "model.enc.8x8_block2": [
+   6400,
+   6912
+  ],
+  "model.enc.8x8_block3": [
+   6912,
+   7424
+  ],
+  "model.dec.8x8_in0": [
+   7424,
+   7936
+  ],
+  "model.dec.8x8_in1": [
+   7936,
+   8448
+  ],
+  "model.dec.8x8_block0": [
+   8448,
+   8960
+  ],
+  "model.dec.8x8_block1": [
+   8960,
+   9472
+  ],
+  "model.dec.8x8_block2": [
+   9472,
+   9984
+  ],
+  "model.dec.8x8_block3": [
+   9984,
+   10496
+  ],
+  "model.dec.8x8_block4": [
+   10496,
+   11008
+  ],
+  "model.dec.16x16_up": [
+   11008,
+   11520
+  ],
+  "model.dec.16x16_block0": [
+   11520,
+   12032
+  ],
+  "model.dec.16x16_block1": [
+   12032,
+   12544
+  ],
+  "model.dec.16x16_block2": [
+   12544,
+   13056
+  ],
+  "model.dec.16x16_block3": [
+   13056,
+   13568
+  ],
+  "model.dec.16x16_block4": [
+   13568,
+   14080
+  ],
+  "model.dec.32x32_up": [
+   14080,
+   14592
+  ],
+  "model.dec.32x32_block0": [
+   14592,
+   15104
+  ],
+  "model.dec.32x32_block1": [
+   15104,
+   15616
+  ],
+  "model.dec.32x32_block2": [
+   15616,
+   16128
+  ],
+  "model.dec.32x32_block3": [
+   16128,
+   16640
+  ],
+  "model.dec.32x32_block4": [
+   16640,
+   17152
+  ]
+ },
+ "q_off": {
+  "model.enc.32x32_conv": [
+   0,
+   512
+  ],
+  "model.enc.32x32_block0": [
+   512,
+   1536
+  ],
+  "model.enc.32x32_block1": [
+   1536,
+   2560
+  ],
+  "model.enc.32x32_block2": [
+   2560,
+   3584
+  ],
+  "model.enc.32x32_block3": [
+   3584,
+   4608
+  ],
+  "model.enc.16x16_down": [
+   4608,
+   5632
+  ],
+  "model.enc.16x16_block0": [
+   5632,
+   6656
+  ],
+  "model.enc.16x16_block1": [
+   6656,
+   7680
+  ],
+  "model.enc.16x16_block2": [
+   7680,
+   8704
+  ],
+  "model.enc.16x16_block3": [
+   8704,
+   9728
+  ],
+  "model.enc.8x8_down": [
+   9728,
+   10752
+  ],
+  "model.enc.8x8_block0": [
+   10752,
+   11776
+  ],
+  "model.enc.8x8_block1": [
+   11776,
+   12800
+  ],
+  "model.enc.8x8_block2": [
+   12800,
+   13824
+  ],
+  "model.enc.8x8_block3": [
+   13824,
+   14848
+  ],
+  "model.dec.8x8_in0": [
+   14848,
+   15872
+  ],
+  "model.dec.8x8_in1": [
+   15872,
+   16896
+  ],
+  "model.dec.8x8_block0": [
+   16896,
+   17920
+  ],
+  "model.dec.8x8_block1": [
+   17920,
+   18944
+  ],
+  "model.dec.8x8_block2": [
+   18944,
+   19968
+  ],
+  "model.dec.8x8_block3": [
+   19968,
+   20992
+  ],
+  "model.dec.8x8_block4": [
+   20992,
+   22016
+  ],
+  "model.dec.16x16_up": [
+   22016,
+   23040
+  ],
+  "model.dec.16x16_block0": [
+   23040,
+   24064
+  ],
+  "model.dec.16x16_block1": [
+   24064,
+   25088
+  ],
+  "model.dec.16x16_block2": [
+   25088,
+   26112
+  ],
+  "model.dec.16x16_block3": [
+   26112,
+   27136
+  ],
+  "model.dec.16x16_block4": [
+   27136,
+   28160
+  ],
+  "model.dec.32x32_up": [
+   28160,
+   29184
+  ],
+  "model.dec.32x32_block0": [
+   29184,
+   30208
+  ],
+  "model.dec.32x32_block1": [
+   30208,
+   31232
+  ],
+  "model.dec.32x32_block2": [
+   31232,
+   32256
+  ],
+  "model.dec.32x32_block3": [
+   32256,
+   33280
+  ],
+  "model.dec.32x32_block4": [
+   33280,
+   34304
+  ]
+ },
+ "g_dim": 17152,
+ "q_dim": 34304,
+ "sigmas": {
+  "0": 0.01,
+  "2": 0.0292864,
+  "4": 0.0857696,
+  "6": 0.251189,
+  "7": 0.429866,
+  "8": 0.735643,
+  "9": 1.25893,
+  "10": 2.15444
+ }
+}

@@ -1,0 +1,38 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}{l*{5}{r}rrcrr}%
+\toprule
+ & \multicolumn{5}{c}{分布内（自然画像の分布外集合の平均）} & & & OLRの & & \\
+\cmidrule(lr){2-6}
+手法 & CIFAR-10 & SVHN & CelebA & ImageNet-64 & FashionMNIST & 5つの平均 & 上下反転 & 勝/分/負 & 順伝播 & 秒/枚\\
+\midrule
+NLL（尤度）[1] & 57.4 & 99.3 & 80.9 & 54.6 & 32.8 & 65.0 & 57.7 & 37/5/9 & 128+128 & 46\\
+IC（PNG）[4] & 72.7 & 91.6 & 86.5 & 48.9 & 86.3 & 77.2 & 57.9 & 41/7/3 & 128+128 & 46\\
+IC（JPEG2000）[4] & 71.4 & 72.8 & 80.9 & 47.2 & 38.4 & 62.1 & 57.3 & 45/5/1 & 128+128 & 46\\
+TT[5] & 62.1 & 99.0 & 84.6 & 59.8 & 62.1 & 73.5 & 54.4 & 38/4/9 & 128+128 & 46\\
+MSMA型[6] & 64.5 & 99.3 & 99.3 & 65.1 & 96.6 & 85.0 & 65.7 & 35/6/10 & 20 & 3.5\\
+DiffPath[7] & 72.4 & 99.8\dg & 99.8\dg & 55.5 & 80.6 & 81.6 & 64.3 & 34/7/10 & 10 & 1.5\\
+GEPC[8] & 49.9 & 92.0 & 99.0 & 52.0 & 83.9 & 75.4 & 52.5 & 47/4/0 & 14 & 2.3\\
+EigenScore[9] & 72.8 & 86.3 & 87.4 & 45.2 & 93.8 & 77.1 & 78.6\dg & 50/0/1 & 180 & 27\\
+\midrule
+CFS[10] & 74.9 & 91.0 & 99.4 & 65.5\dg & 97.4 & 85.6 & 61.4 & 42/9/0 & 1$^{\S}$\dg & 0.09$^{\ddagger}$\dg\\
+CFS（kNNヘッド）[10] & 85.4\dg & 93.8 & 99.6 & 61.4 & 99.8\dg & 88.0\dg & 73.6 & 37/14/0 & 1$^{\S}$\dg & 0.09$^{\ddagger}$\dg\\
+\midrule
+\textbf{OLR（Ours）} & \B{95.6} & 96.9 & \B{100.0} & \B{85.8} & \B{99.8} & \B{95.6} & \B{84.7} & – & 1$^{\S}$ & 0.07$^{\ddagger}$\\
+\bottomrule
+\end{tabular}%
+\end{document}

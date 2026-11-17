@@ -1,0 +1,96 @@
+% f2_amp.tex -- Figure 2: step 1, from one image to p numbers (natural width about 17.4 cm).
+%   (a) the image (plus the small noise) goes through the frozen U-Net of the CIFAR-10 model: 34 blocks drawn one by one with their output
+%       size (32x32, 16x16, 8x8; hl_meta.json); block A = the 23rd (dec.16x16_up, red); the 11 blocks after A are not computed (dashed).
+%   (b) how one number a_h is read from block h (here the 7th block, enc.16x16_block0: 256 channels of 16x16): steps 1-4 of eq. (2).
+%   The channel map is a schematic (gen/mk_data.py), not a real activation.  Colours: navy = block h and its number, red = block A and
+%   the largest deviation.
+\begin{tikzpicture}[>={Stealth[length=1.8mm, width=1.4mm]}, line cap=round, line join=round, font=\footnotesize,
+  lab/.style={inner sep=1pt, align=center, font=\footnotesize}, sm/.style={inner sep=1pt, align=center, font=\scriptsize},
+  ttl/.style={anchor=west, inner sep=0pt, font=\small}]
+\input{figs/d_cells}
+% ================================================================ (a)
+\node[ttl] at (0,0.3) {\textbf{(a)}\ 画像を通し,ブロックごとに数を1つ読む};
+\node[inner sep=0, draw=black!60] (im) at (0.75,-1.25) {\includegraphics[width=1.25cm]{img/b_o0.png}};
+\node[lab, anchor=north] at (0.75,-1.95) {画像 $\vec{x}$};
+\node[sm, anchor=north, text=black!70] at (0.75,-2.33) {$3{\times}32{\times}32$ 個の数};
+\draw[->] (1.45,-1.25) -- node[above, lab] {$+\sigma_{1}\vec{\varepsilon}$} (2.3,-1.25);
+% the 34 blocks: resolution of the output 32, 16, 8 (height 1.5, 1.0, 0.6 cm)
+\def\blk#1#2#3{% index, resolution, style
+  \pgfmathsetmacro{\bx}{2.45+(#1-1)*0.17}
+  \ifnum#2=32 \def\bh{1.5}\def\bc{-1.0}\fi
+  \ifnum#2=16 \def\bh{1.0}\def\bc{-1.4}\fi
+  \ifnum#2=8 \def\bh{0.6}\def\bc{-1.75}\fi
+  \draw[#3] (\bx,\bc-\bh/2) rectangle ++(0.11,\bh);}
+\foreach \i/\r in {1/32,2/32,3/32,4/32,5/32,6/16,8/16,9/16,10/16,11/8,12/8,13/8,14/8,15/8,16/8,17/8,18/8,19/8,20/8,21/8,22/8}
+  {\blk{\i}{\r}{black, line width=0.45pt}}
+\blk{7}{16}{navyc, line width=1.1pt}
+\blk{23}{16}{redc, line width=1.1pt}
+\foreach \i/\r in {24/16,25/16,26/16,27/16,28/16,29/32,30/32,31/32,32/32,33/32,34/32}
+  {\blk{\i}{\r}{black!35, densely dashed, line width=0.4pt}}
+\node[lab, anchor=south] at (5.31,-0.2) {U-Net(凍結)\ \ ブロックは34個};
+\node[lab, text=navyc, anchor=south] at (3.53,-0.86) {$h$};
+\node[lab, text=redc, anchor=south east] at (6.36,-0.86) {(ここで止める)A};
+\node[sm, text=black!50, anchor=north] at (7.25,-2.0) {使わない};
+\draw[decorate, decoration={brace, mirror, amplitude=3pt}] (2.45,-2.38) -- (6.30,-2.38);
+\node[lab, anchor=north] at (4.38,-2.5) {ブロック1〜A ($p=23$ 個)};
+\draw[->] (8.45,-0.75) -- (16.05,-0.75);
+\node[lab, anchor=south] at (12.2,-0.7) {ブロック1〜Aのそれぞれから数を1つ\\(振幅 $a_{h}$)読み,縦に並べる};
+\node[lab, anchor=north, text=black!70] at (12.2,-0.82) {1つの数の読み方は(b)};
+% ---- the profile: p x 1, cells of 0.19 cm
+\begin{scope}[shift={(16.15,-0.15)}]
+  \foreach \k in {1,...,23} \draw[black, line width=0.4pt] (0,{-(\k-1)*0.19}) rectangle ++(0.3,-0.19);
+  \draw[navyc, line width=1.1pt] (0,{-6*0.19}) rectangle ++(0.3,-0.19);
+  \draw[redc, line width=1.1pt] (0,{-22*0.19}) rectangle ++(0.3,-0.19);
+  \node[sm, anchor=west] at (0.33,-0.095) {$a_{1}$};
+  \node[sm, anchor=west, text=navyc] at (0.33,{-6.5*0.19}) {$a_{h}$};
+  \node[sm, anchor=west, text=redc] at (0.33,{-22.5*0.19}) {$a_{p}$(A)};
+  \node[lab, anchor=south] at (0.15,0.02) {$\vec{a}(\vec{x})$};
+  \node[sm, anchor=north] at (0.15,-4.43) {$p{\times}1$};
+\end{scope}
+% ================================================================ (b)
+\begin{scope}[shift={(0,-0.2)}]
+\node[ttl] at (0,-3.0) {\textbf{(b)}\ ブロック $h$(紺. 図では7番目)の出力から数を1つ読む(式~\eqref{eq:amp}の\cn{1}〜\cn{4})};
+% stack of the C_h channel maps
+\foreach \s in {4,3,2,1,0} \draw[black, line width=0.45pt, fill=white] ({0.25+0.1*\s},{-3.35-0.1*\s}) rectangle ++(1.25,-1.25);
+\node[sm, anchor=north] at (1.15,-5.12) {$C_{h}=256$ 枚};
+\node[sm, anchor=north] at (1.15,-5.45) {(チャネル $j$)};
+\draw[->] (2.05,-4.15) -- node[above, sm] {$j$ 枚目} (2.65,-4.15);
+% one channel: 16 x 16 values (cell 0.1 cm)
+\begin{scope}[shift={(2.75,-3.35)}, x=0.1cm, y=0.1cm]
+  \cellsraw
+  \draw[black, line width=0.45pt] (0,0) rectangle (16,-16);
+\end{scope}
+\node[sm, anchor=north] at (3.55,-5.0) {$U_{h}=16{\times}16$ 個の値};
+\node[sm, anchor=north] at (3.55,-5.33) {$f_{h,j,u}(\vec{x})$};
+\draw[->] (4.45,-4.15) -- (6.15,-4.15);
+\node[sm, anchor=south] at (5.3,-4.08) {\cn{1}\,平均を引く};
+\node[sm, anchor=north] at (5.3,-4.22) {\cn{2}\,絶対値};
+% |f - mean|: the largest one in red
+\begin{scope}[shift={(6.25,-3.35)}, x=0.1cm, y=0.1cm]
+  \cellsdev
+  \draw[black, line width=0.45pt] (0,0) rectangle (16,-16);
+  \draw[redc, line width=1.0pt] (\cellmaxcol,-\cellmaxrow) rectangle ++(1,-1);
+\end{scope}
+\node[sm, anchor=north] at (7.05,-5.0) {$|f_{h,j,u}(\vec{x})-\bar{f}_{h,j}(\vec{x})|$};
+\node[sm, anchor=north, text=redc] at (7.05,-5.38) {最大のもの(赤)};
+\draw[->] (7.95,-4.15) -- (9.15,-4.15);
+\node[sm, anchor=south] at (8.55,-4.08) {\cn{3}\,最大の};
+\node[sm, anchor=north] at (8.55,-4.22) {対数};
+\draw[redc, line width=0.9pt] (9.25,-4.0) rectangle ++(0.3,-0.3);
+\node[sm, anchor=north] at (9.4,-4.38) {数1つ};
+\draw[->] (9.65,-4.15) -- (10.45,-4.15);
+\node[sm, anchor=south] at (10.05,-4.08) {$j$ ごとに};
+% the C_h numbers of block h
+\foreach \k in {0,...,9} \draw[black, line width=0.4pt] ({10.55+0.22*\k},-4.04) rectangle ++(0.22,-0.22);
+\node[sm] at (12.95,-4.15) {$\cdots$};
+\foreach \k in {0,1} \draw[black, line width=0.4pt] ({13.2+0.22*\k},-4.04) rectangle ++(0.22,-0.22);
+\draw[decorate, decoration={brace, mirror, amplitude=3pt}] (10.55,-4.38) -- (13.64,-4.38);
+\node[sm, anchor=north] at (12.1,-4.5) {$C_{h}=256$ 個の数};
+\draw[->] (13.75,-4.15) -- (14.55,-4.15);
+\node[sm, anchor=south] at (14.15,-4.08) {\cn{4}\,平均};
+\draw[navyc, line width=1.1pt] (14.65,-4.0) rectangle ++(0.3,-0.3);
+\node[sm, anchor=north, text=navyc] at (14.8,-4.38) {$a_{h}(\vec{x})$};
+\node[sm, anchor=north, text=navyc] at (14.8,-4.72) {数1つ};
+\end{scope}
+\draw[->, navyc, line width=0.7pt] (14.95,-4.15) .. controls (15.6,-3.9) and (15.5,-1.6) .. (16.1,-1.4);
+\end{tikzpicture}

@@ -1,0 +1,34 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}{lrrr@{\hspace{18pt}}lrrr@{\hspace{18pt}}lrrr}%
+\toprule
+\multicolumn{4}{c}{定数$c$（7つの向き）} & \multicolumn{4}{c}{使う向き（$c=8$）} & \multicolumn{4}{c}{分布内の画像の枚数$n$}\\
+\cmidrule(lr){1-4}\cmidrule(lr){5-8}\cmidrule(lr){9-12}
+ & 平均 & 対照 & 上下反転 & & 平均 & 対照 & 上下反転 & & 平均 & 対照 & 上下反転\\
+\midrule
+0（距離の項だけ） & 87.8 & 83.2 & 63.5 & 上下反転だけ & 95.3 & 91.3 & 85.6 & 50 & 93.3 & 88.4 & 80.8\\
+1 & 91.9 & 86.8 & 73.5 & 反転と180度の回転（3つ） & 95.0 & 90.9 & 84.6 & 100 & 93.8 & 89.7 & 82.7\\
+2 & 93.6 & 88.8 & 78.2 & 90度の回転と対角の反転（4つ） & 95.5 & 91.6 & 85.0 & 200 & 94.4 & 89.8 & 84.0\\
+4 & 94.9 & 90.6 & 82.5 & 左右反転を除く6つ & 95.6 & 91.9 & 85.4 & 500 & 94.9 & 90.8 & 85.3\\
+\B{8（OLR）} & \B{95.6} & \B{91.8} & \B{85.2} & \B{7つすべて（OLR）} & \B{95.6} & \B{91.8} & \B{85.2} & 1{,}000 & 95.6 & 91.5 & 85.3\\
+16 & 95.6 & 92.0 & 86.4 &  &  &  &  & \B{すべて（OLR）} & \B{95.6} & \B{91.8} & \B{85.2}\\
+32 & 95.3 & 91.5 & 86.8 &  &  &  &  &  &  &  & \\
+64 & 95.0 & 91.0 & 86.9 &  &  &  &  &  &  &  & \\
+$\infty$（内積の項だけ） & 94.5 & 90.1 & 87.0 &  &  &  &  &  &  &  & \\
+\bottomrule
+\end{tabular}%
+\end{document}

@@ -1,0 +1,46 @@
+% f5_shape.tex -- Figure 5: the shapes in eq. (8) and eq. (13) for p = 23 (CIFAR-10); one cell = one number (natural width about 15 cm).
+%   (a) s(x) = - (1 x p)(p x p)(p x 1) = 1 x 1.  (b) l(x) = (1 x p)(p x 1) = 1 x 1, the inner product of v and P u.
+\begin{tikzpicture}[line cap=round, line join=round, font=\footnotesize,
+  sm/.style={inner sep=1pt, align=center, font=\scriptsize}, lab/.style={inner sep=1pt, align=center, font=\footnotesize},
+  ttl/.style={anchor=west, inner sep=0pt, font=\small}]
+\def\cs{0.1}
+\def\rowv#1#2{% left x, centre y: a 1 x 23 row
+  \draw[black, line width=0.5pt] (#1,#2+\cs/2) rectangle ++(23*\cs,-\cs);
+  \foreach \k in {1,...,22} \draw[black!45, line width=0.2pt] ({#1+\k*\cs},#2+\cs/2) -- ++(0,-\cs);}
+\def\colv#1#2{% centre x, top y: a 23 x 1 column
+  \draw[black, line width=0.5pt] (#1-\cs/2,#2) rectangle ++(\cs,-23*\cs);
+  \foreach \k in {1,...,22} \draw[black!45, line width=0.2pt] (#1-\cs/2,{#2-\k*\cs}) -- ++(\cs,0);}
+% ---------------------------------------------------------------- (a) the score
+\node[ttl] at (0,1.75) {\textbf{(a)}\ スコア $s(\vec{x})$[式~\eqref{eq:score}]};
+\node[lab, anchor=east] at (1.25,0) {$s(\vec{x})=-$};
+\rowv{1.35}{0}
+\node[sm, anchor=south] at (2.5,0.1) {$\{\vec{a}(\vec{x})-\vec{\mu}^{*}\}^{\top}$};
+\node[sm, anchor=north] at (2.5,-0.1) {$1{\times}p$};
+\draw[black, line width=0.5pt] (3.85,1.15) rectangle ++(2.3,-2.3);
+\foreach \k in {1,...,22} {\draw[black!15, line width=0.15pt] ({3.85+\k*\cs},1.15) -- ++(0,-2.3); \draw[black!15, line width=0.15pt] (3.85,{1.15-\k*\cs}) -- ++(2.3,0);}
+\node[lab, anchor=south] at (5.0,1.18) {$\mathbf{P}$};
+\node[sm, anchor=north] at (5.0,-1.2) {$p{\times}p$};
+\colv{6.4}{1.15}
+\node[sm, anchor=south] at (6.4,1.18) {$\vec{a}(\vec{x})-\vec{\mu}^{*}$};
+\node[sm, anchor=north] at (6.4,-1.2) {$p{\times}1$};
+\node[lab] at (6.85,0) {$=$};
+\draw[redc, line width=0.9pt] (7.1,\cs/2) rectangle ++(\cs,-\cs);
+\node[sm, anchor=south, text=redc] at (7.15,0.12) {数1つ};
+\node[sm, anchor=north, text=redc] at (7.15,-0.12) {$1{\times}1$};
+% ---------------------------------------------------------------- (b) the inner product term
+\begin{scope}[shift={(9.3,0)}]
+\node[ttl] at (0,1.75) {\textbf{(b)}\ 内積の項 $\ell(\vec{x})$[式~\eqref{eq:ell}]};
+\node[lab, anchor=east] at (1.25,0) {$\ell(\vec{x})=$};
+\rowv{1.35}{0}
+\node[sm, anchor=south] at (2.5,0.1) {$\vec{v}^{\top}=(\vec{\mu}-\vec{\mu}_{o})^{\top}$};
+\node[sm, anchor=north] at (2.5,-0.1) {$1{\times}p$};
+\colv{3.95}{1.15}
+\node[sm, anchor=south] at (3.95,1.18) {$\mathbf{P}\vec{u}$};
+\node[sm, anchor=north] at (3.95,-1.2) {$p{\times}1$};
+\node[lab] at (4.4,0) {$=$};
+\draw[redc, line width=0.9pt] (4.65,\cs/2) rectangle ++(\cs,-\cs);
+\node[sm, anchor=south, text=redc] at (4.7,0.12) {数1つ};
+\node[sm, anchor=north, text=redc] at (4.7,-0.12) {$1{\times}1$};
+\node[sm, anchor=west, align=left] at (5.05,-0.85) {横の並び $\times$ 縦の並び\\$=$ 内積(数1つ)};
+\end{scope}
+\end{tikzpicture}

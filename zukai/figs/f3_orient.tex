@@ -1,0 +1,41 @@
+% f3_orient.tex -- Figure 3: the seven other orientations of the square, and what they do to the amplitudes (natural width about 17.2 cm).
+%   (a) the eight orientations of one CIFAR-10-like image (bird.png of the slides): as it is (navy frame) and the seven G_k.
+%   (b) a schematic of the per-block mean amplitudes (gen/mk_data.py, not data): ID (navy, band = +-1 SD), the seven re-oriented means
+%       (grey), an OOD mean (red).  The measured shares are in the text (main resume, Table 7).
+\begin{tikzpicture}[>={Stealth[length=1.8mm, width=1.4mm]}, line cap=round, line join=round, font=\footnotesize,
+  lab/.style={inner sep=1pt, align=center, font=\footnotesize}, sm/.style={inner sep=1pt, align=center, font=\scriptsize},
+  ttl/.style={anchor=west, inner sep=0pt, font=\small}]
+\input{figs/d_prof}
+% ================================================================ (a)
+\node[ttl] at (0,0.3) {\textbf{(a)}\ 向きの変え方は,そのままを除いて7つ};
+\foreach \f/\x/\y/\t in {o0/0.7/-0.85/{}, vflip/2.35/-0.85/上下反転, hflip/4.0/-0.85/左右反転, r180/5.65/-0.85/180度回転,
+                         r90/0.7/-2.75/90度回転, r270/2.35/-2.75/270度回転, tr/4.0/-2.75/{対角線で\\反転}, atr/5.65/-2.75/{もう1本の\\対角線で反転}}
+  {\node[inner sep=0, draw=black!50, line width=0.4pt] at (\x,\y) {\includegraphics[width=1.15cm]{img/b_\f.png}};
+   \node[sm, anchor=north] at (\x,{\y-0.64}) {\t};}
+\draw[navyc, line width=1.3pt] (0.105,-0.255) rectangle (1.295,-1.445);
+\node[sm, anchor=north, text=navyc] at (0.7,-1.49) {そのまま};
+\node[sm, anchor=north west, align=left] at (0.0,-4.4) {そのまま以外の7つが $\mathbf{G}_{1}\vec{x},\dots,\mathbf{G}_{7}\vec{x}$(画素の並べ替え)};
+% ================================================================ (b)
+\draw[->, line width=0.9pt] (6.75,-1.8) -- (7.65,-1.8);
+\node[sm, anchor=south] at (7.2,-1.75) {U-Netに};
+\node[sm, anchor=north] at (7.2,-1.85) {通す};
+\node[ttl] at (7.9,0.3) {\textbf{(b)}\ ブロックごとの振幅の平均(模式図)};
+\draw[->, black!80] (8.05,-3.45) -- (16.95,-3.45);
+\draw[->, black!80] (8.05,-3.45) -- (8.05,-0.3);
+\node[lab, anchor=north] at (12.2,-3.5) {ブロック $h$};
+\node[lab, anchor=west] at (8.15,-0.38) {振幅 $a_{h}$};
+\node[sm, anchor=north] at (\profxone,-3.5) {1};
+\node[sm, anchor=north, text=redc] at (\profxA,-3.5) {A};
+\draw[black!45, densely dotted] (\profxA,-3.45) -- (\profxA,-0.6);
+% ID band and mean
+\draw[navyc!70, densely dotted, line width=0.5pt] \profidhi;
+\draw[navyc!70, densely dotted, line width=0.5pt] \profidlo;
+\draw[black!40, line width=0.45pt] \profors;
+\draw[redc, line width=1.0pt] \profood;
+\draw[navyc, line width=1.2pt] \profid;
+\node[sm, text=navyc, anchor=south west, align=left] at (8.4,-1.2) {分布内の画像(そのまま). 点線：$\pm1$ 標準偏差};
+\node[sm, text=black!60, anchor=north west] at (11.0,-3.0) {向きを変えた画像(7つの向き)};
+\node[sm, text=redc, anchor=north west] at (8.65,-2.6) {分布外の画像};
+\draw[->, line width=0.8pt] ({\profxA+0.25},\profyA) -- ({\profxA+0.25},\profyAood);
+\node[sm, anchor=west] at ({\profxA+0.3},{(\profyA+\profyAood)/2}) {下がる};
+\end{tikzpicture}

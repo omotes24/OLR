@@ -1,0 +1,29 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}{lllllrrr}%
+\toprule
+分布内 & 解像度 & モデル & ブロック & ブロックA & 画像$n$ & $\Delta$ & 数値\\
+\midrule
+CIFAR-10 & $32{\times}32$ & EDM（VP, DDPM++）[2] & 23 / 23 / 34 & \texttt{dec.16x16\_up} & 2{,}000 & 1.77 & 552\\
+SVHN & $32{\times}32$ & VP-SDE[18] & 8 / 11 / 13 & \texttt{up\_blocks.3} & 2{,}000 & 1.10 & 72\\
+CelebA & $32{\times}32$ & iDDPM[19] & 25 / 25 / 33 & \texttt{output\_blocks.7} & 2{,}000 & 8.84 & 650\\
+ImageNet-64 & $64{\times}64$ & EDM2-XS（条件なし）[20] & 23 / 23 / 37 & \texttt{dec.16x16\_up} & 1{,}500 & 0.90 & 552\\
+FashionMNIST & $32{\times}32$ & EDMの前処理によるU-Net（本研究で学習） & 22 / 22 / 29 & \texttt{dec.16x16\_up} & 2{,}000 & 2.78 & 506\\
+ImageNet（追加実験） & $256{\times}256$ & ADM（条件なし）[15] & 22 / 22 / 37 & \texttt{output\_blocks.2} & 1{,}000 & 0.55 & 506\\
+\bottomrule
+\end{tabular}%
+\end{document}

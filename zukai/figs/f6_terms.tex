@@ -1,0 +1,63 @@
+% f6_terms.tex -- Figure 6: the two terms of eq. (15) in the same whitened coordinates as Figure 4 (natural width about 17.3 cm).
+%   (a) d^2: equal on circles about mu (navy dashed); grows in every direction.
+%   (b) l: equal on straight lines perpendicular to mu - mu_o; l is the position along that direction times Delta (l = Delta * horizontal
+%       coordinate), so it is ONE number, read off a number line.  ID: mean 0, standard deviation about Delta; re-oriented: mean -Delta^2.
+%   Same schematic clouds and test images as Figure 4; Delta = 1.768 (CIFAR-10).
+\begin{tikzpicture}[>={Stealth[length=1.8mm, width=1.4mm]}, line cap=round, line join=round, font=\footnotesize,
+  lab/.style={inner sep=1pt, align=center, font=\footnotesize}, sm/.style={inner sep=1pt, align=center, font=\scriptsize},
+  ttl/.style={anchor=west, inner sep=0pt, font=\small}]
+\input{figs/d_dots}
+\def\plane{% frame, clouds and the two means (whitened units)
+  \draw[black!35, line width=0.4pt] (-4.4,-2.35) rectangle (3.0,2.35);
+  \begin{scope}
+    \clip (-4.4,-2.35) rectangle (3.0,2.35);
+    \foreach \a/\b in \ordots \fill[black!40] (\a,\b) circle (1.15pt);
+    \foreach \a/\b in \iddots \fill[navyc] (\a,\b) circle (1.15pt);
+  \end{scope}
+  \fill[black!60] (-\mDelta,0) circle (2.1pt);
+  \fill[navyc] (0,0) circle (2.1pt);
+  \node[lab, anchor=north, fill=white, inner sep=0.5pt] at (-\mDelta,-0.15) {$\vec{\mu}_{o}$};
+  \node[lab, anchor=north, text=navyc, fill=white, inner sep=0.5pt] at (0.05,-0.15) {$\vec{\mu}$};
+  \draw[navyc, line width=0.9pt] (0.5,0.8) circle (3.0pt);
+  \fill[redc] (-3.3,-0.8) circle (2.8pt);}
+% ================================================================ (a)
+\node[ttl] at (0,2.45) {\textbf{(a)}\ $d^{2}$：$\vec{\mu}$ からの距離の2乗};
+\begin{scope}[shift={(3.7,0)}, x=0.8cm, y=0.8cm]
+  \begin{scope}
+    \clip (-4.4,-2.35) rectangle (3.0,2.35);
+    \foreach \r in {1,2,3,4} \draw[navyc, densely dashed, line width=0.55pt] (0,0) circle (\r);
+  \end{scope}
+  \plane
+  \node[sm, text=navyc, anchor=north, fill=white, inner sep=1pt, align=center] at (-0.7,-2.42) {$d^{2}$ が等しい線：$\vec{\mu}$ を中心とする円\\どの向きへ外れても $d^{2}$ は大きくなる};
+\end{scope}
+% ================================================================ (b)
+\node[ttl] at (8.3,2.45) {\textbf{(b)}\ $\ell$：$\vec{\mu}-\vec{\mu}_{o}$ の向きの位置(数1つ)};
+\begin{scope}[shift={(11.9,0)}, x=0.8cm, y=0.8cm]
+  \begin{scope}
+    \clip (-4.4,-2.35) rectangle (3.0,2.35);
+    \foreach \x in {-4,-3,...,2} \draw[black!55, densely dashed, line width=0.5pt] (\x,-2.35) -- (\x,2.35);
+  \end{scope}
+  \plane
+  \draw[->, line width=1.0pt] (-\mDelta+0.12,0) -- (-0.12,0);
+  \node[sm, anchor=south, fill=white, inner sep=0.5pt] at (-0.88,0.14) {$\vec{\mu}-\vec{\mu}_{o}$};
+  \node[sm, anchor=south west, fill=white, inner sep=1pt, align=left] at (-4.35,1.45) {$\ell$ が等しい線：\\$\vec{\mu}-\vec{\mu}_{o}$ に垂直な直線};
+  % the number line of l (l = Delta * horizontal coordinate)
+  \def\ny{-4.75}
+  \draw[->, line width=0.7pt] (-4.4,\ny) -- (3.15,\ny);
+  \node[lab, anchor=west] at (3.2,\ny) {$\ell$};
+  \draw[black!60, line width=0.5pt, domain=-4.4:3.0, samples=60] plot (\x,{\ny+1.1*exp(-0.5*((\x+\mDelta)/0.93)^2)});
+  \draw[navyc, line width=0.8pt, domain=-3.6:3.0, samples=60] plot (\x,{\ny+1.1*exp(-0.5*(\x)^2)});
+  \draw[line width=0.6pt] (0,\ny-0.1) -- (0,\ny+0.1);
+  \draw[line width=0.6pt] (-\mDelta,\ny-0.1) -- (-\mDelta,\ny+0.1);
+  \node[sm, anchor=north] at (0,\ny-0.12) {$0$};
+  \node[sm, anchor=north] at (-\mDelta,\ny-0.12) {$-\Delta^{2}$};
+  \node[sm, text=navyc, anchor=south west, align=left] at (1.3,\ny+0.55) {分布内の画像\\平均 $0$,標準偏差 ${\approx}\,\Delta$};
+  \node[sm, text=black!65, anchor=south east, align=right] at (-3.55,\ny+0.3) {向きを変えた画像\\平均 $-\Delta^{2}$};
+  % the two test images dropped onto the line
+  \draw[navyc, densely dotted, line width=0.6pt] (0.5,0.68) -- (0.5,\ny);
+  \draw[redc, densely dotted, line width=0.6pt] (-3.3,-0.92) -- (-3.3,\ny);
+  \fill[navyc] (0.5,\ny) circle (2.2pt);
+  \fill[redc] (-3.3,\ny) circle (2.2pt);
+\end{scope}
+\node[lab, anchor=north west, align=left] at (0.3,-3.0) {(b)の $\ell$ は矢印(ベクトル)ではなく,\\数直線上の1点(スカラー)である.\\画像1枚に $\ell$ が1つ決まる\\(右下の数直線. 横の位置の $\Delta$ 倍).};
+\end{tikzpicture}

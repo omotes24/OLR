@@ -1,0 +1,27 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}{lcrrrrrr}%
+\toprule
+手法 & 止める & 秒/枚 & 比 & 画像 & 数値 & MB & AUROC\\
+\midrule
+\textbf{OLR（Ours）} & A & 0.068 & 1.03 & 2{,}000 & 552 & 0.0011 & 95.6\\
+\midrule
+CFS（kNNヘッド） & $\frac{1}{2}$ & 0.090 & 1.36 & 50{,}000 & 51{,}200{,}000 & 102 & 88.0\\
+CFS（対角ガウス） & $\frac{1}{2}$ & 0.087 & 1.31 & 50{,}000 & 2{,}048 & 0.0041 & 85.6\\
+\bottomrule
+\end{tabular}%
+\end{document}

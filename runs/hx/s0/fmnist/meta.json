@@ -1,0 +1,430 @@
+{
+ "tag": "fmnist",
+ "spec": "own:models/fmnist_s/final.pt",
+ "seed": 0,
+ "fp16": "1",
+ "hooks": [
+  [
+   "unet.enc.32x32_conv",
+   "enc",
+   96,
+   32
+  ],
+  [
+   "unet.enc.32x32_block0",
+   "enc",
+   96,
+   32
+  ],
+  [
+   "unet.enc.32x32_block1",
+   "enc",
+   96,
+   32
+  ],
+  [
+   "unet.enc.16x16_down",
+   "enc",
+   96,
+   16
+  ],
+  [
+   "unet.enc.16x16_block0",
+   "enc",
+   192,
+   16
+  ],
+  [
+   "unet.enc.16x16_block1",
+   "enc",
+   192,
+   16
+  ],
+  [
+   "unet.enc.8x8_down",
+   "enc",
+   192,
+   8
+  ],
+  [
+   "unet.enc.8x8_block0",
+   "enc",
+   192,
+   8
+  ],
+  [
+   "unet.enc.8x8_block1",
+   "enc",
+   192,
+   8
+  ],
+  [
+   "unet.enc.4x4_down",
+   "enc",
+   192,
+   4
+  ],
+  [
+   "unet.enc.4x4_block0",
+   "enc",
+   192,
+   4
+  ],
+  [
+   "unet.enc.4x4_block1",
+   "enc",
+   192,
+   4
+  ],
+  [
+   "unet.dec.4x4_in0",
+   "dec",
+   192,
+   4
+  ],
+  [
+   "unet.dec.4x4_in1",
+   "dec",
+   192,
+   4
+  ],
+  [
+   "unet.dec.4x4_block0",
+   "dec",
+   192,
+   4
+  ],
+  [
+   "unet.dec.4x4_block1",
+   "dec",
+   192,
+   4
+  ],
+  [
+   "unet.dec.4x4_block2",
+   "dec",
+   192,
+   4
+  ],
+  [
+   "unet.dec.8x8_up",
+   "dec",
+   192,
+   8
+  ],
+  [
+   "unet.dec.8x8_block0",
+   "dec",
+   192,
+   8
+  ],
+  [
+   "unet.dec.8x8_block1",
+   "dec",
+   192,
+   8
+  ],
+  [
+   "unet.dec.8x8_block2",
+   "dec",
+   192,
+   8
+  ],
+  [
+   "unet.dec.16x16_up",
+   "dec",
+   192,
+   16
+  ],
+  [
+   "unet.dec.16x16_block0",
+   "dec",
+   192,
+   16
+  ],
+  [
+   "unet.dec.16x16_block1",
+   "dec",
+   192,
+   16
+  ],
+  [
+   "unet.dec.16x16_block2",
+   "dec",
+   192,
+   16
+  ],
+  [
+   "unet.dec.32x32_up",
+   "dec",
+   192,
+   32
+  ],
+  [
+   "unet.dec.32x32_block0",
+   "dec",
+   96,
+   32
+  ],
+  [
+   "unet.dec.32x32_block1",
+   "dec",
+   96,
+   32
+  ],
+  [
+   "unet.dec.32x32_block2",
+   "dec",
+   96,
+   32
+  ]
+ ],
+ "g_off": {
+  "unet.enc.32x32_conv": [
+   0,
+   192
+  ],
+  "unet.enc.32x32_block0": [
+   192,
+   384
+  ],
+  "unet.enc.32x32_block1": [
+   384,
+   576
+  ],
+  "unet.enc.16x16_down": [
+   576,
+   768
+  ],
+  "unet.enc.16x16_block0": [
+   768,
+   1152
+  ],
+  "unet.enc.16x16_block1": [
+   1152,
+   1536
+  ],
+  "unet.enc.8x8_down": [
+   1536,
+   1920
+  ],
+  "unet.enc.8x8_block0": [
+   1920,
+   2304
+  ],
+  "unet.enc.8x8_block1": [
+   2304,
+   2688
+  ],
+  "unet.enc.4x4_down": [
+   2688,
+   3072
+  ],
+  "unet.enc.4x4_block0": [
+   3072,
+   3456
+  ],
+  "unet.enc.4x4_block1": [
+   3456,
+   3840
+  ],
+  "unet.dec.4x4_in0": [
+   3840,
+   4224
+  ],
+  "unet.dec.4x4_in1": [
+   4224,
+   4608
+  ],
+  "unet.dec.4x4_block0": [
+   4608,
+   4992
+  ],
+  "unet.dec.4x4_block1": [
+   4992,
+   5376
+  ],
+  "unet.dec.4x4_block2": [
+   5376,
+   5760
+  ],
+  "unet.dec.8x8_up": [
+   5760,
+   6144
+  ],
+  "unet.dec.8x8_block0": [
+   6144,
+   6528
+  ],
+  "unet.dec.8x8_block1": [
+   6528,
+   6912
+  ],
+  "unet.dec.8x8_block2": [
+   6912,
+   7296
+  ],
+  "unet.dec.16x16_up": [
+   7296,
+   7680
+  ],
+  "unet.dec.16x16_block0": [
+   7680,
+   8064
+  ],
+  "unet.dec.16x16_block1": [
+   8064,
+   8448
+  ],
+  "unet.dec.16x16_block2": [
+   8448,
+   8832
+  ],
+  "unet.dec.32x32_up": [
+   8832,
+   9216
+  ],
+  "unet.dec.32x32_block0": [
+   9216,
+   9408
+  ],
+  "unet.dec.32x32_block1": [
+   9408,
+   9600
+  ],
+  "unet.dec.32x32_block2": [
+   9600,
+   9792
+  ]
+ },
+ "q_off": {
+  "unet.enc.32x32_conv": [
+   0,
+   384
+  ],
+  "unet.enc.32x32_block0": [
+   384,
+   768
+  ],
+  "unet.enc.32x32_block1": [
+   768,
+   1152
+  ],
+  "unet.enc.16x16_down": [
+   1152,
+   1536
+  ],
+  "unet.enc.16x16_block0": [
+   1536,
+   2304
+  ],
+  "unet.enc.16x16_block1": [
+   2304,
+   3072
+  ],
+  "unet.enc.8x8_down": [
+   3072,
+   3840
+  ],
+  "unet.enc.8x8_block0": [
+   3840,
+   4608
+  ],
+  "unet.enc.8x8_block1": [
+   4608,
+   5376
+  ],
+  "unet.enc.4x4_down": [
+   5376,
+   6144
+  ],
+  "unet.enc.4x4_block0": [
+   6144,
+   6912
+  ],
+  "unet.enc.4x4_block1": [
+   6912,
+   7680
+  ],
+  "unet.dec.4x4_in0": [
+   7680,
+   8448
+  ],
+  "unet.dec.4x4_in1": [
+   8448,
+   9216
+  ],
+  "unet.dec.4x4_block0": [
+   9216,
+   9984
+  ],
+  "unet.dec.4x4_block1": [
+   9984,
+   10752
+  ],
+  "unet.dec.4x4_block2": [
+   10752,
+   11520
+  ],
+  "unet.dec.8x8_up": [
+   11520,
+   12288
+  ],
+  "unet.dec.8x8_block0": [
+   12288,
+   13056
+  ],
+  "unet.dec.8x8_block1": [
+   13056,
+   13824
+  ],
+  "unet.dec.8x8_block2": [
+   13824,
+   14592
+  ],
+  "unet.dec.16x16_up": [
+   14592,
+   15360
+  ],
+  "unet.dec.16x16_block0": [
+   15360,
+   16128
+  ],
+  "unet.dec.16x16_block1": [
+   16128,
+   16896
+  ],
+  "unet.dec.16x16_block2": [
+   16896,
+   17664
+  ],
+  "unet.dec.32x32_up": [
+   17664,
+   18432
+  ],
+  "unet.dec.32x32_block0": [
+   18432,
+   18816
+  ],
+  "unet.dec.32x32_block1": [
+   18816,
+   19200
+  ],
+  "unet.dec.32x32_block2": [
+   19200,
+   19584
+  ]
+ },
+ "g_dim": 9792,
+ "q_dim": 19584,
+ "sigmas": {
+  "0": 0.01,
+  "2": 0.0292864,
+  "4": 0.0857696,
+  "6": 0.251189,
+  "7": 0.429866,
+  "8": 0.735643,
+  "9": 1.25893,
+  "10": 2.15444
+ }
+}

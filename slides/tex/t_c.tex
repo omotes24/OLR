@@ -1,0 +1,26 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}{l*{9}{r}}%
+\toprule
+$c$ & 0 & 1 & 2 & 4 & \B{8} & 16 & 32 & 64 & $\infty$\\
+\midrule
+5つの平均 & 87.8 & 91.9 & 93.6 & 94.9 & \B{95.6} & 95.6 & 95.3 & 95.0 & 94.5\\
+縮小の履歴をそろえた対照 & 83.2 & 86.8 & 88.8 & 90.6 & \B{91.8} & 92.0 & 91.5 & 91.0 & 90.1\\
+上下反転 & 63.5 & 73.5 & 78.2 & 82.5 & \B{85.2} & 86.4 & 86.8 & 86.9 & 87.0\\
+\bottomrule
+\end{tabular}%
+\end{document}

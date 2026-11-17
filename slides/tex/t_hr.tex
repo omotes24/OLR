@@ -1,0 +1,30 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}{ll*{5}{r}rrrr}%
+\toprule
+画像 & 手法 & SSB-hard & NINCO & iNaturalist & Textures & OpenImage-O & 近い & 遠い & 5つの平均 & 上下反転\\
+\midrule
+224ピクセルを拡大 & \textbf{OLR（Ours）} & 64.6 & \B{77.1} & \B{74.5} & \B{94.5} & 70.8 & \B{70.8} & \B{80.0} & \B{76.3} & \B{60.4}\\
+ & CFS（kNNヘッド） & 69.4 & 67.7 & 54.2 & 85.6 & 54.1 & 68.5 & 64.6 & 66.2 & 50.5\\
+ & CFS（対角ガウス） & 69.9 & 66.1 & 60.5 & 89.8 & 80.6 & 68.0 & 77.0 & 73.4 & 49.3\\
+\midrule
+112ピクセル経由（対照） & \textbf{OLR（Ours）} & \B{80.2} & \B{69.5} & \B{72.7} & \B{93.7} & \B{78.6} & \B{74.8} & \B{81.7} & \B{78.9} & \B{59.6}\\
+ & CFS（kNNヘッド） & 66.0 & 60.7 & 40.8 & 84.2 & 65.1 & 63.3 & 63.4 & 63.4 & 50.4\\
+ & CFS（対角ガウス） & 70.5 & 63.6 & 61.7 & 88.7 & 70.5 & 67.1 & 73.7 & 71.0 & 49.4\\
+\bottomrule
+\end{tabular}%
+\end{document}

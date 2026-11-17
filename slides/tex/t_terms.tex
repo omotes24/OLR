@@ -1,0 +1,29 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}{l*{5}{r}rr}%
+\toprule
+ & \multicolumn{5}{c}{分布内} & & \\
+\cmidrule(lr){2-6}
+6分割の平均 & CIFAR-10 & SVHN & CelebA & ImageNet-64 & FashionMNIST & 5つの平均 & 上下反転\\
+\midrule
+\textbf{OLR（Ours）} & 95.1 & 96.9 & 100.0 & 85.9 & 99.7 & 95.5 & 84.8\\
+内積の項だけ & 94.9 & 95.2 & 100.0 & 82.3 & 99.6 & 94.4 & 86.8\\
+距離の項だけ & 76.3 & 90.6 & 100.0 & 73.1 & 97.6 & 87.5 & 62.8\\
+ブロックAで止めない & 93.4 & 99.5 & 100.0 & 84.3 & 99.7 & 95.4 & 84.5\\
+\bottomrule
+\end{tabular}%
+\end{document}

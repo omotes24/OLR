@@ -1,0 +1,32 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}{ll*{5}{r}rrrrr}%
+\toprule
+画像 & 式 & SSB-hard & NINCO & iNaturalist & Textures & OpenImage-O & 近い & 遠い & 5つの平均 & 上下反転 & FPR95\\
+\midrule
+224ピクセルを拡大 & \textbf{OLR（Ours）} & 64.6 & 77.1 & 74.5 & 94.5 & 70.8 & 70.8 & 80.0 & 76.3 & 60.4 & 73.4\\
+ & 全ブロック & 80.8 & 81.3 & 73.8 & 93.9 & 83.6 & 81.0 & 83.8 & 82.7 & 65.1 & 73.0\\
+ & 内積の項だけ & 39.3 & 64.4 & 81.3 & 74.9 & 41.4 & 51.9 & 65.9 & 60.3 & 68.4 & 86.2\\
+ & 距離の項だけ & 73.2 & 75.3 & 59.7 & 93.0 & 80.9 & 74.2 & 77.9 & 76.4 & 48.1 & 77.9\\
+\midrule
+112ピクセル経由 & \textbf{OLR（Ours）} & 80.2 & 69.5 & 72.7 & 93.7 & 78.6 & 74.8 & 81.7 & 78.9 & 59.6 & 73.0\\
+ & 全ブロック & 89.6 & 69.9 & 62.9 & 91.9 & 82.6 & 79.8 & 79.1 & 79.4 & 61.6 & 73.2\\
+ & 内積の項だけ & 64.9 & 61.9 & 78.9 & 78.6 & 54.4 & 63.4 & 70.6 & 67.7 & 65.2 & 82.1\\
+ & 距離の項だけ & 79.7 & 65.6 & 55.1 & 91.9 & 85.3 & 72.6 & 77.4 & 75.5 & 47.4 & 76.1\\
+\bottomrule
+\end{tabular}%
+\end{document}

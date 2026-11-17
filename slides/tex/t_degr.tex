@@ -1,0 +1,31 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}{l*{7}{r}r}%
+\toprule
+ & \multicolumn{2}{c}{ぼかし} & \multicolumn{3}{c}{JPEG} & \multicolumn{2}{c}{縮小して戻す} & \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-6}\cmidrule(lr){7-8}
+手法 & 0.5 & 1.0 & 90 & 75 & 50 & $\frac{3}{4}$ & $\frac{1}{2}$ & 平均\\
+\midrule
+\textbf{OLR（Ours）} & 62.7 & 90.0 & 69.0 & 74.9 & 79.8 & 72.5 & 86.7 & 76.5\\
+\quad  内積の項だけ & 58.7 & 81.4 & 62.5 & 68.8 & 73.7 & 65.8 & 79.8 & 70.1\\
+\quad  距離の項だけ & 66.2 & 91.6 & 72.2 & 76.6 & 79.3 & 75.2 & 87.9 & 78.4\\
+\midrule
+CFS（kNNヘッド） & 64.0 & 88.7 & 64.7 & 68.5 & 76.6 & 74.4 & 84.8 & 74.5\\
+CFS（対角ガウス） & 57.4 & 88.9 & 69.7 & 73.0 & 73.0 & 65.8 & 81.9 & 72.8\\
+\bottomrule
+\end{tabular}%
+\end{document}

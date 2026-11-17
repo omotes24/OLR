@@ -1,0 +1,6 @@
+# CPU side: paper/gen/ol_gen.py (the numbers and tables of the resume) and the slide / figure scripts.
+#   The generator needs only the Python standard library; the analysis scripts of code/ (olx_*.py, gx_eval*.py, ol_final.py) need:
+numpy==2.4.6
+scipy==1.17.1
+# slides/build: python-pptx, Pillow; the TeX tables need lualatex with luatexja (Hiragino fonts on macOS)
+# paper/, zukai/: pLaTeX + dvipdfmx (TeX Live), latexmk

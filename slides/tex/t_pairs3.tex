@@ -1,0 +1,32 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}[t]{lrrlrrr}
+\toprule
+\multicolumn{7}{l}{分布内：FashionMNIST}\\
+\midrule
+分布外 & OLR & \multicolumn{2}{c}{先行研究の最良} & 差 & CFS-kNN & 差\\
+\midrule
+MNIST & 99.9 & 99.9 & CFS-kNN & 0.0 & 99.9 & 0.0\\
+KMNIST & 99.7 & 99.8 & CFS-kNN & −0.1 & 99.8 & −0.1\\
+Omniglot & 99.8 & 99.5 & CFS-kNN & +0.4 & 99.5 & +0.4\\
+notMNIST & 99.8 & 100.0 & CFS-kNN & −0.1 & 100.0 & −0.1\\
+上下反転 & 97.2 & 96.4 & CFS-kNN & +0.8 & 96.4 & +0.8\\
+一様ノイズ & 100.0 & 100.0 & NLL & 0.0 & 100.0 & 0.0\\
+定数画像 & 100.0 & 100.0 & IC（PNG） & 0.0 & 100.0 & 0.0\\
+\bottomrule
+\end{tabular}%
+\end{document}

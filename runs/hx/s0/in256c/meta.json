@@ -1,0 +1,535 @@
+{
+ "tag": "in256c",
+ "spec": "adm:256",
+ "seed": 0,
+ "fp16": "1",
+ "hooks": [
+  [
+   "input_blocks.0",
+   "enc",
+   256,
+   256
+  ],
+  [
+   "input_blocks.1",
+   "enc",
+   256,
+   256
+  ],
+  [
+   "input_blocks.2",
+   "enc",
+   256,
+   256
+  ],
+  [
+   "input_blocks.3",
+   "enc",
+   256,
+   128
+  ],
+  [
+   "input_blocks.4",
+   "enc",
+   256,
+   128
+  ],
+  [
+   "input_blocks.5",
+   "enc",
+   256,
+   128
+  ],
+  [
+   "input_blocks.6",
+   "enc",
+   256,
+   64
+  ],
+  [
+   "input_blocks.7",
+   "enc",
+   512,
+   64
+  ],
+  [
+   "input_blocks.8",
+   "enc",
+   512,
+   64
+  ],
+  [
+   "input_blocks.9",
+   "enc",
+   512,
+   32
+  ],
+  [
+   "input_blocks.10",
+   "enc",
+   512,
+   32
+  ],
+  [
+   "input_blocks.11",
+   "enc",
+   512,
+   32
+  ],
+  [
+   "input_blocks.12",
+   "enc",
+   512,
+   16
+  ],
+  [
+   "input_blocks.13",
+   "enc",
+   1024,
+   16
+  ],
+  [
+   "input_blocks.14",
+   "enc",
+   1024,
+   16
+  ],
+  [
+   "input_blocks.15",
+   "enc",
+   1024,
+   8
+  ],
+  [
+   "input_blocks.16",
+   "enc",
+   1024,
+   8
+  ],
+  [
+   "input_blocks.17",
+   "enc",
+   1024,
+   8
+  ],
+  [
+   "middle_block",
+   "mid",
+   1024,
+   8
+  ],
+  [
+   "output_blocks.0",
+   "dec",
+   1024,
+   8
+  ],
+  [
+   "output_blocks.1",
+   "dec",
+   1024,
+   8
+  ],
+  [
+   "output_blocks.2",
+   "dec",
+   1024,
+   16
+  ],
+  [
+   "output_blocks.3",
+   "dec",
+   1024,
+   16
+  ],
+  [
+   "output_blocks.4",
+   "dec",
+   1024,
+   16
+  ],
+  [
+   "output_blocks.5",
+   "dec",
+   1024,
+   32
+  ],
+  [
+   "output_blocks.6",
+   "dec",
+   512,
+   32
+  ],
+  [
+   "output_blocks.7",
+   "dec",
+   512,
+   32
+  ],
+  [
+   "output_blocks.8",
+   "dec",
+   512,
+   64
+  ],
+  [
+   "output_blocks.9",
+   "dec",
+   512,
+   64
+  ],
+  [
+   "output_blocks.10",
+   "dec",
+   512,
+   64
+  ],
+  [
+   "output_blocks.11",
+   "dec",
+   512,
+   128
+  ],
+  [
+   "output_blocks.12",
+   "dec",
+   256,
+   128
+  ],
+  [
+   "output_blocks.13",
+   "dec",
+   256,
+   128
+  ],
+  [
+   "output_blocks.14",
+   "dec",
+   256,
+   256
+  ],
+  [
+   "output_blocks.15",
+   "dec",
+   256,
+   256
+  ],
+  [
+   "output_blocks.16",
+   "dec",
+   256,
+   256
+  ],
+  [
+   "output_blocks.17",
+   "dec",
+   256,
+   256
+  ]
+ ],
+ "g_off": {
+  "input_blocks.0": [
+   0,
+   512
+  ],
+  "input_blocks.1": [
+   512,
+   1024
+  ],
+  "input_blocks.2": [
+   1024,
+   1536
+  ],
+  "input_blocks.3": [
+   1536,
+   2048
+  ],
+  "input_blocks.4": [
+   2048,
+   2560
+  ],
+  "input_blocks.5": [
+   2560,
+   3072
+  ],
+  "input_blocks.6": [
+   3072,
+   3584
+  ],
+  "input_blocks.7": [
+   3584,
+   4608
+  ],
+  "input_blocks.8": [
+   4608,
+   5632
+  ],
+  "input_blocks.9": [
+   5632,
+   6656
+  ],
+  "input_blocks.10": [
+   6656,
+   7680
+  ],
+  "input_blocks.11": [
+   7680,
+   8704
+  ],
+  "input_blocks.12": [
+   8704,
+   9728
+  ],
+  "input_blocks.13": [
+   9728,
+   11776
+  ],
+  "input_blocks.14": [
+   11776,
+   13824
+  ],
+  "input_blocks.15": [
+   13824,
+   15872
+  ],
+  "input_blocks.16": [
+   15872,
+   17920
+  ],
+  "input_blocks.17": [
+   17920,
+   19968
+  ],
+  "middle_block": [
+   19968,
+   22016
+  ],
+  "output_blocks.0": [
+   22016,
+   24064
+  ],
+  "output_blocks.1": [
+   24064,
+   26112
+  ],
+  "output_blocks.2": [
+   26112,
+   28160
+  ],
+  "output_blocks.3": [
+   28160,
+   30208
+  ],
+  "output_blocks.4": [
+   30208,
+   32256
+  ],
+  "output_blocks.5": [
+   32256,
+   34304
+  ],
+  "output_blocks.6": [
+   34304,
+   35328
+  ],
+  "output_blocks.7": [
+   35328,
+   36352
+  ],
+  "output_blocks.8": [
+   36352,
+   37376
+  ],
+  "output_blocks.9": [
+   37376,
+   38400
+  ],
+  "output_blocks.10": [
+   38400,
+   39424
+  ],
+  "output_blocks.11": [
+   39424,
+   40448
+  ],
+  "output_blocks.12": [
+   40448,
+   40960
+  ],
+  "output_blocks.13": [
+   40960,
+   41472
+  ],
+  "output_blocks.14": [
+   41472,
+   41984
+  ],
+  "output_blocks.15": [
+   41984,
+   42496
+  ],
+  "output_blocks.16": [
+   42496,
+   43008
+  ],
+  "output_blocks.17": [
+   43008,
+   43520
+  ]
+ },
+ "q_off": {
+  "input_blocks.0": [
+   0,
+   1024
+  ],
+  "input_blocks.1": [
+   1024,
+   2048
+  ],
+  "input_blocks.2": [
+   2048,
+   3072
+  ],
+  "input_blocks.3": [
+   3072,
+   4096
+  ],
+  "input_blocks.4": [
+   4096,
+   5120
+  ],
+  "input_blocks.5": [
+   5120,
+   6144
+  ],
+  "input_blocks.6": [
+   6144,
+   7168
+  ],
+  "input_blocks.7": [
+   7168,
+   9216
+  ],
+  "input_blocks.8": [
+   9216,
+   11264
+  ],
+  "input_blocks.9": [
+   11264,
+   13312
+  ],
+  "input_blocks.10": [
+   13312,
+   15360
+  ],
+  "input_blocks.11": [
+   15360,
+   17408
+  ],
+  "input_blocks.12": [
+   17408,
+   19456
+  ],
+  "input_blocks.13": [
+   19456,
+   23552
+  ],
+  "input_blocks.14": [
+   23552,
+   27648
+  ],
+  "input_blocks.15": [
+   27648,
+   31744
+  ],
+  "input_blocks.16": [
+   31744,
+   35840
+  ],
+  "input_blocks.17": [
+   35840,
+   39936
+  ],
+  "middle_block": [
+   39936,
+   44032
+  ],
+  "output_blocks.0": [
+   44032,
+   48128
+  ],
+  "output_blocks.1": [
+   48128,
+   52224
+  ],
+  "output_blocks.2": [
+   52224,
+   56320
+  ],
+  "output_blocks.3": [
+   56320,
+   60416
+  ],
+  "output_blocks.4": [
+   60416,
+   64512
+  ],
+  "output_blocks.5": [
+   64512,
+   68608
+  ],
+  "output_blocks.6": [
+   68608,
+   70656
+  ],
+  "output_blocks.7": [
+   70656,
+   72704
+  ],
+  "output_blocks.8": [
+   72704,
+   74752
+  ],
+  "output_blocks.9": [
+   74752,
+   76800
+  ],
+  "output_blocks.10": [
+   76800,
+   78848
+  ],
+  "output_blocks.11": [
+   78848,
+   80896
+  ],
+  "output_blocks.12": [
+   80896,
+   81920
+  ],
+  "output_blocks.13": [
+   81920,
+   82944
+  ],
+  "output_blocks.14": [
+   82944,
+   83968
+  ],
+  "output_blocks.15": [
+   83968,
+   84992
+  ],
+  "output_blocks.16": [
+   84992,
+   86016
+  ],
+  "output_blocks.17": [
+   86016,
+   87040
+  ]
+ },
+ "g_dim": 43520,
+ "q_dim": 87040,
+ "sigmas": {
+  "0": 0.01
+ }
+}

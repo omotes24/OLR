@@ -1,0 +1,29 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}{llrrrrr}%
+\toprule
+分布内 & モデルの学習データ & 本来 & OLR & 内積の項 & 距離の項 & 上下反転\\
+\midrule
+CIFAR-10 & SVHN & 94.2 & 60.0 & 55.4 & 60.9 & 53.5\\
+CIFAR-10 & CelebA & 94.2 & 72.8 & 52.9 & 71.9 & 51.9\\
+SVHN & CIFAR-10 & 96.9 & 99.4 & 73.8 & 99.3 & 49.6\\
+SVHN & CelebA & 96.9 & 97.5 & 46.3 & 98.3 & 52.2\\
+CelebA & CIFAR-10 & 99.9 & 93.8 & 81.0 & 99.3 & 83.4\\
+CelebA & SVHN & 99.9 & 82.0 & 75.3 & 80.0 & 65.7\\
+\bottomrule
+\end{tabular}%
+\end{document}

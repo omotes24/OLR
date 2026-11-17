@@ -1,0 +1,30 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}{lrrrrrrrr}%
+\toprule
+ & & 向きを変えた & \multicolumn{3}{c}{分布外の集合} & val2の & \multicolumn{2}{c}{ブロックA}\\
+\cmidrule(lr){4-6}\cmidrule(lr){8-9}
+分布内 & $p$ & 画像 & 平均 & 最小 & 最大 & 分布内 & 向き & 分布外\\
+\midrule
+CIFAR-10 & 23 & 91 & 80 & 61 & 100 & 94 & 100 & 100\\
+SVHN & 8 & 62 & 31 & 25 & 71 & 0 & 100 & 100\\
+CelebA & 25 & 60 & 80 & 68 & 100 & 56 & 100 & 100\\
+ImageNet-64 & 23 & 80 & 88 & 65 & 100 & 17 & 100 & 100\\
+FashionMNIST & 22 & 59 & 69 & 59 & 82 & 59 & 100 & 100\\
+\bottomrule
+\end{tabular}%
+\end{document}

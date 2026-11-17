@@ -1,0 +1,32 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}{l*{5}{r}rr}%
+\toprule
+ & \multicolumn{5}{c}{分布内} & & \\
+\cmidrule(lr){2-6}
+手法 & CIFAR-10 & SVHN & CelebA & ImageNet-64 & FashionMNIST & 5つの平均 & 順伝播\\
+\midrule
+NLL（尤度）[1] & \R{57.4} & 99.3 & 80.9 & \R{54.6} & \R{32.8} & \R{65.0} & 128+128\\
+IC（PNG）[4] & 72.7 & 91.6 & 86.5 & \R{48.9} & 86.3 & 77.2 & 128+128\\
+MSMA型[6] & \R{64.5} & 99.3 & 99.3 & \R{65.1} & 96.6 & 85.0 & 20\\
+DiffPath[7] & 72.4 & 99.8 & 99.8 & \R{55.5} & 80.6 & 81.6 & 10\\
+\midrule
+CFS[10] & 74.9 & 91.0 & 99.4 & \R{65.5} & 97.4 & 85.6 & 1\\
+CFS（kNNヘッド）[10] & 85.4 & 93.8 & 99.6 & \R{61.4} & 99.8 & 88.0 & 1\\
+\bottomrule
+\end{tabular}%
+\end{document}

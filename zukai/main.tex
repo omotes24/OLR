@@ -1,0 +1,233 @@
+% 図解レジュメ: the method of the 26f WIP resume (OLR) explained one step per figure.  Same notation and numbers as the resume (ol7):
+%   numbers_ol.tex is copied from it; CIFAR-10 values (p = 23, 34 blocks, block A = the 23rd, Delta = 1.768, n = 2,000) are from the
+%   resume's gen/data/ol (olx_info.json, hl_meta.json).  The clouds, the channel map and the curves of Figure 3(b) are schematic
+%   (gen/mk_data.py).  Notation: scalars plain, vectors with arrows (p x 1 columns), matrices bold.
+% Layout: one column (class option onecolumn); every figure and table is placed with [H] right where its step is explained.
+% build: python3 gen/mk_data.py && latexmk -r latexmkrc main.tex
+\documentclass[MIRU,submit,onecolumn]{miru2025j}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage[dvipdfmx]{xcolor}
+\definecolor{navyc}{RGB}{31,58,122}\definecolor{redc}{RGB}{192,57,43}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{float}   % [H]: each figure stays where its step is explained
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.pathreplacing}
+\newcommand{\Ours}{OLR}
+\newcommand{\cn}[1]{\tikz[baseline=(cn.base)]\node[circle, draw, line width=0.4pt, inner sep=0.6pt, font=\scriptsize](cn){#1};}   % circled step numbers (U+2460.. are not in pLaTeX)
+\newcommand{\vmu}{\vec{\mu}}\newcommand{\va}{\vec{a}}\newcommand{\vx}{\vec{x}}\newcommand{\vu}{\vec{u}}\newcommand{\vv}{\vec{v}}
+\newcommand{\Pm}{\mathbf{P}}\newcommand{\Sm}{\mathbf{S}}\newcommand{\Id}{\mathbf{I}}\newcommand{\Gm}{\mathbf{G}}
+\input{numbers_ol}
+\makeatletter
+\renewcommand{\signame}{26f WIP中間発表(手法の図解)}
+\renewcommand{\MIRUPreface}{}
+\renewenvironment{figure}{\@floatenv\capwidth\textwidth\ecapwidth\textwidth\abovecaptionskip1mm\belowcaptionskip\z@\@float{figure}}{\end@float}
+\renewenvironment{table}{\@floatenv\capwidth\textwidth\ecapwidth\textwidth\abovecaptionskip\z@\belowcaptionskip1mm\@float{table}}{\end@float}
+\setlength{\@fptop}{0pt}\setlength{\@fpbot}{0pt plus 1fil}
+\makeatother
+\renewcommand{\eqref}[1]{(\ref{#1})}
+\raggedbottom
+\begin{document}
+\title{\textbf{図解 \Ours{}\\向きを変えた分布内画像による拡散モデルの分布外検知}}
+\affiliate{sfc}{慶應義塾大学 総合政策学部B3 中澤・大越研究室 d-hacks}
+\affiliate{sfc2}{慶應義塾大学大学院 政策・メディア研究科}
+\author{omote}{}{sfc}[]
+\author{親:zackeyさん}{}{sfc2}[]
+\maketitle
+
+\begin{figure}[H]\centering
+\input{figs/f1_overview}
+\caption{\Ours{}の流れ. 1：画像1枚から数を $p$ 個とる(2節). 2：分布内の画像と,その向きを変えた画像から基準点 $\vmu^{*}$ を決める(3節,4節. 事前に1回だけ). 3：テスト画像の $p$ 個の数から $\vmu^{*}$ までの距離を測り,スコア $s(\vx)$(数1つ)とする(4節,5節). 2と3の配置は模式図で,縮尺どおりの図は図~\ref{fig:space}.}
+\label{fig:overview}
+\end{figure}
+
+\section{この資料について}
+本編のレジュメ(ol7)の3節(提案手法)を,手順ごとに図で説明する. 流れは図~\ref{fig:overview}の3つの手順である. 数値はCIFAR-10のモデルの値である. 記号は表~\ref{tab:notation}のとおりで,数1つ(スカラー)は細字,数の縦の並び(ベクトル)は矢印,行列は太字で書く. 形は「縦の数$\times$横の数」で書き, $p\times 1$ のベクトルを転置($\top$)すると $1\times p$ になる.
+
+\begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{8pt}\renewcommand{\arraystretch}{1.15}
+\caption{記号の約束(形はCIFAR-10で $p=23$ のとき).}
+\label{tab:notation}
+\begin{tabular}{@{}lll@{}}\toprule
+種類(書き方) & 形 & この資料の例\\\midrule
+数1つ(細字) & $1\times 1$ & $a_{h}$, $s$, $d^{2}$, $\ell$, $\Delta^{2}$, $c$, $p$, $n$\\
+数の縦の並び(矢印) & $p\times 1$ & $\va(\vx)$, $\vmu$, $\vmu_{o}$, $\vmu^{*}$, $\vu$, $\vv$\\
+行列(太字) & $p\times p$ & $\Sm$, $\Pm$, $\Id$\\
+画像(矢印) & $3{,}072\times 1$ & $\vx$, $\vec{\varepsilon}$\\
+向きを変える行列(太字) & $3{,}072\times 3{,}072$ & $\Gm_{1},\dots,\Gm_{7}$\\\bottomrule
+\end{tabular}
+\end{table}
+
+\section{手順1：画像1枚から数を$p$個とる}
+\label{sec:step1}
+画像 $\vx$ に小さいノイズ $\sigma_{1}\vec{\varepsilon}$($\sigma_{1}=0.01$. $\vec{\varepsilon}$ は全画像に共通)を加えて凍結したU-Netに通し,ブロックごとに数を1つ読む(図~\ref{fig:amp}(a)). ブロック $h$ の出力は $C_{h}$ 枚の地図(チャネル)で, 1枚に $U_{h}$ 個の値 $f_{h,j,u}(\vx)$ がある($j$：チャネル, $u$：位置). チャネルごとの空間平均を
+\begin{equation}
+\bar{f}_{h,j}(\vx)=\frac{1}{U_{h}}\sum_{u=1}^{U_{h}}f_{h,j,u}(\vx)
+\label{eq:fbar}
+\end{equation}
+とし,ブロック $h$ の振幅を
+\begin{equation}
+a_{h}(\vx)=\frac{1}{C_{h}}\sum_{j=1}^{C_{h}}\log\max_{u}|f_{h,j,u}(\vx)-\bar{f}_{h,j}(\vx)|
+\label{eq:amp}
+\end{equation}
+とする. \cn{1}空間平均を引き,\cn{2}絶対値をとり,\cn{3}その最大の対数をとり,\cn{4}チャネルで平均する(図~\ref{fig:amp}(b)). どこかに強い応答があるチャネルが多いほど大きい. デコーダで出力が $16{\times}16$ になる最初のブロックをAとし,入力からAまでの $p$ 個の振幅(分布内の画像で分散が0になるブロックは除く)を縦に並べる.
+\begin{equation}
+\va(\vx)=\{a_{1}(\vx),\dots,a_{p}(\vx)\}^{\top}
+\label{eq:profile}
+\end{equation}
+これをプロファイルと呼ぶ($p\times 1$). CIFAR-10のモデルはブロックが34個で, Aは23番目である($p=23$). 順伝播はAで止めるので,時間は全体の\olFwdAShare\%で済む.
+
+\begin{figure}[H]\centering
+\input{figs/f2_amp}
+\caption{手順1：画像1枚から数を $p$ 個とる(CIFAR-10のモデル). (a) 34個のブロックを,出力の大きさ($32{\times}32$, $16{\times}16$, $8{\times}8$)に合わせた高さで描いた. 紺：ブロック $h$. 赤：ブロックA(23番目). その後の11個は計算しない. (b) 式~\eqref{eq:amp}の\cn{1}〜\cn{4}. 地図の濃淡は模式図である(濃いほど大きい).}
+\label{fig:amp}
+\end{figure}
+
+\section{手順2：振幅が下がる向きを知る}
+\label{sec:step2}
+正方形の画像の向きの変え方は,そのままを除いて7つある(図~\ref{fig:orient}(a)). 画素を並べ替えるだけなので,画素の値の集まりは変わらない. この並べ替えを行列 $\Gm_{1},\dots,\Gm_{7}$ で書く. それでも見慣れない画像になり,振幅が下がる(図~\ref{fig:orient}(b)). 分布外の画像も下がる.
+
+\begin{figure}[H]\centering
+\input{figs/f3_orient}
+\caption{手順2の準備：向きを変えた分布内の画像. (a) 8つの向き. (b) ブロックごとの振幅の平均の模式図. 向きを変えた画像(灰)と分布外の画像(赤)は,分布内の画像(紺)より下がる.}
+\label{fig:orient}
+\end{figure}
+
+CIFAR-10では,Aまでの23ブロックのうち,向きを変えると65\%,分布外の画像では70\%のブロックで,振幅の平均が分布内の平均より下がった(val2. 分布内の標準偏差の0.2倍以上低いブロックの割合. 分布外は集合ごとの値の平均. 本編の表7). そこで,分布外の画像を使わずに,分布内の画像 $\vx_{1},\dots,\vx_{n}$(val1. CIFAR-10では $n=\olNRefMax$)で振幅が下がる向きを求める. プロファイルの平均を
+\begin{equation}
+\vmu=\frac{1}{n}\sum_{i=1}^{n}\va(\vx_{i})
+\label{eq:mu}
+\end{equation}
+共分散行列を $\Sm$($p\times p$),向きを変えたときの平均を
+\begin{equation}
+\vmu_{o}=\frac{1}{7n}\sum_{k=1}^{7}\sum_{i=1}^{n}\va(\Gm_{k}\vx_{i})
+\label{eq:muo}
+\end{equation}
+とする. $\vmu-\vmu_{o}$ は $\vmu_{o}$ から $\vmu$ へ向かう矢印で,振幅が下がる向きの逆を指す(図~\ref{fig:space}の黒の矢印).
+
+\section{手順3：基準点までの距離をスコアにする}
+\label{sec:step3}
+$\vmu$ を $\vmu-\vmu_{o}$ の向きへ $c$ 倍だけ動かした点を基準点とする($c=8$. 開発用の分割val2で決めた).
+\begin{equation}
+\vmu^{*}=\vmu+c(\vmu-\vmu_{o})
+\label{eq:mustar}
+\end{equation}
+距離の重みの行列を
+\begin{equation}
+\Pm=(\Sm+\lambda\bar{s}\Id)^{-1}
+\label{eq:prec}
+\end{equation}
+とし($\bar{s}$ は $\Sm$ の対角成分の平均, $\lambda=10^{-3}$),スコアを $\vmu^{*}$ までのマハラノビス距離の2乗にマイナスをつけたものとする.
+\begin{equation}
+s(\vx)=-\{\va(\vx)-\vmu^{*}\}^{\top}\Pm\{\va(\vx)-\vmu^{*}\}
+\label{eq:score}
+\end{equation}
+形は $(1\times p)(p\times p)(p\times 1)$ で, $s(\vx)$ は数1つである(図~\ref{fig:shape}(a)).
+
+\begin{figure}[H]\centering
+\input{figs/f4_space}
+\caption{手順3：プロファイルの空間(CIFAR-10の $\Delta=\olDeltaCten$, $c=8$ で縮尺どおり). 横：$\vmu-\vmu_{o}$ の向き. 縦：ほかの向きの1つ. 点は模式図(紺：分布内,灰：向きを変えた画像). $\vmu^{*}$ は $\vmu$ から $\vmu-\vmu_{o}$ の8倍だけ右にある. 赤の破線：スコアが等しい線.}
+\label{fig:space}
+\end{figure}
+
+図~\ref{fig:space}は,分布内のばらつきが1になるように軸をとった図で,図の中のふつうの距離がマハラノビス距離である. $\vmu^{*}$ が遠いので,分布内の画像の付近では,スコアが等しい線(円)はほぼ縦になる. スコアはおもに横の位置で決まり,左(振幅が下がる側)へ外れた画像ほど低い.
+
+\begin{figure}[H]\centering
+\input{figs/f5_shape}
+\caption{形の確認($p=23$. 1マスが数1つ). (a) 式~\eqref{eq:score}. (b) 式~\eqref{eq:ell}：$\vv^{\top}$(横)と $\Pm\vu$(縦)の積,つまり内積. どちらも結果は $1\times 1$ の行列,つまり数1つ(スカラー)である.}
+\label{fig:shape}
+\end{figure}
+
+\section{スコアを2つの項に分ける}
+\label{sec:terms}
+$\vu=\va(\vx)-\vmu$(テスト画像の,分布内の平均からのずれ), $\vv=\vmu-\vmu_{o}$ とおく. どちらも $p\times 1$ である. 式~\eqref{eq:mustar}から
+\begin{equation}
+\begin{split}
+\va(\vx)-\vmu^{*}
+&=\va(\vx)-\vmu-c(\vmu-\vmu_{o})\\
+&=\vu-c\vv
+\end{split}
+\label{eq:shift}
+\end{equation}
+である. これを式~\eqref{eq:score}に入れて展開する.
+\begin{equation}
+\begin{split}
+s(\vx)
+&=-(\vu-c\vv)^{\top}\Pm(\vu-c\vv)\\
+&=-\vu^{\top}\Pm\vu+c\,\vu^{\top}\Pm\vv+c\,\vv^{\top}\Pm\vu-c^{2}\vv^{\top}\Pm\vv\\
+&=-\vu^{\top}\Pm\vu+2c\,\vv^{\top}\Pm\vu-c^{2}\vv^{\top}\Pm\vv
+\end{split}
+\label{eq:expand0}
+\end{equation}
+2行目から3行目では, $\vu^{\top}\Pm\vv$ が $1\times 1$ で転置しても変わらないことと, $\Pm$ が対称($\Pm^{\top}=\Pm$)であることを使った.
+\begin{equation}
+\begin{split}
+\vu^{\top}\Pm\vv
+&=(\vu^{\top}\Pm\vv)^{\top}\\
+&=\vv^{\top}\Pm^{\top}\vu\\
+&=\vv^{\top}\Pm\vu
+\end{split}
+\label{eq:sym}
+\end{equation}
+3つの項に名前をつける.
+\begin{equation}
+\begin{split}
+d^{2}(\vx)
+&=\vu^{\top}\Pm\vu\\
+&=\{\va(\vx)-\vmu\}^{\top}\Pm\{\va(\vx)-\vmu\}
+\end{split}
+\label{eq:dsq}
+\end{equation}
+\begin{equation}
+\begin{split}
+\ell(\vx)
+&=\vv^{\top}\Pm\vu\\
+&=(\vmu-\vmu_{o})^{\top}\Pm\{\va(\vx)-\vmu\}
+\end{split}
+\label{eq:ell}
+\end{equation}
+\begin{equation}
+\begin{split}
+\Delta^{2}
+&=\vv^{\top}\Pm\vv\\
+&=(\vmu-\vmu_{o})^{\top}\Pm(\vmu-\vmu_{o})
+\end{split}
+\label{eq:delta}
+\end{equation}
+とおくと,式~\eqref{eq:expand0}は
+\begin{equation}
+s(\vx)=-d^{2}(\vx)+2c\,\ell(\vx)-c^{2}\Delta^{2}
+\label{eq:expand}
+\end{equation}
+となる. 3つとも $(1\times p)(p\times p)(p\times 1)$ の形で,数1つである(図~\ref{fig:shape}).
+
+\begin{figure}[H]\centering
+\input{figs/f6_terms}
+\caption{式~\eqref{eq:expand}の2つの項(図~\ref{fig:space}と同じ座標と点). (a) $d^{2}$ は $\vmu$ を中心とする円の上で等しい. (b) $\ell$ は $\vmu-\vmu_{o}$ に垂直な直線の上で等しく,横の位置の $\Delta$ 倍である. 下の数直線の山は,分布内(紺)と向きを変えた画像(灰)の $\ell$ の分布の模式図. 紺の丸と赤の点：図~\ref{fig:space}の2枚のテスト画像.}
+\label{fig:terms}
+\end{figure}
+
+\textbf{$d^{2}$(距離の項).} $\vmu$ を中心とする円の上で等しく,どの向きへ外れても大きくなる(図~\ref{fig:terms}(a)).
+
+\textbf{$\ell$(内積の項).} $\vv$ と $\Pm\vu$ の内積で,数1つである(図~\ref{fig:shape}(b)). 図~\ref{fig:terms}(b)では横の位置の $\Delta$ 倍で, $\vmu-\vmu_{o}$ に垂直な直線の上で等しい. 分布内の画像では平均が0,標準偏差がほぼ $\Delta$ で,向きを変えた画像では平均が $-\Delta^{2}$ である. $2c=16$ がかかるので,スコアはおもに $\ell$ で決まる(図~\ref{fig:space}で等しい線がほぼ縦になる理由).
+
+\textbf{$\Delta^{2}$.} 画像によらない定数で,画像の順位を変えない. CIFAR-10では $\Delta=\olDeltaCten$ である. 向きを変えてもプロファイルが動かないデータでは $\Delta$ が小さく, $\ell$ の幅も小さいので,内積の項は自動的に軽くなる(5つのモデルで $\Delta=\olDeltaMin$〜$\olDeltaMax$).
+
+\section{まとめ：何をいつ計算するか}
+表~\ref{tab:summary}のとおりである. 勾配による学習,追加のネットワーク,人手のラベル,分布外の画像は使わない.
+
+\begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.15}
+\caption{用意するものと計算(右の列はCIFAR-10).}
+\label{tab:summary}
+\begin{tabular}{@{}p{18mm}p{92mm}p{38mm}@{}}\toprule
+ & すること & CIFAR-10\\\midrule
+用意する & 学習済みの拡散モデル(凍結)と,分布内の画像 $n$ 枚(val1) & $n=\olNRefMax$\\
+事前に1回 & $n$ 枚を8つの向きでブロックAまで通す($8n$ 回の順伝播) & 16{,}000回\\
+ & $\vmu$, $\Sm$, $\vmu_{o}$ から $\vmu^{*}$ と $\Pm$ を作る[式~\eqref{eq:mustar},~\eqref{eq:prec}] & \\
+保存する & $\vmu^{*}$($p$ 個)と $\Pm$($p\times p$ 個)の数 & $23+529=552$ 個\\
+テスト時 & ブロックAで止める順伝播1回 & 全体の\olFwdAShare\%の時間\\
+ & 式~\eqref{eq:score}の計算1つ & \\\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

@@ -1,0 +1,28 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}{lll}%
+\toprule
+分割 & 画像 & 用途\\
+\midrule
+train & 分布内の学習画像5万枚（ImageNet-64は1万枚） & 比較手法の当てはめ\\
+val1 & 分布内の画像2,000枚（ImageNet-64は1,500枚） & OLRの$\vec{\mu}$、$\mathbf{S}$、$\vec{\mu}_{o}$。比較手法の当てはめ\\
+val2 & 分布内と各分布外集合から1,000枚ずつ（FashionMNISTは2,000枚） & OLRの開発\\
+test & 500枚ずつ & 比較手法との比較\\
+test2〜6 & 500枚ずつ（test6のCIFAR-10は258枚） & 分割を変えた確認\\
+\bottomrule
+\end{tabular}%
+\end{document}

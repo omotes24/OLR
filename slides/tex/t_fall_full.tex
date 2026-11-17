@@ -1,0 +1,30 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{luatexja-fontspec}
+\setmainjfont[Scale=1,BoldFont=HiraMinProN-W6]{Hiragino Mincho ProN}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\ltjsetparameter{xkanjiskip=0pt}
+\usepackage{booktabs,xcolor}
+\definecolor{tred}{RGB}{192,57,43}
+\definecolor{tnavy}{RGB}{31,58,122}
+\newcommand{\R}[1]{\textcolor{tred}{#1}}
+\newcommand{\B}[1]{\textcolor{tnavy}{\textbf{#1}}}
+\newcommand{\U}[1]{\textcolor{tnavy}{\underline{#1}}}
+\newcommand{\dg}{\rlap{$^{\dagger}$}}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{document}%
+\begin{tabular}{lrrrrrrrrrr}%
+\toprule
+ & & \multicolumn{3}{c}{向きを変えた画像} & \multicolumn{3}{c}{分布外の集合} & \multicolumn{3}{c}{val2の分布内}\\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}\cmidrule(lr){9-11}
+分布内 & $p$ & 下がる & 上がる & $z_{\mathrm{A}}$ & 下がる & 上がる & $z_{\mathrm{A}}$ & 下がる & 上がる & $z_{\mathrm{A}}$\\
+\midrule
+CIFAR-10 & 23 & 65 & 0 & $-$1.6 & 70 & 12 & $-$2.2 & 0 & 0 & $-$0.1\\
+SVHN & 8 & 38 & 0 & $-$0.6 & 26 & 55 & $-$0.5 & 0 & 0 & 0.1\\
+CelebA & 25 & 40 & 4 & $-$7.6 & 76 & 17 & $-$11.2 & 0 & 0 & $-$0.1\\
+ImageNet-64 & 23 & 39 & 0 & $-$0.7 & 81 & 6 & $-$1.2 & 0 & 0 & 0.0\\
+FashionMNIST & 22 & 39 & 21 & $-$2.5 & 59 & 24 & $-$3.2 & 0 & 0 & 0.1\\
+\bottomrule
+\end{tabular}%
+\end{document}
