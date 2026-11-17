@@ -31,6 +31,7 @@ numbers are kept, so "PROTOCOL_IDO.md Ixx" in `code/` and `paper/README.md` refe
 
 ## Log
 
+```text
 I59 2026-11-16 10:29 UTC.  EXPLORATION OF A SIMPLER SCORE (asked by the author at 10:18 UTC: "a more elegant method above 95%").
     PLAN, written before any number.  Development only: val2 and the val1 ID images for every parameter; no test split is read, the
     sel- sets are not read, nothing is frozen and no claim is made here.
@@ -439,3 +440,4 @@ I80 2026-11-17 05:42 UTC.  THE PUBLIC REPOSITORY (the author at 05:08 UTC: put t
     (d) slides/ and zukai/: as delivered; the paths of the slide scripts are made relative to the repository (the deck built from
     the repository is part-for-part identical to the delivered one).
     (e) This file replaces, for the public, the entries I59-I80 of the log.
+```
