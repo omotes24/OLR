@@ -43,7 +43,7 @@
 
 \subsection{何が効いているか}
 \label{sec:ablate}
-表~\ref{tab:six}の下の3行のとおり,距離の項だけでは\olSixT\%,方向の項だけでは\olSixL\%で,方向の項が主である. 距離の項はSVHNとImageNet-64で効く. 全ブロックを使っても平均は\olSixAll\%でほぼ同じだが, SVHNが上がり, CIFAR-10とImageNet-64が下がる. val2 での分析(表~\ref{tab:dev})では, $c$ を0から大きくすると\olDevCzero\%から上がり, 8と16で最も高く(\olDevCeight\%と\olDevCsixteen\%), $c\to\infty$ で\olDevCinf\%に下がる. 上下反転だけを使うと\olDevOv\%で, SVHNが低い. 分布内の画像を1{,}000枚に減らしても\olDevNthousand\%である. 定数のない形(8つの向きのうち「そのまま」である事後確率)は\olDevPk\%にとどまる.
+表~\ref{tab:six}の下の3行のとおり,距離の項だけでは\olSixT\%,内積の項だけでは\olSixL\%で,内積の項が主である. 距離の項はSVHNとImageNet-64で効く. 全ブロックを使っても平均は\olSixAll\%でほぼ同じだが, SVHNが上がり, CIFAR-10とImageNet-64が下がる. val2 での分析(表~\ref{tab:dev})では, $c$ を0から大きくすると\olDevCzero\%から上がり, 8と16で最も高く(\olDevCeight\%と\olDevCsixteen\%), $c\to\infty$ で\olDevCinf\%に下がる. 上下反転だけを使うと\olDevOv\%で, SVHNが低い. 分布内の画像を1{,}000枚に減らしても\olDevNthousand\%である. 定数のない形(8つの向きのうち「そのまま」である事後確率)は\olDevPk\%にとどまる.
 
 \subsection{256{$\times$}256の画像}
 \label{sec:hr}
@@ -84,11 +84,11 @@
 \end{adjustbox}
 \end{table*}
 \begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{2.2pt}\renewcommand{\arraystretch}{0.95}
-\caption{重みを変えたときのAUROC(\%. test6,ノイズの種0). 較正の画像と式は同じ. 初期化したまま：学習前の重み. 並べ替え：テンソルごとに要素を並べ替えた重み. 上下：上下反転した分布内の画像. 方向,距離：方向の項だけ,距離の項だけでの5つの平均.}
+\caption{重みを変えたときのAUROC(\%. test6,ノイズの種0). 較正の画像と式は同じ. 初期化したまま：学習前の重み. 並べ替え：テンソルごとに要素を並べ替えた重み. 上下：上下反転した分布内の画像. 内積,距離：内積の項だけ,距離の項だけでの5つの平均.}
 \label{tab:var}
 \begin{adjustbox}{max width=\columnwidth}
 \begin{tabular}{@{}lccccc|c|c|cc@{}}\toprule
-重み & C-10 & SVHN & CelebA & IN-64 & FMNIST & 平均 & 上下 & 方向 & 距離\\\midrule
+重み & C-10 & SVHN & CelebA & IN-64 & FMNIST & 平均 & 上下 & 内積 & 距離\\\midrule
 \inputrows{tab_var_ol.tex}
 \end{tabular}
 \end{adjustbox}
@@ -99,7 +99,7 @@
 
 \subsection{画質への感度}
 \label{sec:qual}
-内容が同じでも, \Ours{}は劣化させた写しを平均\olDqOLMean\%で見分ける(表~\ref{tab:degr}). CFSの kNN ヘッドも\olDqCfsKnnMean\%で,画質への感度は中間特徴を読む検知器に共通である. \Ours{}では距離の項が方向の項より敏感で, ImageNet-64は品質90のJPEGを\olDqINJpeg\%で見分ける.
+内容が同じでも, \Ours{}は劣化させた写しを平均\olDqOLMean\%で見分ける(表~\ref{tab:degr}). CFSの kNN ヘッドも\olDqCfsKnnMean\%で,画質への感度は中間特徴を読む検知器に共通である. \Ours{}では距離の項が内積の項より敏感で, ImageNet-64は品質90のJPEGを\olDqINJpeg\%で見分ける.
 
 \subsection{縮小の履歴をそろえた対照}
 \label{sec:hist}
@@ -107,7 +107,7 @@
 
 \subsection{モデルの学習}
 \label{sec:model}
-ノイズ除去器の重みを初期化したままにすると, 5つの平均は\olVarTrained\%から\olVarRinit\%に,要素を並べ替えると\olVarRshuf\%に下がる(test6. 表~\ref{tab:var}). 方向の項は\olVarTrainedL\%から\olVarRinitL\%に下がり,学習した応答を読んでいる. 距離の項の低下は小さく(\olVarTrainedT\%から\olVarRinitT\%),画像の統計の違いは学習していないネットワークの振幅にも現れる. 別のデータで学習したモデルでも,数字と自然画像は距離の項で分かれる(SVHNの画像をCIFAR-10のモデルに通すと\olVarByMax\%). SVHNの結果は,モデルが数字を学習した証拠にはならない.
+ノイズ除去器の重みを初期化したままにすると, 5つの平均は\olVarTrained\%から\olVarRinit\%に,要素を並べ替えると\olVarRshuf\%に下がる(test6. 表~\ref{tab:var}). 内積の項は\olVarTrainedL\%から\olVarRinitL\%に下がり,学習した応答を読んでいる. 距離の項の低下は小さく(\olVarTrainedT\%から\olVarRinitT\%),画像の統計の違いは学習していないネットワークの振幅にも現れる. 別のデータで学習したモデルでも,数字と自然画像は距離の項で分かれる(SVHNの画像をCIFAR-10のモデルに通すと\olVarByMax\%). SVHNの結果は,モデルが数字を学習した証拠にはならない.
 
 \subsection{分布外集合から決めた方向との比較}
 \label{sec:oracle}
@@ -117,7 +117,7 @@ val2 の分布外集合を使って決めた線形判別の方向(手法では�
 \label{sec:disc}
 \textbf{何をしているか.} \Ours{}は,補助の分布外データ~\cite{hendrycks2019oe}の代わりに分布内の画像の向きを変えた写しを使い,学習の代わりに平均を1つ求める. 向きを変えた画像でも分布外の画像でもブロックAの振幅は下がり(\ref{sec:fall}節),得られる方向は分布外集合で決めた方向に近い(\ref{sec:oracle}節).
 
-\textbf{限界.} (1) $c=8$ は val2 で決めた(8と16の間は平ら). $c$ は尤度比の共分散の比 $1+1/c$ にあたるが,測った比とは合わない. (2) 開発では候補の式を\olNDev{}通り試し,変種を\olNVar{}通り計算した. テスト分割はどれも以前に他の手法で結果を見ている. (3) 縮小の履歴と画質に反応する(CFSも同じ). (4) 向きを変えても並びが動かないデータでは方向の項が働かない. $256{\times}256$ のImageNetがそうで,内容を見分けている証拠も得られなかった. 上下反転した数字も見分けにくい(SVHN \olSixVfSVHN\%). (5) SVHNでは尤度やスコアの大きさを使う手法に及ばず,内容が近い集合(ImageNet-64)は難しい. 分類器の特徴を使う検知器とは比べていない.
+\textbf{限界.} (1) $c=8$ は val2 で決めた(8と16の間は平ら). $c$ は尤度比の共分散の比 $1+1/c$ にあたるが,測った比とは合わない. (2) 開発では候補の式を\olNDev{}通り試し,変種を\olNVar{}通り計算した. テスト分割はどれも以前に他の手法で結果を見ている. (3) 縮小の履歴と画質に反応する(CFSも同じ). (4) 向きを変えても並びが動かないデータでは内積の項が働かない. $256{\times}256$ のImageNetがそうで,内容を見分けている証拠も得られなかった. 上下反転した数字も見分けにくい(SVHN \olSixVfSVHN\%). (5) SVHNでは尤度やスコアの大きさを使う手法に及ばず,内容が近い集合(ImageNet-64)は難しい. 分類器の特徴を使う検知器とは比べていない.
 
 \section{おわりに}
 凍結した拡散モデルのブロックごとに数値を1つ読み,向きを変えた分布内の画像から求めた方向で判定する\Ours{}を提案した. 5つの分布内データセットで,平均AUROCは test で\olTestOL\%, 6つの分割で\olSixMin{}〜\olSixMax\%で,先行研究の最良を\olGapCfsKnn{}ポイント上回った. 必要なのは,途中で止める順伝播1回と\olNStored{}個の数値である. 一方,向きを変えても並びが動かない場合($256{\times}256$ のImageNet)には働かない. $\Delta$ は分布内の画像だけから求まるので,使えるかどうかは分布外の画像なしで確かめられる.

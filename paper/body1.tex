@@ -9,7 +9,7 @@
 
 本研究の\Ours{}は, U-Net~\cite{ronneberger2015unet}のブロックごとに数値を1つ(振幅)だけ読み,その並びを1つの式で判定する(図~\ref{fig:method}). 学習済みのモデルの振幅は,分布外の画像で下がることが多い(\ref{sec:fall}節). この下がる方向を,分布外の画像を使わずに,分布内の画像の向きを変えて求める. 上下反転や回転をした画像は,画素の値の集まりが同じまま見慣れない画像になり,振幅が下がるからである. スコアは,分布内の平均をこの方向の反対側へ動かした点へのマハラノビス距離~\cite{lee2018mahalanobis}である. 勾配による学習,追加のネットワーク,人手のラベル,分布外の画像は使わない.
 
-5つの分布内データセットで,自然画像の分布外集合に対する平均AUROCは test で\olTestOL\%で,先行研究の最良(\olBestPriorName, \olBestPriorMean\%)を\olGapCfsKnn{}ポイント上回った(95\%信頼区間[\olGapCfsKnnLo, \olGapCfsKnnHi]). 6つのテスト分割では\olSixMin{}〜\olSixMax\%であった. 順伝播は途中で止める1回で, CPUで1枚\olSecOL{}秒(途中で止めたCFSの\olSecRatioCfsKnn{}倍),保存する数値は\olNStored{}個である. 縮小の履歴をそろえた対照でもCFSとの差は変わらず,重みを初期化したままにすると\olVarRinit\%に下がる. 一方, $256{\times}256$ のImageNetでは向きを変えても並びがほとんど動かず,方向の手がかりは働かない(上下反転は\olHrOLVf\%). なお,定数1つ($c=8$)は開発用の分割で決め,テスト分割は以前に他の手法で結果を見たものである.
+5つの分布内データセットで,自然画像の分布外集合に対する平均AUROCは test で\olTestOL\%で,先行研究の最良(\olBestPriorName, \olBestPriorMean\%)を\olGapCfsKnn{}ポイント上回った(95\%信頼区間[\olGapCfsKnnLo, \olGapCfsKnnHi]). 6つのテスト分割では\olSixMin{}〜\olSixMax\%であった. 順伝播は途中で止める1回で, CPUで1枚\olSecOL{}秒(途中で止めたCFSの\olSecRatioCfsKnn{}倍),保存する数値は\olNStored{}個である. 縮小の履歴をそろえた対照でもCFSとの差は変わらず,重みを初期化したままにすると\olVarRinit\%に下がる. 一方, $256{\times}256$ のImageNetでは向きを変えても並びがほとんど動かず,向きの手がかりは働かない(上下反転は\olHrOLVf\%). なお,定数1つ($c=8$)は開発用の分割で決め,テスト分割は以前に他の手法で結果を見たものである.
 
 \section{先行研究}
 \label{sec:related}
@@ -77,7 +77,7 @@ s(\vec{x})=-\{\va(\vec{x})-\vmu^{*}\}^{\top}\Pm\{\va(\vec{x})-\vmu^{*}\}
 \end{equation}
 とする.
 
-\textbf{2つの項.} 分布内の平均からの距離と,向きの方向への射影を
+\textbf{2つの項.} 分布内の平均からの距離の2乗と, $\vmu-\vmu_{o}$ との内積($\Pm$ で重みをつけたもの)を
 \begin{equation}
 d^{2}(\vec{x})=\{\va(\vec{x})-\vmu\}^{\top}\Pm\{\va(\vec{x})-\vmu\}
 \label{eq:dsq}
@@ -91,7 +91,7 @@ d^{2}(\vec{x})=\{\va(\vec{x})-\vmu\}^{\top}\Pm\{\va(\vec{x})-\vmu\}
 s(\vec{x})=-d^{2}(\vec{x})+2c\,\ell(\vec{x})-c^{2}\Delta^{2}
 \label{eq:expand}
 \end{equation}
-と分かれる. $\Delta^{2}=(\vmu-\vmu_{o})^{\top}\Pm(\vmu-\vmu_{o})$ は画像によらない. $-d^{2}$ はどの方向の外れでも小さくなる距離の項, $\ell$ は向きを変えた画像の側へ外れると小さくなる方向の項である. 分布内の画像での $\ell$ の標準偏差はほぼ $\Delta$ なので,向きを変えても並びが動かないデータでは,方向の項は自動的に軽くなる(5つのモデルで $\Delta=\olDeltaMin$〜$\olDeltaMax$).
+と分かれる. $\Delta^{2}=(\vmu-\vmu_{o})^{\top}\Pm(\vmu-\vmu_{o})$ は画像によらない. $d^{2}$, $\ell$, $\Delta^{2}$ はどれも $1\times p$, $p\times p$, $p\times 1$ の行列の積で, $1\times 1$ の行列,つまりスカラーである. $-d^{2}$ はどの方向の外れでも小さくなる距離の項, $\ell$ は向きを変えた画像の側へ外れると小さくなる内積の項である. 分布内の画像での $\ell$ の標準偏差はほぼ $\Delta$ なので,向きを変えても並びが動かないデータでは,内積の項は自動的に軽くなる(5つのモデルで $\Delta=\olDeltaMin$〜$\olDeltaMax$).
 
 \textbf{尤度比としての解釈.} 分布内のプロファイルを正規分布 $N(\vmu,\Pm^{-1})$,向きを変えた画像のプロファイルを $N\{\vmu_{o},(1+1/c)\Pm^{-1}\}$ とおくと,
 \begin{equation}
@@ -128,7 +128,7 @@ test2〜6 & 500枚ずつ(test6 のCIFAR-10は\olNCten{}枚) & 分割を変えた
 \end{adjustbox}}
 \end{table*}
 \begin{table*}[t]\centering\scriptsize\setlength{\tabcolsep}{3.4pt}\renewcommand{\arraystretch}{0.92}
-\caption{6つのテスト分割での\Ours{}(AUROC, \%). 上下反転,左右反転：分布内の画像とその反転を見分けるAUROC. FPR95：\%,低いほどよい. 下の3行は評価の前に登録した変種(6分割の平均). 方向の項：式~\eqref{eq:ell}. 距離の項：式~\eqref{eq:dsq}.}
+\caption{6つのテスト分割での\Ours{}(AUROC, \%). 上下反転,左右反転：分布内の画像とその反転を見分けるAUROC. FPR95：\%,低いほどよい. 下の3行は評価の前に登録した変種(6分割の平均). 内積の項：式~\eqref{eq:ell}. 距離の項：式~\eqref{eq:dsq}.}
 \label{tab:six}
 \begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{}lccccc|c|c|c|c@{}}\toprule

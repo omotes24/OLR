@@ -71,7 +71,7 @@
 
 本研究の\Ours{}は, U-Net~\cite{ronneberger2015unet}のブロックごとに数値を1つ(振幅)だけ読み,その並びを1つの式で判定する(図~\ref{fig:method}). 学習済みのモデルの振幅は,分布外の画像で下がることが多い(\ref{sec:fall}節). この下がる方向を,分布外の画像を使わずに,分布内の画像の向きを変えて求める. 上下反転や回転をした画像は,画素の値の集まりが同じまま見慣れない画像になり,振幅が下がるからである. スコアは,分布内の平均をこの方向の反対側へ動かした点へのマハラノビス距離~\cite{lee2018mahalanobis}である. 勾配による学習,追加のネットワーク,人手のラベル,分布外の画像は使わない.
 
-5つの分布内データセットで,自然画像の分布外集合に対する平均AUROCは test で\olTestOL\%で,先行研究の最良(\olBestPriorName, \olBestPriorMean\%)を\olGapCfsKnn{}ポイント上回った(95\%信頼区間[\olGapCfsKnnLo, \olGapCfsKnnHi]). 6つのテスト分割では\olSixMin{}〜\olSixMax\%であった. 順伝播は途中で止める1回で, CPUで1枚\olSecOL{}秒(途中で止めたCFSの\olSecRatioCfsKnn{}倍),保存する数値は\olNStored{}個である. 縮小の履歴をそろえた対照でもCFSとの差は変わらず,重みを初期化したままにすると\olVarRinit\%に下がる. 一方, $256{\times}256$ のImageNetでは向きを変えても並びがほとんど動かず,方向の手がかりは働かない(上下反転は\olHrOLVf\%). なお,定数1つ($c=8$)は開発用の分割で決め,テスト分割は以前に他の手法で結果を見たものである.
+5つの分布内データセットで,自然画像の分布外集合に対する平均AUROCは test で\olTestOL\%で,先行研究の最良(\olBestPriorName, \olBestPriorMean\%)を\olGapCfsKnn{}ポイント上回った(95\%信頼区間[\olGapCfsKnnLo, \olGapCfsKnnHi]). 6つのテスト分割では\olSixMin{}〜\olSixMax\%であった. 順伝播は途中で止める1回で, CPUで1枚\olSecOL{}秒(途中で止めたCFSの\olSecRatioCfsKnn{}倍),保存する数値は\olNStored{}個である. 縮小の履歴をそろえた対照でもCFSとの差は変わらず,重みを初期化したままにすると\olVarRinit\%に下がる. 一方, $256{\times}256$ のImageNetでは向きを変えても並びがほとんど動かず,向きの手がかりは働かない(上下反転は\olHrOLVf\%). なお,定数1つ($c=8$)は開発用の分割で決め,テスト分割は以前に他の手法で結果を見たものである.
 
 \section{先行研究}
 \label{sec:related}
@@ -139,7 +139,7 @@ s(\vec{x})=-\{\va(\vec{x})-\vmu^{*}\}^{\top}\Pm\{\va(\vec{x})-\vmu^{*}\}
 \end{equation}
 とする.
 
-\textbf{2つの項.} 分布内の平均からの距離と,向きの方向への射影を
+\textbf{2つの項.} 分布内の平均からの距離の2乗と, $\vmu-\vmu_{o}$ との内積($\Pm$ で重みをつけたもの)を
 \begin{equation}
 d^{2}(\vec{x})=\{\va(\vec{x})-\vmu\}^{\top}\Pm\{\va(\vec{x})-\vmu\}
 \label{eq:dsq}
@@ -153,7 +153,7 @@ d^{2}(\vec{x})=\{\va(\vec{x})-\vmu\}^{\top}\Pm\{\va(\vec{x})-\vmu\}
 s(\vec{x})=-d^{2}(\vec{x})+2c\,\ell(\vec{x})-c^{2}\Delta^{2}
 \label{eq:expand}
 \end{equation}
-と分かれる. $\Delta^{2}=(\vmu-\vmu_{o})^{\top}\Pm(\vmu-\vmu_{o})$ は画像によらない. $-d^{2}$ はどの方向の外れでも小さくなる距離の項, $\ell$ は向きを変えた画像の側へ外れると小さくなる方向の項である. 分布内の画像での $\ell$ の標準偏差はほぼ $\Delta$ なので,向きを変えても並びが動かないデータでは,方向の項は自動的に軽くなる(5つのモデルで $\Delta=\olDeltaMin$〜$\olDeltaMax$).
+と分かれる. $\Delta^{2}=(\vmu-\vmu_{o})^{\top}\Pm(\vmu-\vmu_{o})$ は画像によらない. $d^{2}$, $\ell$, $\Delta^{2}$ はどれも $1\times p$, $p\times p$, $p\times 1$ の行列の積で, $1\times 1$ の行列,つまりスカラーである. $-d^{2}$ はどの方向の外れでも小さくなる距離の項, $\ell$ は向きを変えた画像の側へ外れると小さくなる内積の項である. 分布内の画像での $\ell$ の標準偏差はほぼ $\Delta$ なので,向きを変えても並びが動かないデータでは,内積の項は自動的に軽くなる(5つのモデルで $\Delta=\olDeltaMin$〜$\olDeltaMax$).
 
 \textbf{尤度比としての解釈.} 分布内のプロファイルを正規分布 $N(\vmu,\Pm^{-1})$,向きを変えた画像のプロファイルを $N\{\vmu_{o},(1+1/c)\Pm^{-1}\}$ とおくと,
 \begin{equation}
@@ -190,7 +190,7 @@ test2〜6 & 500枚ずつ(test6 のCIFAR-10は\olNCten{}枚) & 分割を変えた
 \end{adjustbox}}
 \end{table*}
 \begin{table*}[t]\centering\scriptsize\setlength{\tabcolsep}{3.4pt}\renewcommand{\arraystretch}{0.92}
-\caption{6つのテスト分割での\Ours{}(AUROC, \%). 上下反転,左右反転：分布内の画像とその反転を見分けるAUROC. FPR95：\%,低いほどよい. 下の3行は評価の前に登録した変種(6分割の平均). 方向の項：式~\eqref{eq:ell}. 距離の項：式~\eqref{eq:dsq}.}
+\caption{6つのテスト分割での\Ours{}(AUROC, \%). 上下反転,左右反転：分布内の画像とその反転を見分けるAUROC. FPR95：\%,低いほどよい. 下の3行は評価の前に登録した変種(6分割の平均). 内積の項：式~\eqref{eq:ell}. 距離の項：式~\eqref{eq:dsq}.}
 \label{tab:six}
 \begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{}lccccc|c|c|c|c@{}}\toprule
@@ -254,11 +254,11 @@ test2〜6 & 500枚ずつ(test6 のCIFAR-10は\olNCten{}枚) & 分割を変えた
 
 \subsection{何が効いているか}
 \label{sec:ablate}
-表~\ref{tab:six}の下の3行のとおり,距離の項だけでは\olSixT\%,方向の項だけでは\olSixL\%で,方向の項が主である. 距離の項はSVHNとImageNet-64で効く. 全ブロックを使っても平均は\olSixAll\%でほぼ同じだが, SVHNが上がり, CIFAR-10とImageNet-64が下がる. val2 での分析(表~\ref{tab:dev})では, $c$ を0から大きくすると\olDevCzero\%から上がり, 8と16で最も高く(\olDevCeight\%と\olDevCsixteen\%), $c\to\infty$ で\olDevCinf\%に下がる. 上下反転だけを使うと\olDevOv\%で, SVHNが低い. 分布内の画像を1{,}000枚に減らしても\olDevNthousand\%である. 定数のない形(8つの向きのうち「そのまま」である事後確率)は\olDevPk\%にとどまる.
+表~\ref{tab:six}の下の3行のとおり,距離の項だけでは\olSixT\%,内積の項だけでは\olSixL\%で,内積の項が主である. 距離の項はSVHNとImageNet-64で効く. 全ブロックを使っても平均は\olSixAll\%でほぼ同じだが, SVHNが上がり, CIFAR-10とImageNet-64が下がる. val2 での分析(表~\ref{tab:dev})では, $c$ を0から大きくすると\olDevCzero\%から上がり, 8と16で最も高く(\olDevCeight\%と\olDevCsixteen\%), $c\to\infty$ で\olDevCinf\%に下がる. 上下反転だけを使うと\olDevOv\%で, SVHNが低い. 分布内の画像を1{,}000枚に減らしても\olDevNthousand\%である. 定数のない形(8つの向きのうち「そのまま」である事後確率)は\olDevPk\%にとどまる.
 
 \subsection{256{$\times$}256の画像}
 \label{sec:hr}
-表~\ref{tab:hr}のとおり, 5つの平均は\Ours{}が\olHrOL\%, CFSが\olHrCfs\%(対角ガウス)と\olHrCfsKnn\%(kNN ヘッド)である. しかし,このモデルでは向きを変えても並びがほとんど動かず($\Delta=\olHrDelta$),方向の項だけでは\olHrL\%,上下反転は\olHrOLVf\%で,スコアはほぼ距離の項だけになる(補足資料の表~\ref{tab:hrparts}). また,分布外集合は元のファイルの大きさや圧縮の仕方がImageNetと違い,それらの量だけでAUROC \olFactsMin\%以上で見分けられる(補足資料の表~\ref{tab:ssbsrc}). この結果は内容を見分けている証拠にならず, \Ours{}が使えるのは向きを変えると並びが動く場合に限られることを示す.
+表~\ref{tab:hr}のとおり, 5つの平均は\Ours{}が\olHrOL\%, CFSが\olHrCfs\%(対角ガウス)と\olHrCfsKnn\%(kNN ヘッド)である. しかし,このモデルでは向きを変えても並びがほとんど動かず($\Delta=\olHrDelta$),内積の項だけでは\olHrL\%,上下反転は\olHrOLVf\%で,スコアはほぼ距離の項だけになる(補足資料の表~\ref{tab:hrparts}). また,分布外集合は元のファイルの大きさや圧縮の仕方がImageNetと違い,それらの量だけでAUROC \olFactsMin\%以上で見分けられる(補足資料の表~\ref{tab:ssbsrc}). この結果は内容を見分けている証拠にならず, \Ours{}が使えるのは向きを変えると並びが動く場合に限られることを示す.
 
 \section{検証：何を見ているか}
 \label{sec:verify}
@@ -295,11 +295,11 @@ test2〜6 & 500枚ずつ(test6 のCIFAR-10は\olNCten{}枚) & 分割を変えた
 \end{adjustbox}
 \end{table*}
 \begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{2.2pt}\renewcommand{\arraystretch}{0.95}
-\caption{重みを変えたときのAUROC(\%. test6,ノイズの種0). 較正の画像と式は同じ. 初期化したまま：学習前の重み. 並べ替え：テンソルごとに要素を並べ替えた重み. 上下：上下反転した分布内の画像. 方向,距離：方向の項だけ,距離の項だけでの5つの平均.}
+\caption{重みを変えたときのAUROC(\%. test6,ノイズの種0). 較正の画像と式は同じ. 初期化したまま：学習前の重み. 並べ替え：テンソルごとに要素を並べ替えた重み. 上下：上下反転した分布内の画像. 内積,距離：内積の項だけ,距離の項だけでの5つの平均.}
 \label{tab:var}
 \begin{adjustbox}{max width=\columnwidth}
 \begin{tabular}{@{}lccccc|c|c|cc@{}}\toprule
-重み & C-10 & SVHN & CelebA & IN-64 & FMNIST & 平均 & 上下 & 方向 & 距離\\\midrule
+重み & C-10 & SVHN & CelebA & IN-64 & FMNIST & 平均 & 上下 & 内積 & 距離\\\midrule
 \inputrows{tab_var_ol.tex}
 \end{tabular}
 \end{adjustbox}
@@ -310,7 +310,7 @@ test2〜6 & 500枚ずつ(test6 のCIFAR-10は\olNCten{}枚) & 分割を変えた
 
 \subsection{画質への感度}
 \label{sec:qual}
-内容が同じでも, \Ours{}は劣化させた写しを平均\olDqOLMean\%で見分ける(表~\ref{tab:degr}). CFSの kNN ヘッドも\olDqCfsKnnMean\%で,画質への感度は中間特徴を読む検知器に共通である. \Ours{}では距離の項が方向の項より敏感で, ImageNet-64は品質90のJPEGを\olDqINJpeg\%で見分ける.
+内容が同じでも, \Ours{}は劣化させた写しを平均\olDqOLMean\%で見分ける(表~\ref{tab:degr}). CFSの kNN ヘッドも\olDqCfsKnnMean\%で,画質への感度は中間特徴を読む検知器に共通である. \Ours{}では距離の項が内積の項より敏感で, ImageNet-64は品質90のJPEGを\olDqINJpeg\%で見分ける.
 
 \subsection{縮小の履歴をそろえた対照}
 \label{sec:hist}
@@ -318,7 +318,7 @@ test2〜6 & 500枚ずつ(test6 のCIFAR-10は\olNCten{}枚) & 分割を変えた
 
 \subsection{モデルの学習}
 \label{sec:model}
-ノイズ除去器の重みを初期化したままにすると, 5つの平均は\olVarTrained\%から\olVarRinit\%に,要素を並べ替えると\olVarRshuf\%に下がる(test6. 表~\ref{tab:var}). 方向の項は\olVarTrainedL\%から\olVarRinitL\%に下がり,学習した応答を読んでいる. 距離の項の低下は小さく(\olVarTrainedT\%から\olVarRinitT\%),画像の統計の違いは学習していないネットワークの振幅にも現れる. 別のデータで学習したモデルでも,数字と自然画像は距離の項で分かれる(SVHNの画像をCIFAR-10のモデルに通すと\olVarByMax\%). SVHNの結果は,モデルが数字を学習した証拠にはならない.
+ノイズ除去器の重みを初期化したままにすると, 5つの平均は\olVarTrained\%から\olVarRinit\%に,要素を並べ替えると\olVarRshuf\%に下がる(test6. 表~\ref{tab:var}). 内積の項は\olVarTrainedL\%から\olVarRinitL\%に下がり,学習した応答を読んでいる. 距離の項の低下は小さく(\olVarTrainedT\%から\olVarRinitT\%),画像の統計の違いは学習していないネットワークの振幅にも現れる. 別のデータで学習したモデルでも,数字と自然画像は距離の項で分かれる(SVHNの画像をCIFAR-10のモデルに通すと\olVarByMax\%). SVHNの結果は,モデルが数字を学習した証拠にはならない.
 
 \subsection{分布外集合から決めた方向との比較}
 \label{sec:oracle}
@@ -328,7 +328,7 @@ val2 の分布外集合を使って決めた線形判別の方向(手法では�
 \label{sec:disc}
 \textbf{何をしているか.} \Ours{}は,補助の分布外データ~\cite{hendrycks2019oe}の代わりに分布内の画像の向きを変えた写しを使い,学習の代わりに平均を1つ求める. 向きを変えた画像でも分布外の画像でもブロックAの振幅は下がり(\ref{sec:fall}節),得られる方向は分布外集合で決めた方向に近い(\ref{sec:oracle}節).
 
-\textbf{限界.} (1) $c=8$ は val2 で決めた(8と16の間は平ら). $c$ は尤度比の共分散の比 $1+1/c$ にあたるが,測った比とは合わない. (2) 開発では候補の式を\olNDev{}通り試し,変種を\olNVar{}通り計算した. テスト分割はどれも以前に他の手法で結果を見ている. (3) 縮小の履歴と画質に反応する(CFSも同じ). (4) 向きを変えても並びが動かないデータでは方向の項が働かない. $256{\times}256$ のImageNetがそうで,内容を見分けている証拠も得られなかった. 上下反転した数字も見分けにくい(SVHN \olSixVfSVHN\%). (5) SVHNでは尤度やスコアの大きさを使う手法に及ばず,内容が近い集合(ImageNet-64)は難しい. 分類器の特徴を使う検知器とは比べていない.
+\textbf{限界.} (1) $c=8$ は val2 で決めた(8と16の間は平ら). $c$ は尤度比の共分散の比 $1+1/c$ にあたるが,測った比とは合わない. (2) 開発では候補の式を\olNDev{}通り試し,変種を\olNVar{}通り計算した. テスト分割はどれも以前に他の手法で結果を見ている. (3) 縮小の履歴と画質に反応する(CFSも同じ). (4) 向きを変えても並びが動かないデータでは内積の項が働かない. $256{\times}256$ のImageNetがそうで,内容を見分けている証拠も得られなかった. 上下反転した数字も見分けにくい(SVHN \olSixVfSVHN\%). (5) SVHNでは尤度やスコアの大きさを使う手法に及ばず,内容が近い集合(ImageNet-64)は難しい. 分類器の特徴を使う検知器とは比べていない.
 
 \section{おわりに}
 凍結した拡散モデルのブロックごとに数値を1つ読み,向きを変えた分布内の画像から求めた方向で判定する\Ours{}を提案した. 5つの分布内データセットで,平均AUROCは test で\olTestOL\%, 6つの分割で\olSixMin{}〜\olSixMax\%で,先行研究の最良を\olGapCfsKnn{}ポイント上回った. 必要なのは,途中で止める順伝播1回と\olNStored{}個の数値である. 一方,向きを変えても並びが動かない場合($256{\times}256$ のImageNet)には働かない. $\Delta$ は分布内の画像だけから求まるので,使えるかどうかは分布外の画像なしで確かめられる.
@@ -402,20 +402,20 @@ $\vd=\vmu-\vmu_{o}$, $\kappa=1+1/c$ とおく. 次元を $p$ とすると,正規
 \end{table}
 式は val2 と val1 の分布内の画像だけで決めた. 各回の前に,候補の式,候補にしない変種,判断の基準を手順書に書いてから計算し,すべて記録した(表~\ref{tab:devlog}). 基準は「順位の合成を含まない1つの式で, val2 の平均が\olBarNat\%以上,かつ縮小の履歴をそろえた対照で\olBarEq\%以上」で,候補にだけ当てはめる. 2つの値は,開発を始める前に手順書に書いた目標値である. 8回で候補を\olNDev{}通り試し, 8回目の候補(7つの向き, $c=8$,ブロックAまで. val2 で\olCandEightNat\%,対照で\olCandEightEq\%. ノイズの種0)が初めて基準を満たした.
 
-6回目, 7回目, 8回目には,数値が基準を上回る変種があった. 変種は候補ではないので採っていないが,次の回の候補はそれを見て決めた. 6回目には,上下反転だけを使う形で $c$ を2から64まで変えた変種を計算し, $c=8$ と16が最も高かった(最良は\olVarSixName{}で\olVarSixNat\%,対照で\olVarSixEq\%). これを見て, 7回目と8回目の候補の定数を $c=8$ とした. 7回目の候補の最良は\olCandSevenBest\%(対照で\olCandSevenBestEq\%)で基準を満たさなかった. 同じ回の変種では,画像を切って並べ替えた写しは方向を悪くし(方向の項だけで\olDevCutMin{}〜\olDevCutMax\%),上下反転と90度・270度の回転の3つを使う形が\olDevMGeight\%(対照で\olVarSevenEq\%)と最も高かった. これを見てから, 8回目の候補として,3つを選んだ形ではなく,正方形を自分自身に重ねる向きの7つすべてを使う形を手順書に書いた. 8回目の変種のうち,左右反転と180度の回転を除いた5つの向きを使う形は\olVarEightNat\%(対照で\olVarEightEq\%)で,候補と同じ程度である.
+6回目, 7回目, 8回目には,数値が基準を上回る変種があった. 変種は候補ではないので採っていないが,次の回の候補はそれを見て決めた. 6回目には,上下反転だけを使う形で $c$ を2から64まで変えた変種を計算し, $c=8$ と16が最も高かった(最良は\olVarSixName{}で\olVarSixNat\%,対照で\olVarSixEq\%). これを見て, 7回目と8回目の候補の定数を $c=8$ とした. 7回目の候補の最良は\olCandSevenBest\%(対照で\olCandSevenBestEq\%)で基準を満たさなかった. 同じ回の変種では,画像を切って並べ替えた写しは方向を悪くし(内積の項だけで\olDevCutMin{}〜\olDevCutMax\%),上下反転と90度・270度の回転の3つを使う形が\olDevMGeight\%(対照で\olVarSevenEq\%)と最も高かった. これを見てから, 8回目の候補として,3つを選んだ形ではなく,正方形を自分自身に重ねる向きの7つすべてを使う形を手順書に書いた. 8回目の変種のうち,左右反転と180度の回転を除いた5つの向きを使う形は\olVarEightNat\%(対照で\olVarEightEq\%)で,候補と同じ程度である.
 
 基準を満たした候補は,ノイズの種を変えても同じ値であった(val2 の平均は種0, 1, 2で\olDevSeeds\%,対照で\olDevSeedsEq\%). その後に実装を凍結し, val2 で開発時の値を再現することを確かめてから(差は最大\olDevDiff{}ポイント), 6つのテスト分割で1回だけ評価した. 振幅の定義,ノイズの大きさ,ブロックAの規則は,著者の以前の研究で決めたものを変えずに使った.
 
 \subsection*{A.4\quad val2 での分析}
 本文の表~\ref{tab:dev}を補足する.
 
-\textbf{定数 $c$.} $c=0$(距離の項だけ)の\olDevCzero\%から $c=8$ の\olDevCeight\%まで上がり, $c=16$ で\olDevCsixteen\%, $c=64$ で\olDevCsixtyfour\%, $c\to\infty$(方向の項だけ)で\olDevCinf\%になる. 8と16の間は平らである. $c=8$ は,上下反転だけを使う形で val2 を見て決め, 7つの向きを使う形を試す前に手順書に書いた(A.3).
+\textbf{定数 $c$.} $c=0$(距離の項だけ)の\olDevCzero\%から $c=8$ の\olDevCeight\%まで上がり, $c=16$ で\olDevCsixteen\%, $c=64$ で\olDevCsixtyfour\%, $c\to\infty$(内積の項だけ)で\olDevCinf\%になる. 8と16の間は平らである. $c=8$ は,上下反転だけを使う形で val2 を見て決め, 7つの向きを使う形を試す前に手順書に書いた(A.3).
 
-\textbf{使う向き.} 上下反転だけでは\olDevOv\%, 7つすべてで\olDevCeight\%である. 差が出るのはSVHNで,上下反転だけの\olDevSVHNOv\%が, 90度の回転と対角の反転(4つ)では\olDevSVHNOquarter\%になる. 左右反転を除いた6つでも\olDevOnomirror\%である. 画像を切って並べ替えた写し(4分割の入れ替え, $4{\times}4$ のパッチの並べ替え, 2枚の貼り合わせ)では,方向の項だけで\olDevCutMin{}〜\olDevCutMax\%にとどまった. 切り口の縁に反応する方向になるためと考えられる.
+\textbf{使う向き.} 上下反転だけでは\olDevOv\%, 7つすべてで\olDevCeight\%である. 差が出るのはSVHNで,上下反転だけの\olDevSVHNOv\%が, 90度の回転と対角の反転(4つ)では\olDevSVHNOquarter\%になる. 左右反転を除いた6つでも\olDevOnomirror\%である. 画像を切って並べ替えた写し(4分割の入れ替え, $4{\times}4$ のパッチの並べ替え, 2枚の貼り合わせ)では,内積の項だけで\olDevCutMin{}〜\olDevCutMax\%にとどまった. 切り口の縁に反応する方向になるためと考えられる.
 
-\textbf{枚数と定数のない形.} 分布内の画像を1{,}000枚に減らしても\olDevNthousand\%で, 500枚で\olDevNfivehundred\%, 100枚で\olDevNhundred\%に下がる. 8つの向きの正規分布のうち「そのまま」である事後確率を使うと\olDevPk\%,距離の項を密度として掛けると\olDevPkd\%である. 距離の項は\olNBlkCten{}次元のどの方向の外れも同じに数えるので,そのままの重みでは方向の項を埋もれさせる. 定数 $c$ はこの重みを決めている.
+\textbf{枚数と定数のない形.} 分布内の画像を1{,}000枚に減らしても\olDevNthousand\%で, 500枚で\olDevNfivehundred\%, 100枚で\olDevNhundred\%に下がる. 8つの向きの正規分布のうち「そのまま」である事後確率を使うと\olDevPk\%,距離の項を密度として掛けると\olDevPkd\%である. 距離の項は\olNBlkCten{}次元のどの方向の外れも同じに数えるので,そのままの重みでは内積の項を埋もれさせる. 定数 $c$ はこの重みを決めている.
 
-\textbf{式の一部を変えたもの(6分割).} 本文の表~\ref{tab:six}の下の3行は,評価の前に手順書に書いた3通りである. 距離の項だけでは\Ours{}より\olSixTGap{}ポイント,方向の項だけでは\olSixLGap{}ポイント低い. 方向の項だけでは, SVHNとImageNet-64が\olSixLSVHN\%と\olSixLIN\%である(\Ours{}は\olSixSVHN\%と\olSixIN\%). 全ブロックを使うと, SVHNは\olSixAllSVHN\%に上がり, CIFAR-10とImageNet-64は\olSixAllCten\%と\olSixAllIN\%に下がる. ブロックAで止める形は,時間が\olFwdAShare\%で済む.
+\textbf{式の一部を変えたもの(6分割).} 本文の表~\ref{tab:six}の下の3行は,評価の前に手順書に書いた3通りである. 距離の項だけでは\Ours{}より\olSixTGap{}ポイント,内積の項だけでは\olSixLGap{}ポイント低い. 内積の項だけでは, SVHNとImageNet-64が\olSixLSVHN\%と\olSixLIN\%である(\Ours{}は\olSixSVHN\%と\olSixIN\%). 全ブロックを使うと, SVHNは\olSixAllSVHN\%に上がり, CIFAR-10とImageNet-64は\olSixAllCten\%と\olSixAllIN\%に下がる. ブロックAで止める形は,時間が\olFwdAShare\%で済む.
 
 \begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{0.93}
 \caption{表~\ref{tab:dev}の分布内ごとの値と,ほかの形(AUROC, \%. val2,ノイズの種3つの平均). 左の5列：分布内ごとの自然画像の分布外集合の平均. 右の2列：縮小の履歴をそろえた対照での5つの平均と上下反転. 全ブロック：ブロックAで止めない. 対数標準偏差：振幅の代わりに,チャネルごとの空間の標準偏差の対数の平均を使う. 事後確率：8つの向きの正規分布(共分散は共通)のうち「そのまま」である事後確率の対数. 密度の積：それに $-d^{2}/2$ を加えたもの. 部分空間：$d^{2}$ を, 7つの向きの方向が張る部分空間に限ったもの.}
@@ -485,7 +485,7 @@ $\vd=\vmu-\vmu_{o}$, $\kappa=1+1/c$ とおく. 次元を $p$ とすると,正規
 \end{table}
 
 \subsection*{A.8\quad 検証の詳細}
-重みを初期化したままのものと,テンソルごとに要素を並べ替えたものに替えると(本文の表~\ref{tab:var}),上下反転も見分けなくなる(\olVarRinitVf\%). 別のデータセットで学習したモデルに替えると(\olVarNBy{}通り. 表~\ref{tab:varby}),平均は\olVarByTrained\%から\olVarBy\%になる. 方向の項は\olVarByL\%に下がるが,距離の項は\olVarByT\%である. 組による差が大きく, CIFAR-10の画像をSVHNのモデルに通すと\olVarByMin\%, SVHNの画像をCIFAR-10のモデルに通すと\olVarByMax\%である.
+重みを初期化したままのものと,テンソルごとに要素を並べ替えたものに替えると(本文の表~\ref{tab:var}),上下反転も見分けなくなる(\olVarRinitVf\%). 別のデータセットで学習したモデルに替えると(\olVarNBy{}通り. 表~\ref{tab:varby}),平均は\olVarByTrained\%から\olVarBy\%になる. 内積の項は\olVarByL\%に下がるが,距離の項は\olVarByT\%である. 組による差が大きく, CIFAR-10の画像をSVHNのモデルに通すと\olVarByMin\%, SVHNの画像をCIFAR-10のモデルに通すと\olVarByMax\%である.
 
 \begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{0.93}
 \caption{表~\ref{tab:degr}の分布内ごとの値(AUROC, \%. 分布内の画像と,それを劣化させた写し).}
@@ -496,10 +496,10 @@ $\vd=\vmu-\vmu_{o}$, $\kappa=1+1/c$ とおく. 次元を $p$ とすると,正規
 \end{tabular}
 \end{table}
 \begin{table}[H]\centering\footnotesize\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{0.93}
-\caption{別のデータセットで学習したモデルに通したときのAUROC(\%. test6,ノイズの種0,自然画像の分布外集合の平均). 較正の画像も同じモデルに通す. 本来：その分布内で学習したモデルでの値. 方向,距離：方向の項だけ,距離の項だけ. 上下反転：上下反転した分布内の画像.}
+\caption{別のデータセットで学習したモデルに通したときのAUROC(\%. test6,ノイズの種0,自然画像の分布外集合の平均). 較正の画像も同じモデルに通す. 本来：その分布内で学習したモデルでの値. 内積,距離：内積の項だけ,距離の項だけ. 上下反転：上下反転した分布内の画像.}
 \label{tab:varby}
 \begin{tabular}{@{}llccccc@{}}\toprule
-分布内 & モデルの学習データ & 本来 & \Ours & 方向 & 距離 & 上下反転\\\midrule
+分布内 & モデルの学習データ & 本来 & \Ours & 内積 & 距離 & 上下反転\\\midrule
 \inputrows{supp_var_ol.tex}
 \end{tabular}
 \end{table}
