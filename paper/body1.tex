@@ -27,22 +27,22 @@
 
 \subsection{振幅の並び}
 \label{sec:amp}
-画像 $\vec{x}$ にノイズ $\sigma_1\veps$($\sigma_1=0.01$. $\veps$ は全画像に共通)を加えてノイズ除去器に通す. ブロック $h$ の出力の,チャネル $c$,位置 $u$ での値を $f_{h,c,u}(\vec{x})$,チャネルの数を $C_h$,位置の数を $U_h$ とし,チャネルごとの空間平均を
+画像 $\vec{x}$ にノイズ $\sigma_1\veps$($\sigma_1=0.01$. $\veps$ は全画像に共通)を加えてノイズ除去器に通す. ブロック $h$ の出力の,チャネル $j$,位置 $u$ での値を $f_{h,j,u}(\vec{x})$,チャネルの数を $C_h$,位置の数を $U_h$ とし,チャネルごとの空間平均を
 \begin{equation}
-\bar{f}_{h,c}(\vec{x})=\frac{1}{U_h}\sum_{u=1}^{U_h}f_{h,c,u}(\vec{x})
+\bar{f}_{h,j}(\vec{x})=\frac{1}{U_h}\sum_{u=1}^{U_h}f_{h,j,u}(\vec{x})
 \label{eq:fbar}
 \end{equation}
 とする. ブロック $h$ の振幅を
 \begin{equation}
-a_h(\vec{x})=\frac{1}{C_h}\sum_{c=1}^{C_h}\log\max_{u}|f_{h,c,u}(\vec{x})-\bar{f}_{h,c}(\vec{x})|
+a_h(\vec{x})=\frac{1}{C_h}\sum_{j=1}^{C_h}\log\max_{u}|f_{h,j,u}(\vec{x})-\bar{f}_{h,j}(\vec{x})|
 \label{eq:amp}
 \end{equation}
 と定める. チャネルごとに空間平均から最も離れた値を見る量で,どこかに強い応答があれば大きい. デコーダで出力が $16{\times}16$ になる最初のブロックをAとし(5つのモデルで同じ規則. 補足資料の表~\ref{tab:models}),入力からAまでの $p$ 個の振幅を並べた
 \begin{equation}
-\va(\vec{x})=\{a_1(\vec{x}),\dots,a_p(\vec{x})\}
+\va(\vec{x})=\{a_1(\vec{x}),\dots,a_p(\vec{x})\}^{\top}
 \label{eq:profile}
 \end{equation}
-をプロファイルと呼ぶ(CIFAR-10で $p=\olNBlkCten$). 順伝播はAで止めてよい.
+をプロファイルと呼ぶ($p\times 1$ の列ベクトル. CIFAR-10で $p=\olNBlkCten$). 順伝播はAで止めてよい.
 
 \subsection{向きを変えた分布内の画像}
 \label{sec:orient}
